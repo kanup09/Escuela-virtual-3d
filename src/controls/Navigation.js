@@ -52,7 +52,7 @@ export function createNavigation(camera, canvas, building, onModeChanged) {
     orbit.enabled = false;
     camera.position.set(
       building.center.x,
-      building.bounds.min.y + eyeHeight,
+      (building.terrainBounds?.min.y ?? building.bounds.min.y) + eyeHeight,
       building.bounds.max.z + Math.max(4, radius * 0.15)
     );
     camera.lookAt(building.center.x, camera.position.y, building.center.z);
