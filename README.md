@@ -1,121 +1,52 @@
-import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
-import { SETTINGS } from '../config/settings.js';
+# Escuela Virtual 3D — versión modular
 
-const UP = new THREE.Vector3(0, 1, 0);
-const MOVEMENT_KEYS = ['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+Proyecto para recorrer un modelo de escuela con Three.js y Vite.
 
-export function createNavigation(camera, canvas, building, onModeChanged) {
-  const orbit = new OrbitControls(camera, canvas);
-  orbit.enableDamping = true;
-  orbit.dampingFactor = 0.075;
+## Iniciar
 
-  const walk = new PointerLockControls(camera, canvas);
-  walk.pointerSpeed = SETTINGS.mouseSensitivity;
+```bash
+npm install
+npm run dev
+```
 
-  const keys = new Set();
-  const radius = Math.max(building.size.x, building.size.y, building.size.z, 10);
-  const eyeHeight = Math.min(Math.max(SETTINGS.cameraHeight, building.size.y * 0.07), 3.2);
+## Controles
 
-  let mode = 'orbit';
-  const forward = new THREE.Vector3();
-  const right = new THREE.Vector3();
-  const movement = new THREE.Vector3();
+- **Vista órbita:** arrastrar para girar, rueda para zoom.
+- **Caminar:** W A S D (o flechas) para moverte, mouse para mirar, **Shift** para correr,
+  **R** para volver al punto de inicio, **ESC** para salir.
+- El visitante choca con paredes y barandas, se apoya en el piso y sube rampas.
 
-  function emitChange() {
-    onModeChanged(mode);
-  }
+## Elegir dónde se empieza a caminar (la entrada)
 
-  function reset() {
-    walk.unlock();
-    mode = 'orbit';
-    keys.clear();
-    orbit.enabled = true;
+1. En la vista órbita, tocar **📍 Fijar inicio**.
+2. Tocar en el modelo el lugar de la entrada (aparece un marcador rojo).
+3. Se muestran y copian las coordenadas, con este formato:
+   `walkStart: { x: 232, y: 0.15, z: -262, yaw: 0 }`
+4. Pegarlas en `src/config/settings.js` para que queden fijas para todos
+   los visitantes. (Mientras tanto se guardan solo en tu navegador.)
 
-    camera.position.copy(building.center).add(
-      new THREE.Vector3(radius * 0.9, radius * 0.55, radius * 0.95)
-    );
-    orbit.target.copy(building.center);
-    camera.lookAt(building.center);
-    orbit.update();
-    emitChange();
-  }
+`yaw` es hacia dónde mira, en grados: 0 = hacia -Z, 90 = hacia -X,
+180 = hacia +Z, -90 = hacia +X. Al fijar el inicio con el botón, mira hacia el centro de la escuela.
 
-  function setMode(nextMode) {
-    if (nextMode !== 'walk') {
-      reset();
-      return;
-    }
+## Ajustes
 
-    mode = 'walk';
-    orbit.enabled = false;
-    camera.position.set(
-      building.center.x,
-      (building.terrainBounds?.min.y ?? building.bounds.min.y) + eyeHeight,
-      building.bounds.max.z + Math.max(4, radius * 0.15)
-    );
-    camera.lookAt(building.center.x, camera.position.y, building.center.z);
-    walk.lock();
-    emitChange();
-  }
+Todo está en `src/config/settings.js`: velocidad, altura de los ojos,
+tamaño del cuerpo, zona de la escuela para la vista inicial y punto de inicio.
+Las medidas son metros.
 
-  function onKeyDown(event) {
-    if (!MOVEMENT_KEYS.includes(event.code)) return;
-    keys.add(event.code);
-    if (mode === 'walk') event.preventDefault();
-  }
+## El modelo
 
-  function onKeyUp(event) {
-    keys.delete(event.code);
-  }
+`public/models/escuela.glb` (convertido desde el .obj de SketchUp, con los
+polígonos re-triangulados). Los colores son provisionales: el .mtl original
+no estaba disponible, así que se asignaron por nombre de material.
+También se admite `escuela.dae`.
 
-  document.addEventListener('keydown', onKeyDown);
-  document.addEventListener('keyup', onKeyUp);
+## Estructura
 
-  walk.addEventListener('unlock', () => {
-    if (mode !== 'walk') return;
-    mode = 'orbit';
-    orbit.enabled = true;
-    orbit.target.copy(camera.position).add(new THREE.Vector3(0, 0, -5));
-    orbit.update();
-    emitChange();
-  });
-
-  function update(deltaSeconds) {
-    if (mode === 'orbit') {
-      orbit.update();
-      return;
-    }
-    if (!walk.isLocked) return;
-
-    camera.getWorldDirection(forward);
-    forward.y = 0;
-    forward.normalize();
-    right.crossVectors(forward, UP).normalize();
-    movement.set(0, 0, 0);
-
-    if (keys.has('KeyW') || keys.has('ArrowUp')) movement.add(forward);
-    if (keys.has('KeyS') || keys.has('ArrowDown')) movement.sub(forward);
-    if (keys.has('KeyD') || keys.has('ArrowRight')) movement.add(right);
-    if (keys.has('KeyA') || keys.has('ArrowLeft')) movement.sub(right);
-
-    if (movement.lengthSq() > 0) {
-      const speed = SETTINGS.walkSpeed;
-      const safeDelta = Math.min(deltaSeconds, 0.05);
-      camera.position.addScaledVector(movement.normalize(), safeDelta * speed);
-    }
-  }
-
-  reset();
-  return { reset, setMode, update, getMode: () => mode };
-}
-
-
-## Ajustes de visualización del OBJ (17/11)
-
-- La iluminación se redujo para evitar que la geometría sin MTL se vea quemada.
-- El encuadre en órbita ahora se calcula a partir de la arquitectura elevada y no de toda la parcela (que mide aproximadamente 307 × 407 metros).
-- `src/models/calculateArchitectureBounds.js` contiene la lógica modular del encuadre.
-- Sigue faltando el MTL y las texturas originales.
-- El recorrido WASD no tiene colisiones ni detección de pisos; se ajustará con el modelo definitivo.
+- `src/core/`: escena, luces y cámara.
+- `src/config/`: valores editables.
+- `src/controls/`: movimiento, cámara y cambio de modos.
+- `src/physics/`: choques y gravedad (cápsula + BVH).
+- `src/models/`: carga del modelo y maqueta de demostración.
+- `src/ui/`: botones e indicaciones.
+- `src/styles/`: estilos.

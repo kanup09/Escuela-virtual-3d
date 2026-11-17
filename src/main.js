@@ -19,7 +19,8 @@ try {
     camera,
     renderer.domElement,
     building,
-    (mode) => updateUI(mode)
+    (mode) => updateUI(mode),
+    (message) => { status.textContent = message; }
   );
 
   updateUI = setupButtons(navigation);

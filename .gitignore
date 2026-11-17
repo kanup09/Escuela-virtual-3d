@@ -1,8 +1,19 @@
+
+# Dependencias
 node_modules/
+
+# Archivos generados
 dist/
 .vite/
+
+# Variables locales
 .env
 .env.local
-*.log
+.env.*.local
+
+# Archivos del sistema
 .DS_Store
 Thumbs.db
+
+# Archivos temporales
+*.log

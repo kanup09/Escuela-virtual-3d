@@ -81,6 +81,11 @@ button:hover {
   background: #384b5c;
 }
 
+button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
 button.active {
   background: #377a92;
   border-color: #63abc0;
