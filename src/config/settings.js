@@ -1,7 +1,7 @@
 // Ajustes del recorrido. Cambiá estos valores cuando quieras.
 // Todas las medidas están en metros (como el modelo de SketchUp).
 export const SETTINGS = {
-  walkSpeed: 3,            // metros por segundo al caminar
+  walkSpeed: 5,            // metros por segundo al caminar
   runMultiplier: 2,        // se multiplica al mantener Shift
   mouseSensitivity: 1,     // 1 = sensibilidad normal
   cameraHeight: 1.6,       // altura de los ojos sobre el piso
