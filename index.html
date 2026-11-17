@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Escuela Virtual 3D</title>
+  </head>
+  <body>
+    <div id="app">
+      <header>
+        <div>
+          <strong>ESCUELA <span>3D</span></strong>
+          <small>RECORRIDO VIRTUAL · PROTOTIPO</small>
+        </div>
+        <div id="status">Escena de demostración</div>
+      </header>
+
+      <main id="viewer"></main>
+
+      <footer>
+        <div class="actions">
+          <button id="orbit" class="active">↻ Vista órbita</button>
+          <button id="walk">♙ Caminar</button>
+          <button id="reset">⌂ Reiniciar vista</button>
+        </div>
+        <p id="hint">Arrastrá para girar · Rueda para zoom</p>
+      </footer>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
