@@ -18,15 +18,14 @@ export async function loadBuilding(scene) {
   let object;
   let source;
 
-  if (await modelExists('/models/escuela.glb')) {
-    object = (await new GLTFLoader().loadAsync('/models/escuela.glb')).scene;
+  const BASE = import.meta.env.BASE_URL;
+
+  if (await modelExists(`${BASE}models/escuela.glb`)) {
+    object = (await new GLTFLoader().loadAsync(`${BASE}models/escuela.glb`)).scene;
     source = 'GLB';
-  } else if (await modelExists('/models/escuela.dae')) {
-    object = (await new ColladaLoader().loadAsync('/models/escuela.dae')).scene;
+  } else if (await modelExists(`${BASE}models/escuela.dae`)) {
+    object = (await new ColladaLoader().loadAsync(`${BASE}models/escuela.dae`)).scene;
     source = 'DAE';
-  } else {
-    object = createDemoBuilding();
-    source = 'DEMO';
   }
 
   scene.add(object);
