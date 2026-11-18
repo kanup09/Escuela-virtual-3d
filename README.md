@@ -1,52 +1,34 @@
-# Escuela Virtual 3D — versión modular
+# Escuela Virtual
 
-Proyecto para recorrer un modelo de escuela con Three.js y Vite.
+Tour virtual de una escuela: imagen exterior que se acerca a la entrada,
+botón **Ingresar**, vistas interiores (aulas, biblioteca, gimnasio, patio)
+y, aparte, un recorrido libre en 3D.
 
-## Iniciar
+## Probarlo
 
-```bash
-npm install
-npm run dev
-```
+    npm install
+    npm run dev
 
-## Controles
+## Cambiar las imágenes
 
-- **Vista órbita:** arrastrar para girar, rueda para zoom.
-- **Caminar:** W A S D (o flechas) para moverte, mouse para mirar, **Shift** para correr,
-  **R** para volver al punto de inicio, **ESC** para salir.
-- El visitante choca con paredes y barandas, se apoya en el piso y sube rampas.
+Las imágenes están en `public/tour/`. Para reemplazar una, poné la nueva con
+el **mismo nombre**:
 
-## Elegir dónde se empieza a caminar (la entrada)
+| Archivo | Qué es |
+| --- | --- |
+| `exterior.jpg` | Imagen de inicio (la fachada) |
+| `entrada.jpg`, `aulas.jpg`, `biblioteca.jpg`, `gimnasio.jpg`, `patio.jpg` | Vistas del interior |
 
-1. En la vista órbita, tocar **📍 Fijar inicio**.
-2. Tocar en el modelo el lugar de la entrada (aparece un marcador rojo).
-3. Se muestran y copian las coordenadas, con este formato:
-   `walkStart: { x: 232, y: 0.15, z: -262, yaw: 0 }`
-4. Pegarlas en `src/config/settings.js` para que queden fijas para todos
-   los visitantes. (Mientras tanto se guardan solo en tu navegador.)
+- Si la imagen es un **panorama 360°** (equirectangular, proporción 2:1,
+  por ejemplo 8192×4096) se detecta sola y se puede girar.
+- Cualquier otra proporción se muestra como imagen normal con zoom.
+- Si falta un archivo, esa vista muestra un aviso en vez de romperse.
 
-`yaw` es hacia dónde mira, en grados: 0 = hacia -Z, 90 = hacia -X,
-180 = hacia +Z, -90 = hacia +X. Al fijar el inicio con el botón, mira hacia el centro de la escuela.
+Para agregar o quitar vistas, o cambiar los nombres y las zonas tocables del
+exterior, editar `src/tour/tourConfig.js`. Para ubicar una zona, abrir la
+página con `?debug` al final de la dirección y tocar la imagen: muestra x e y.
 
-## Ajustes
+## Recorrido 3D
 
-Todo está en `src/config/settings.js`: velocidad, altura de los ojos,
-tamaño del cuerpo, zona de la escuela para la vista inicial y punto de inicio.
-Las medidas son metros.
-
-## El modelo
-
-`public/models/escuela.glb` (convertido desde el .obj de SketchUp, con los
-polígonos re-triangulados). Los colores son provisionales: el .mtl original
-no estaba disponible, así que se asignaron por nombre de material.
-También se admite `escuela.dae`.
-
-## Estructura
-
-- `src/core/`: escena, luces y cámara.
-- `src/config/`: valores editables.
-- `src/controls/`: movimiento, cámara y cambio de modos.
-- `src/physics/`: choques y gravedad (cápsula + BVH).
-- `src/models/`: carga del modelo y maqueta de demostración.
-- `src/ui/`: botones e indicaciones.
-- `src/styles/`: estilos.
+Botón **Recorrido 3D**. El modelo está en `public/models/escuela.glb` y el punto
+de inicio al caminar se ajusta en `src/config/settings.js`.

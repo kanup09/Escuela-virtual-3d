@@ -26,19 +26,10 @@ export async function loadBuilding(scene) {
   } else if (await modelExists(`${BASE}models/escuela.dae`)) {
     object = (await new ColladaLoader().loadAsync(`${BASE}models/escuela.dae`)).scene;
     source = 'DAE';
-  }
-  
-  if (await modelExists(`${BASE}models/escuela.glb`)) {
-    object = (await new GLTFLoader().loadAsync(`${BASE}models/escuela.glb`)).scene;
-    source = 'GLB';
-  } else if (await modelExists(`${BASE}models/escuela.dae`)) {
-    object = (await new ColladaLoader().loadAsync(`${BASE}models/escuela.dae`)).scene;
-    source = 'DAE';
   } else {
     object = createDemoBuilding();
     source = 'DEMO';
   }
-  
 
   scene.add(object);
   const colliders = prepareColliders(object);

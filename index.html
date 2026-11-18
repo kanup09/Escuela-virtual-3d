@@ -2,17 +2,23 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Escuela Virtual 3D</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Escuela Virtual</title>
+    <link rel="icon" href="data:," />
   </head>
   <body>
-    <div id="app">
+    <!-- Tour con imágenes (pantalla de inicio) -->
+    <div id="tour"></div>
+
+    <!-- Recorrido libre en 3D (se carga solo si lo piden) -->
+    <div id="app" hidden>
       <header>
         <div>
           <strong>ESCUELA <span>3D</span></strong>
-          <small>RECORRIDO VIRTUAL · PROTOTIPO</small>
+          <small>RECORRIDO LIBRE</small>
         </div>
-        <div id="status">Escena de demostración</div>
+        <button id="back-tour">← Volver al tour</button>
+        <div id="status">Cargando…</div>
       </header>
 
       <main id="viewer"></main>

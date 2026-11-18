@@ -67,7 +67,7 @@ canvas {
   flex-wrap: wrap;
 }
 
-button {
+#app button {
   background: #2b3946;
   color: #eaf3f7;
   border: 1px solid #425261;
@@ -77,16 +77,16 @@ button {
   font-weight: 600;
 }
 
-button:hover {
+#app button:hover {
   background: #384b5c;
 }
 
-button:disabled {
+#app button:disabled {
   opacity: 0.45;
   cursor: default;
 }
 
-button.active {
+#app button.active {
   background: #377a92;
   border-color: #63abc0;
 }
@@ -104,7 +104,7 @@ button.active {
     align-items: stretch;
   }
 
-  button {
+  #app button {
     flex: 1;
   }
 

@@ -1,41 +1,18 @@
-import { createScene } from './core/createScene.js';
-import { loadBuilding } from './models/loadBuilding.js';
-import { createNavigation } from './controls/Navigation.js';
-import { setupButtons } from './ui/setupButtons.js';
 import './styles/main.css';
+import './tour/tour.css';
+import { createTour } from './tour/Tour.js';
 
-const viewer = document.querySelector('#viewer');
-const status = document.querySelector('#status');
-const { scene, camera, renderer } = createScene(viewer);
+let viewer3d = null;
 
-try {
-  const building = await loadBuilding(scene);
-  status.textContent = building.source === 'DEMO'
-    ? 'Modelo de prueba · Esperando tu escuela'
-    : `Modelo cargado: ${building.source}`;
-
-  let updateUI = () => {};
-  const navigation = createNavigation(
-    camera,
-    renderer.domElement,
-    building,
-    (mode) => updateUI(mode),
-    (message) => { status.textContent = message; }
-  );
-
-  updateUI = setupButtons(navigation);
-  let previousTime = performance.now();
-
-  function animate(currentTime) {
-    requestAnimationFrame(animate);
-    const deltaSeconds = (currentTime - previousTime) / 1000;
-    previousTime = currentTime;
-    navigation.update(deltaSeconds);
-    renderer.render(scene, camera);
-  }
-
-  requestAnimationFrame(animate);
-} catch (error) {
-  console.error('Error al iniciar el recorrido:', error);
-  status.textContent = 'Error al cargar la escena';
-}
+const tour = createTour(document.querySelector('#tour'), {
+  // El visor 3D se descarga recién cuando alguien toca "Recorrido 3D"
+  open3D: async () => {
+    tour.hide();
+    viewer3d ??= await import('./viewer3d.js');
+    viewer3d.setBackHandler(() => {
+      viewer3d.hideViewer3D();
+      tour.show();
+    });
+    await viewer3d.showViewer3D();
+  },
+});
