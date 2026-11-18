@@ -25,13 +25,46 @@ export const TOUR = {
 
   // Vistas del interior, en el orden del menú.
   // yaw (opcional, solo panoramas): hacia dónde mira al abrir, en grados.
-  scenes: [
-    { id: 'entrada', title: 'Entrada', image: 'tour/entrada.jpg' },
-    { id: 'aulas', title: 'Aulas', image: 'tour/aulas.jpg' },
-    { id: 'biblioteca', title: 'Biblioteca', image: 'tour/biblioteca.jpg' },
-    { id: 'gimnasio', title: 'Gimnasio', image: 'tour/gimnasio.jpg' },
-    { id: 'patio', title: 'Patio', image: 'tour/patio.jpg' },
-  ],
+
+scenes: [
+  {
+    id: 'entrada',
+    title: 'Vista exterior 1',
+    image: 'tour/entrada.png'
+  },
+  {
+    id: 'aulas',
+    title: 'Vista desde el edificio',
+    image: 'tour/aulas.png',
+    autoRotate: false,
+    minYaw: -30,
+    maxYaw: 100
+  },
+  {
+    id: 'biblioteca',
+    title: 'Biblioteca',
+    image: 'tour/biblioteca.jpg'
+  },
+  {
+    id: 'gimnasio',
+    title: 'Gimnasio',
+    image: 'tour/gimnasio.jpg'
+  },
+
+  {
+    id: 'patio',
+    title: 'Exterior 2',
+    image: 'tour/patio.png',
+
+    yaw: 0,
+    autoRotate: false,
+
+    minYaw: -90,
+    maxYaw: 90
+  }
+
+],
+
 };
 
 export const assetUrl = (path) => `${import.meta.env.BASE_URL}${path}`;

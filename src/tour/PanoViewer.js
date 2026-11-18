@@ -2,12 +2,39 @@ import * as THREE from 'three';
 
 // Visor de panoramas 360° (imagen equirectangular, proporción 2:1).
 export class PanoViewer {
-  constructor(container, image, { yaw = 0 } = {}) {
+  
+  constructor(
+    container,
+    image,
+    {
+      yaw = 0,
+      autoRotate = true,
+      minYaw = null,
+      maxYaw = null
+    } = {}
+  ){
+
     this.container = container;
-    this.lon = -90 + yaw; // -90 = centro de la imagen
+    
+    this.lon = -90 + yaw;
     this.lat = 0;
     this.fov = 75;
-    this.autoRotate = true;
+
+    // Centro inicial de la panorámica
+    this.initialLon = this.lon;
+
+    // Activar o desactivar giro automático
+    this.autoRotate = autoRotate;
+
+    // Límites horizontales relativos al centro
+    this.minLon = minYaw === null
+      ? -Infinity
+      : this.initialLon + minYaw;
+
+    this.maxLon = maxYaw === null
+      ? Infinity
+      : this.initialLon + maxYaw;
+
     this.running = true;
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -45,6 +72,12 @@ export class PanoViewer {
       if (!drag) return;
       const k = 0.12 * (this.fov / 75);
       this.lon -= (e.clientX - drag.x) * k;
+
+      this.lon = Math.max(
+        this.minLon,
+        Math.min(this.maxLon, this.lon)
+      );
+
       this.lat += (e.clientY - drag.y) * k;
       this.lat = Math.max(-85, Math.min(85, this.lat));
       drag = { x: e.clientX, y: e.clientY };
@@ -67,7 +100,16 @@ export class PanoViewer {
       const dt = Math.min((now - this.last) / 1000, 0.1);
       this.last = now;
       if (!this.running) return;
-      if (this.autoRotate) this.lon += 4 * dt; // gira despacio hasta que lo tocan
+      
+      if (this.autoRotate) {
+        this.lon += 4 * dt;
+
+        this.lon = Math.max(
+          this.minLon,
+          Math.min(this.maxLon, this.lon)
+        );
+      }
+ // gira despacio hasta que lo tocan
       const phi = THREE.MathUtils.degToRad(this.lat);
       const theta = THREE.MathUtils.degToRad(this.lon);
       this.camera.lookAt(Math.sin(theta) * Math.cos(phi), Math.sin(phi), -Math.cos(theta) * Math.cos(phi));
