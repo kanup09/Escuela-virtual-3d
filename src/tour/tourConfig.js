@@ -31,41 +31,44 @@
 //  Para saber x e y: abrí la página con ?debug al final de la dirección
 //  y tocá la imagen. Funciona igual en panoramas.
 // ============================================================
+
+/**
+ * ==========================================
+ * CONFIGURACIÓN GENERAL DEL TOUR
+ * ==========================================
+ *
+ * Reúne las vistas exteriores e interiores.
+ * No contiene imágenes ni escenas definidas
+ * directamente.
+ */
+
+import { exteriores } from './config/exteriores.js';
+import { interiores } from './config/interiores.js';
+
+// ==========================================
+// CONFIGURACIÓN PRINCIPAL
+// ==========================================
+
 export const TOUR = {
+
+  // Nombre de la escuela
   title: 'Escuela',
+
+  // Vista inicial al abrir el recorrido
   start: 'norte',
 
+  // Todas las vistas disponibles
   scenes: [
-    // ---------- Exterior ----------
-    {
-      id: 'norte', group: 'exterior', title: 'Norte', image: 'tour/exterior-norte.jpg',
-      hotspots: [
-        { x: 51, y: 66, to: 'entrada', label: 'Ingresar', sub: 'Entrada principal' },
-        { x: 27, y: 63, to: 'biblioteca', label: 'Ingresar', sub: 'Biblioteca' },
-      ],
-    },
-    { id: 'este', group: 'exterior', title: 'Este', image: 'tour/exterior-este.jpg' },
-    { id: 'sur', group: 'exterior', title: 'Sur', image: 'tour/exterior-sur.jpg' },
-    { id: 'oeste', group: 'exterior', title: 'Oeste', image: 'tour/exterior-oeste.jpg' },
-    { id: 'vista-exterior-1', group: 'exterior', title: 'Vista exterior 1', image: 'tour/vista-exterior-1.jpg' },
-    {
-      id: 'vista-exterior-2', group: 'exterior', title: 'Vista exterior 2', image: 'tour/vista-exterior-2.jpg',
-      yaw: 0, minYaw: -90, maxYaw: 90,
-    },
+    ...exteriores,
+    ...interiores
+  ]
 
-    // ---------- Interior ----------
-    { id: 'entrada', group: 'interior', title: 'Entrada', image: 'tour/entrada.jpg' },
-    { id: 'biblioteca', group: 'interior', title: 'Biblioteca', image: 'tour/biblioteca.jpg' },
-    { id: 'aulas', group: 'interior', title: 'Aulas', image: 'tour/aulas.jpg' },
-    {
-      id: 'vista-edificio', group: 'interior', title: 'Vista desde el edificio', image: 'tour/vista-edificio.jpg',
-      minYaw: -30, maxYaw: 100,
-    },
-    { id: 'talleres', group: 'interior', title: 'Talleres', image: 'tour/talleres.jpg' },
-    { id: 'comedor', group: 'interior', title: 'Comedor', image: 'tour/comedor.jpg' },
-    { id: 'patio', group: 'interior', title: 'Patio', image: 'tour/patio.jpg' },
-    { id: 'gimnasio', group: 'interior', title: 'Gimnasio', image: 'tour/gimnasio.jpg' },
-  ],
 };
 
-export const assetUrl = (path) => `${import.meta.env.BASE_URL}${path}`;
+// ==========================================
+// RUTAS DE LOS ARCHIVOS
+// ==========================================
+
+export const assetUrl = (path) => {
+  return `${import.meta.env.BASE_URL}${path}`;
+};
