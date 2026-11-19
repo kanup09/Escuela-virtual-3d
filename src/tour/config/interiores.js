@@ -37,7 +37,7 @@ export const interiores = [
   // ----------------------------------------
 
     {
-        id: 'talller',
+        id: 'galeria',
         group: 'interior',
         title: 'Talleres y Galeria',
         image: 'tour/Talleres y Galeria_1.png',
@@ -72,11 +72,13 @@ export const interiores = [
   // Espacio ludico
   // ----------------------------------------
   {
-    id: 'espacio ludico',
+    id: 'espacio-ludico',
     group: 'interior',
     title: 'Espacio Ludico',
     image: 'tour/Espacio Ludico.png',
-
+    
+    yaw: 0,
+    autoRotate: false,
   },
 
   // ----------------------------------------

@@ -52,7 +52,7 @@ import { interiores } from './config/interiores.js';
 export const TOUR = {
 
   // Nombre de la escuela
-  title: 'Escuela',
+  title: 'Nombre de la Escuela',
 
   // Vista inicial al abrir el recorrido
   start: 'norte',

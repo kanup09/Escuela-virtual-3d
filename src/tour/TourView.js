@@ -40,7 +40,8 @@ export class TourView {
     this.history = [];
     this.historyIndex = -1;
 
-    root.classList.add('tv');
+    root.classList.add('tv', 'intro-active');
+    this.tourStarted = false;
     root.innerHTML = `
       <div class="stage"></div>
       
@@ -105,6 +106,56 @@ export class TourView {
       <nav class="dock"></nav>
       <div class="fade on"></div>
       <div class="toast" hidden></div>`;
+
+    // ==========================================
+    // PANTALLA DE BIENVENIDA
+    // ==========================================
+
+    this.intro = document.createElement('div');
+
+    this.intro.className = 'tour-intro';
+
+    this.intro.innerHTML = `
+      <div class="tour-intro-content">
+
+        <span class="tour-intro-subtitle">
+          BIENVENIDOS A NUESTRA INSTITUCIÓN
+        </span>
+
+        <h1 class="tour-intro-title"></h1>
+
+        <p class="tour-intro-description">
+          Descubrí nuestros espacios a través de
+          un recorrido virtual interactivo.
+        </p>
+
+        <button
+          type="button"
+          class="tour-start-button"
+        >
+          Iniciar tour
+          <span aria-hidden="true">→</span>
+        </button>
+
+        <span class="tour-intro-hint">
+          Arrastrá para explorar la panorámica
+        </span>
+
+      </div>
+    `;
+
+    this.intro.querySelector(
+      '.tour-intro-title'
+    ).textContent = tour.title;
+
+    root.appendChild(this.intro);
+
+    this.intro.querySelector(
+      '.tour-start-button'
+    ).addEventListener('click', () => {
+      this.startTour();
+    });
+
     root.querySelector('.brand').textContent = tour.title;
 
     this.stage = root.querySelector('.stage');
@@ -166,6 +217,51 @@ export class TourView {
 
     this.ready = this.init();
   }
+
+
+  // ==========================================
+  // INICIAR RECORRIDO DESDE LA PORTADA
+  // ==========================================
+
+  async startTour() {
+
+    // Evitar varios clics consecutivos
+    if (this.tourStarted) {
+      return;
+    }
+
+    this.tourStarted = true;
+
+    // Desvanecer título y botón de inicio
+    this.intro.classList.add('leaving');
+
+    await wait(400);
+
+    // Cambiar desde Entrada hacia Exterior Norte
+    await this.goTo('norte');
+
+    // Reiniciar el historial:
+    // la portada no cuenta como visita
+    this.history = [
+      {
+        id: 'norte',
+        view: null
+      }
+    ];
+
+    this.historyIndex = 0;
+
+    // Activar la interfaz habitual del tour
+    this.root.classList.remove('intro-active');
+
+    // Retirar la portada
+    this.intro.remove();
+
+    // Actualizar controles
+    this.updateNavigationButtons();
+  }
+
+
 
   async init() {
     await Promise.all(this.tour.scenes.map(async (s) => {

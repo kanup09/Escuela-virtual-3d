@@ -24,13 +24,19 @@ export const exteriores = [
     image: 'tour/Escena Principal.png',
     
     hotspots: [
-      {
-        x: 51,
-        y: 66,
-        to: 'entrada',
-        label: 'Ingresar',
-        sub: 'Entrada principal'
-      },]
+    {
+      x: 51,
+      y: 66,
+
+      to: 'galeria',
+
+      style: 'arrow',
+      direction: 'forward',
+
+      label: 'Entrar a Galería',
+
+      arrivalYaw: 0
+    },]
      /*  {
         x: 27,
         y: 63,
@@ -53,15 +59,20 @@ export const exteriores = [
 
     hotspots: [
       {
-        x: 51,
-        y: 66,
-        to: 'entrada',
-        label: 'Ingresar',
-        sub: 'Entrada secundaria'
-      },
-    
+        // Coordenadas provisionales
+        x: 47,
+        y: 65,
+
+        to: 'espacio-ludico',
+
+        style: 'arrow',
+        direction: 'forward',
+
+        label: 'Entrar al Espacio Lúdico',
+
+        arrivalYaw: 0
+      }
     ]
-    
   },
 
   // ----------------------------------------
