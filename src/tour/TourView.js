@@ -57,26 +57,28 @@ export class TourView {
         </button>
 
         <div class="history-controls">
+
           <button
             class="pill history-btn"
             data-act="back"
             aria-label="Volver a la vista anterior"
-            title="Volver a la vista anterior"
+            title="Volver"
             disabled
           >
-            ← Volver
+            ←
           </button>
 
           <button
             class="pill history-btn"
             data-act="forward"
             aria-label="Avanzar en el historial"
-            title="Avanzar en el historial"
+            title="Adelante"
             disabled
           >
-            Adelante →
+            →
           </button>
         </div>
+
       </div>
 
       <div class="bar bar-right"><button class="pill" data-act="3d">Recorrido 3D</button></div>
@@ -103,8 +105,27 @@ export class TourView {
         </button>
       </div>
 
-      <nav class="dock"></nav>
+      <div class="dock"></div>
+
       <div class="fade on"></div>
+
+      <div
+        class="tour-loading"
+        role="status"
+        aria-live="polite"
+        hidden
+      >
+        <div class="tour-loading-spinner"></div>
+
+        <span class="tour-loading-title">
+          Cargando panorámica...
+        </span>
+
+        <span class="tour-loading-description">
+          Preparando el siguiente espacio
+        </span>
+      </div>
+
       <div class="toast" hidden></div>`;
 
     // ==========================================
@@ -161,6 +182,7 @@ export class TourView {
     this.stage = root.querySelector('.stage');
     this.dock = root.querySelector('.dock');
     this.fade = root.querySelector('.fade');
+    this.loading = root.querySelector('.tour-loading');
     this.toast = root.querySelector('.toast');
     this.brand = root.querySelector('.brand');
     this.backBtn = root.querySelector('[data-act="exterior"]');
@@ -443,6 +465,14 @@ export class TourView {
     button.type = 'button';
     button.className = 'hotspot';
 
+
+    // Distinguir accesos importantes de
+    // las conexiones interiores normales.
+    if (h.prominent === true) {
+      button.classList.add('hotspot--primary');
+    }
+
+
     const destination = this.byId.get(h.to);
 
     const label = h.label ?? destination?.title ?? '';
@@ -556,8 +586,14 @@ export class TourView {
       this.saveCurrentView();
     }
 
+    
     const token = ++this.token;
+
+    // Activar transición y mostrar carga
     this.fade.classList.add('on');
+
+    this.loading.hidden = false;
+
     if (!instant) await wait(250);
 
     const url = assetUrl(scene.image);
@@ -567,6 +603,19 @@ export class TourView {
     
     this.clearViewer();
     this.current = scene;
+
+
+    // ==========================================
+    // EFECTO VISUAL DE FACHADAS
+    // ==========================================
+
+    // Activar iluminación únicamente
+    // en las escenas que la permitan.
+    this.stage.classList.toggle(
+      'facade-glow',
+      scene.hoverGlow === true
+    );
+
 
     // Guardamos la escena visitada,
     // salvo cuando usamos el historial.
@@ -643,10 +692,14 @@ export class TourView {
         }
       }
     }
-
     this.updateChrome();
-    if (token === this.token) this.fade.classList.remove('on');
-    
+
+    // Ocultar indicador únicamente si
+    // esta sigue siendo la carga activa.
+    if (token === this.token) {
+      this.loading.hidden = true;
+      this.fade.classList.remove('on');
+    }
   }
 
   // Botones de arriba y barra de abajo según el grupo (exterior / interior)

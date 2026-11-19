@@ -17,49 +17,79 @@ export const interiores = [
   // ENTRADA PRINCIPAL
   // ----------------------------------------
  
+  {
+    id: 'entrada',
+    group: 'interior',
+    title: 'Entrada',
+    image: 'tour/Escena Ingreso.png',
+
+    // Orientación de la cámara
+    yaw: 0,
+    autoRotate: false,
+    hotspots: [
     {
-      id: 'entrada',
-      group: 'interior',
-      title: 'Entrada',
-      image: 'tour/Escena Ingreso.png',
+      x: 51,
+      y: 66,
 
-      // Orientación de la cámara
-      yaw: 0,
-      autoRotate: false,
-      hotspots: [
-      {
-        x: 51,
-        y: 66,
+      to: 'galeria',
 
-        to: 'galeria',
+      style: 'arrow',
+      direction: 'forward',
 
-        style: 'arrow',
-        direction: 'forward',
+      label: 'Entrar a Galería',
 
-        label: 'Entrar a Galería',
+      arrivalYaw: 0
+    },]
 
-        arrivalYaw: 0
-      },]
-
-    },
+  },
 
 
   // ----------------------------------------
   // Taller
   // ----------------------------------------
 
-    {
-        id: 'galeria',
-        group: 'interior',
-        title: 'Talleres y Galeria',
-        image: 'tour/Talleres y Galeria_1.png',
+  {
+    id: 'galeria',
+    group: 'interior',
+    title: 'Talleres y Galeria',
+    image: 'tour/Talleres y Galeria_1.png',
 
-        yaw: 0,
-        autoRotate: false,
+    yaw: 0,
+    autoRotate: false,
 
-    },
-
-
+  },
+    
+    // ----------------------------------------
+    // Espacio ludico
+    // ----------------------------------------
+  {
+    id: 'espacio-ludico',
+    group: 'interior',
+    title: 'Espacio Ludico',
+    image: 'tour/Espacio Ludico.png',
+    
+    yaw: 0,
+    autoRotate: false,
+  },
+  // ----------------------------------------
+  // PATIO
+  // ----------------------------------------
+  {
+    id: 'patio',
+    group: 'interior',
+    title: 'Patio',
+    image: 'tour/Patio.png'
+  },
+  
+  // ----------------------------------------
+  // Rampa
+  // ----------------------------------------
+  {
+    id: 'rampa',
+    group: 'interior',
+    title: 'Rampa',
+    image: 'tour/Rampa.png'
+  },
   // ----------------------------------------
   // AULAS
   // ----------------------------------------
@@ -80,18 +110,6 @@ export const interiores = [
     image: 'tour/Aulas Planta Alta.png'
   },
 
-  // ----------------------------------------
-  // Espacio ludico
-  // ----------------------------------------
-  {
-    id: 'espacio-ludico',
-    group: 'interior',
-    title: 'Espacio Ludico',
-    image: 'tour/Espacio Ludico.png',
-    
-    yaw: 0,
-    autoRotate: false,
-  },
 
   // ----------------------------------------
   // TALLERES
@@ -103,25 +121,7 @@ export const interiores = [
     image: 'tour/talleres.jpg'
   },
 
-  // ----------------------------------------
-  // Rampa
-  // ----------------------------------------
-  {
-    id: 'rampa',
-    group: 'interior',
-    title: 'Rampa',
-    image: 'tour/Rampa.png'
-  },
 
-  // ----------------------------------------
-  // PATIO
-  // ----------------------------------------
-  {
-    id: 'patio',
-    group: 'interior',
-    title: 'Patio',
-    image: 'tour/Patio.png'
-  },
 
   // ----------------------------------------
   // GIMNASIO

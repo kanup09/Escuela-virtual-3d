@@ -35,17 +35,15 @@ export const exteriores = [
 
       label: 'Entrar a Galería',
 
-      arrivalYaw: 0
-    },]
-     /*  {
-        x: 27,
-        y: 63,
-        to: 'biblioteca',
-        label: 'Ingresar',
-        sub: 'Biblioteca'
-      }
-    ]
-    */
+      arrivalYaw: 0,
+
+      style: 'arrow',
+      direction: 'forward',
+      prominent: true,
+      label: 'Entrar a Galería',
+    },],
+
+    hoverGlow: true
   },
   
   // ----------------------------------------
@@ -70,9 +68,15 @@ export const exteriores = [
 
         label: 'Entrar al Espacio Lúdico',
 
-        arrivalYaw: 0
+        arrivalYaw: 0,
+
+        style: 'arrow',
+        direction: 'forward',
+        prominent: true,
+        label: 'Espacio Lúdico',
       }
-    ]
+    ],
+    hoverGlow: true
   },
 
   // ----------------------------------------
@@ -82,7 +86,9 @@ export const exteriores = [
     id: 'este',
     group: 'exterior',
     title: 'Este',
-    image: 'tour/Escena SUM.png'
+    image: 'tour/Escena SUM.png',
+
+    hoverGlow: true
   },
 
 
@@ -93,19 +99,12 @@ export const exteriores = [
     id: 'oeste',
     group: 'exterior',
     title: 'Oeste',
-    image: 'tour/Fachada-Oeste.png'
+    image: 'tour/Fachada-Oeste.png',
+    hoverGlow: true
   },
 
-  // ----------------------------------------
-  // PANORÁMICA EXTERIOR 1
-  // ----------------------------------------
-  {
-    id: 'vista-exterior-1',
-    group: 'exterior',
-    title: 'Vista exterior 1',
-    image: 'tour/vista-exterior-1.jpg'
-  },
-
+ 
+    //ejemplo
   // ----------------------------------------
   // PANORÁMICA EXTERIOR 2
   // ----------------------------------------

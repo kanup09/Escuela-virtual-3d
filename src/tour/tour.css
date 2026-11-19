@@ -1,16 +1,26 @@
-[hidden] { display: none !important; }
+[hidden] {
+  display: none !important;
+}
 
+/* Contenedor y visor */
 #tour {
   position: fixed;
   inset: 0;
   z-index: 20;
-  background: #0d1a22;
   overflow: hidden;
+  background: #0d1a22;
+}
+
+#tour .stage,
+.pano-canvas,
+.pano-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
 }
 
 #tour .stage {
-  position: absolute;
-  inset: 0;
   overflow: hidden;
   touch-action: none;
   cursor: grab;
@@ -35,69 +45,132 @@
 }
 
 .pano-canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
   touch-action: none;
   cursor: grab;
 }
 
 .pano-layer {
-  position: absolute;
-  inset: 0;
   overflow: hidden;
   pointer-events: none;
 }
-.pano-layer .hotspot { pointer-events: auto; }
 
-/* Botones de arriba */
+.pano-layer .hotspot {
+  pointer-events: auto;
+}
+
+/* Controles superiores */
 #tour .bar {
   position: absolute;
-  top: max(14px, env(safe-area-inset-top));
-  display: flex;
-  gap: 8px;
-  align-items: center;
+  top: max(18px, env(safe-area-inset-top));
   z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
-#tour .bar-left { left: 14px; }
-#tour .bar-right { right: 14px; }
+
+#tour .bar-left {
+  left: 14px;
+}
+
+#tour .bar-right {
+  right: 14px;
+}
+
+#tour .brand,
+#tour .history-btn,
+#tour .bar-right .pill {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 12px;
+  background: rgba(12, 28, 38, 0.55);
+  color: #fff;
+  backdrop-filter: blur(12px);
+  box-shadow: none;
+}
+
+#tour .brand {
+  padding: 10px 16px;
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(12, 28, 38, 0.65);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
 
 #tour .pill {
-  background: rgba(255, 255, 255, 0.9);
-  color: #16303d;
   border: 0;
   border-radius: 999px;
   padding: 9px 15px;
-  font-weight: 600;
+  background: rgba(255, 255, 255, 0.9);
+  color: #16303d;
   font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
   box-shadow: 0 1px 8px rgba(0, 0, 0, 0.22);
 }
-#tour .pill:hover { background: #fff; }
-#tour .pill.dark { background: rgba(22, 64, 86, 0.92); color: #fff; }
-#tour .pill.dark:hover { background: #164056; }
 
-#tour .brand {
-  background: rgba(22, 64, 86, 0.92);
-  color: #fff;
-  padding: 8px 13px;
-  border-radius: 6px;
-  font-weight: 600;
-  font-size: 13px;
+#tour .pill:hover {
+  background: #fff;
 }
 
-/* Acercar / alejar, discretos */
+#tour .pill.dark {
+  background: rgba(22, 64, 86, 0.92);
+  color: #fff;
+}
+
+#tour .pill.dark:hover {
+  background: #164056;
+}
+
+#tour .history-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#tour .history-btn {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+  font-size: 22px;
+  line-height: 1;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+#tour .history-btn:hover:not(:disabled),
+#tour .bar-right .pill:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(12, 28, 38, 0.9);
+}
+
+#tour [data-act="exterior"] {
+  display: none !important;
+}
+
+#tour [data-act="3d"] {
+  white-space: nowrap;
+}
+
+#tour .history-btn:disabled,
+#tour .scene-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* Controles de zoom */
 #tour .zoom-ctl {
   position: absolute;
   right: 14px;
-  bottom: max(18px, env(safe-area-inset-bottom));
+  bottom: max(82px, calc(82px + env(safe-area-inset-bottom)));
+  z-index: 4;
   display: flex;
   flex-direction: column;
   gap: 6px;
-  z-index: 4;
 }
+
 #tour .round {
+  display: grid;
+  place-items: center;
   width: 36px;
   height: 36px;
   padding: 0;
@@ -107,61 +180,95 @@
   color: #fff;
   font-size: 19px;
   line-height: 1;
-  display: grid;
-  place-items: center;
   cursor: pointer;
   backdrop-filter: blur(6px);
 }
-#tour .round:hover { background: rgba(13, 26, 34, 0.85); }
 
-/* Barra de abajo: fachadas (afuera) o destinos (adentro) */
+#tour .round:hover {
+  background: rgba(13, 26, 34, 0.85);
+}
+
+/* Menú inferior */
 #tour .dock {
   position: absolute;
   left: 50%;
-  bottom: max(18px, env(safe-area-inset-bottom));
-  transform: translateX(-50%);
-  max-width: calc(100vw - 136px);
+  bottom: max(12px, env(safe-area-inset-bottom));
+  z-index: 4;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
+  max-width: calc(100vw - 136px);
   padding: 5px;
-  border-radius: 999px;
-  background: rgba(13, 26, 34, 0.7);
-  backdrop-filter: blur(8px);
   overflow-x: auto;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(12, 28, 38, 0.64);
+  backdrop-filter: blur(14px);
   scrollbar-width: none;
-  z-index: 4;
+  transform: translateX(-50%);
 }
-#tour .dock::-webkit-scrollbar { display: none; }
+
+#tour .dock::-webkit-scrollbar {
+  display: none;
+}
+
 #tour .dock-label {
   padding: 0 8px 0 12px;
+  color: #8fa5b2;
   font-size: 10px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #8fa5b2;
   white-space: nowrap;
 }
+
 #tour .chip {
   border: 0;
-  padding: 8px 14px;
   border-radius: 999px;
+  padding: 9px 13px;
   background: transparent;
-  color: #dbe8ef;
-  font-size: 13px;
-  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 12px;
+  font-weight: 500;
   white-space: nowrap;
   cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
 }
-#tour .chip:hover { background: rgba(255, 255, 255, 0.14); }
-#tour .chip.active { background: #fff; color: #16303d; }
 
-/* Botones sobre la imagen (Ingresar, etc.): chicos y translúcidos */
+#tour .chip:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+#tour .chip.active {
+  background: rgba(255, 255, 255, 0.95);
+  color: #16303d;
+}
+
+#tour .scene-controls {
+  display: none !important;
+}
+
+#tour .scene-btn {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(12, 28, 38, 0.55);
+  color: #fff;
+  box-shadow: none;
+  backdrop-filter: blur(10px);
+  white-space: nowrap;
+}
+
+#tour .scene-btn:hover:not(:disabled) {
+  background: rgba(22, 64, 86, 0.95);
+}
+
+/* Hotspots normales */
 #tour .hotspot {
   position: absolute;
-  transform: translate(-50%, -50%) scale(calc(1 / var(--s, 1)));
   display: flex;
   align-items: center;
   gap: 7px;
+  transform: translate(-50%, -50%) scale(calc(1 / var(--s, 1)));
   padding: 5px 12px 5px 9px;
   border: 0;
   border-radius: 999px;
@@ -178,8 +285,18 @@
   opacity: 0.94;
   transition: background 0.2s, opacity 0.2s;
 }
-#tour .hotspot:hover { background: #fff; opacity: 1; }
-#tour .hotspot.pano { left: 0; top: 0; transform: none; }
+
+#tour .hotspot:hover {
+  background: #fff;
+  opacity: 1;
+}
+
+#tour .hotspot.pano {
+  left: 0;
+  top: 0;
+  transform: none;
+}
+
 #tour .hotspot i {
   flex: none;
   width: 9px;
@@ -188,374 +305,175 @@
   background: #164056;
   animation: pulse 2.4s infinite;
 }
+
 #tour .hotspot small {
   display: block;
   font-size: 10px;
   font-weight: 500;
   opacity: 0.75;
 }
+
 @keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(22, 64, 86, 0.5); }
-  70% { box-shadow: 0 0 0 8px rgba(22, 64, 86, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(22, 64, 86, 0); }
-}
-
-/* Transición */
-#tour .fade {
-  position: absolute;
-  inset: 0;
-  background: #000;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-  z-index: 5;
-}
-#tour .fade.on { opacity: 1; pointer-events: auto; }
-
-#tour .toast {
-  position: absolute;
-  top: 64px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 7px 13px;
-  border-radius: 8px;
-  background: #164056;
-  color: #fff;
-  font-size: 13px;
-  z-index: 7;
-}
-
-/* Imagen que falta */
-#tour .missing {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-content: center;
-  gap: 10px;
-  text-align: center;
-  padding: 24px;
-  color: #cfdde5;
-}
-#tour .missing strong { font-size: 24px; color: #fff; }
-#tour .missing p { margin: 0; }
-#tour .missing code {
-  display: inline-block;
-  padding: 6px 12px;
-  border-radius: 6px;
-  background: #1a2a35;
-  color: #9fd2e3;
-}
-
-@media (max-width: 700px) {
-  #tour .pill { padding: 8px 12px; font-size: 12px; }
-  #tour .dock-label { display: none; }
-  #tour .chip { padding: 8px 12px; font-size: 12px; }
-  #tour .dock { max-width: calc(100vw - 80px); left: 14px; transform: none; }
-  #tour .zoom-ctl { bottom: 70px; }
-}
-
-/* ==========================================
-   CONTROLES DE HISTORIAL
-   ========================================== */
-
-#tour .history-controls {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-#tour .history-btn {
-  background: rgba(22, 64, 86, 0.9);
-  color: white;
-}
-
-/* Botones deshabilitados */
-
-#tour .history-btn:disabled,
-#tour .scene-btn:disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
-}
-
-
-/* ==========================================
-   NAVEGACIÓN ENTRE PANORÁMICAS
-   ========================================== */
-
-#tour .scene-controls {
-  position: absolute;
-
-  left: 50%;
-  bottom: max(
-    82px,
-    calc(82px + env(safe-area-inset-bottom))
-  );
-
-  transform: translateX(-50%);
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-
-  z-index: 4;
-}
-
-#tour .scene-btn {
-  background: rgba(13, 26, 34, 0.78);
-  color: #ffffff;
-
-  border: 1px solid rgba(255, 255, 255, 0.18);
-
-  backdrop-filter: blur(8px);
-  white-space: nowrap;
-}
-
-#tour .scene-btn:hover:not(:disabled) {
-  background: rgba(22, 64, 86, 0.95);
-}
-
-
-/* ==========================================
-   PANTALLAS PEQUEÑAS
-   ========================================== */
-
-@media (max-width: 700px) {
-
-  #tour .history-controls {
-    gap: 4px;
+  0% {
+    box-shadow: 0 0 0 0 rgba(22, 64, 86, 0.5);
   }
-
-  #tour .history-btn {
-    padding: 7px 9px;
-    font-size: 11px;
+  70% {
+    box-shadow: 0 0 0 8px rgba(22, 64, 86, 0);
   }
-
-  #tour .scene-controls {
-    bottom: 118px;
-    gap: 8px;
-  }
-
-  #tour .scene-btn {
-    padding: 8px 10px;
-    font-size: 12px;
+  100% {
+    box-shadow: 0 0 0 0 rgba(22, 64, 86, 0);
   }
 }
 
-
-/* ==========================================
-   HOTSPOTS CON FLECHAS DIRECCIONALES
-   ========================================== */
-
-#tour .hotspot--arrow {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  gap: 6px;
-  padding: 8px;
-
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  border-radius: 16px;
-
-  background: rgba(13, 42, 58, 0.88);
-  color: #ffffff;
-
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.3);
-
-  backdrop-filter: blur(8px);
-
-  cursor: pointer;
-
-  transition:
-    background 0.2s ease,
-    opacity 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-
-/* ==========================================
-   FLECHAS MINIMALISTAS
-   ========================================== */
-
+/* Flechas direccionales */
 #tour .hotspot.hotspot--arrow {
-  padding: 7px;
-
-  width: 40px;
-  height: 40px;
-
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  background: transparent;
+  gap: 0;
+  padding: 0;
   border: none;
   border-radius: 50%;
-
+  background: transparent;
   box-shadow: none;
   backdrop-filter: none;
-
   opacity: 0.65;
+  transition: opacity 0.2s ease, filter 0.2s ease;
 }
 
-#tour .hotspot--arrow .hotspot-arrow-icon {
+#tour .hotspot.hotspot--arrow .hotspot-arrow-icon {
+  width: 34px;
+  height: 34px;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  width: 30px;
-  height: 30px;
-
+  flex-shrink: 0;
   background: transparent;
-  color: white;
-
-  font-size: 28px;
+  color: #fff;
+  font-size: 30px;
   font-weight: 700;
-
-  text-shadow: 0 2px 5px rgba(0,0,0,0.8);
+  line-height: 1;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
 }
 
-/* Ocultar los textos, conservando
-   el nombre accesible del botón */
-
-#tour .hotspot--arrow .hotspot-text {
+#tour .hotspot.hotspot--arrow .hotspot-text {
   display: none;
 }
 
-/* Resaltar al pasar el mouse */
-
-#tour .hotspot.hotspot--arrow:hover {
+#tour .hotspot.hotspot--arrow:hover,
+#tour .hotspot.hotspot--arrow:focus-visible {
   background: transparent;
+  box-shadow: none;
+  opacity: 1;
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.7));
+}
+
+#tour .hotspot--arrow:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+@media (hover: hover) {
+  #tour .hotspot.hotspot--arrow::after {
+    content: attr(aria-label);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 6px 10px;
+    border-radius: 6px;
+    background: rgba(12, 27, 37, 0.9);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+
+  #tour .hotspot.hotspot--arrow:hover::after,
+  #tour .hotspot.hotspot--arrow:focus-visible::after {
+    opacity: 1;
+  }
+}
+
+/* Accesos principales */
+#tour .hotspot.hotspot--primary {
+  width: auto;
+  min-width: 52px;
+  height: auto;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  overflow: visible;
+  background: transparent;
+  border: none;
   box-shadow: none;
   opacity: 1;
 }
 
-#tour .hotspot--arrow:focus-visible {
-  outline: 2px solid white;
-  outline-offset: 3px;
-}
-
-
-/* ==========================================
-   ICONO DE LA FLECHA
-   ========================================== */
-
-#tour .hotspot-arrow-icon {
+#tour .hotspot--primary .hotspot-arrow-icon {
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  width: 40px;
-  height: 40px;
-
   border-radius: 50%;
-
-  background: #ffffff;
-  color: #164056;
-
-  font-size: 27px;
-  font-weight: 700;
+  background: rgba(139, 52, 64, 0.94);
+  color: #fff;
+  font-size: 30px;
   line-height: 1;
-
-  flex-shrink: 0;
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.3);
+  animation: primary-arrow-pulse 2.8s ease-in-out infinite;
 }
 
-
-/* ==========================================
-   ETIQUETA DEL DESTINO
-   ========================================== */
-
-#tour .hotspot--arrow .hotspot-text {
+#tour .hotspot--primary .hotspot-text {
   display: block;
-
-  padding: 2px 8px;
-
-  font-size: 11px;
+  padding: 7px 13px;
+  border-radius: 999px;
+  background: rgba(17, 31, 41, 0.92);
+  color: #fff;
+  font-size: 12px;
   font-weight: 600;
-
   text-align: center;
   white-space: nowrap;
+  text-shadow: none;
 }
 
-#tour .hotspot--arrow small {
-  display: block;
-
-  margin-top: 3px;
-
-  font-size: 10px;
-  font-weight: 400;
-
-  color: #cbdde5;
+#tour .hotspot--primary::after {
+  display: none !important;
 }
 
-
-/* ==========================================
-   INTERACCIÓN CON EL MOUSE
-   ========================================== */
-
-#tour .hotspot--arrow:hover {
-  background: rgba(22, 64, 86, 0.98);
-  color: #ffffff;
-
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
-}
-
-#tour .hotspot--arrow:focus-visible {
-  outline: 3px solid #ffffff;
-  outline-offset: 3px;
-}
-
-
-/* ==========================================
-   ADAPTACIÓN A CELULARES
-   ========================================== */
-
-@media (max-width: 700px) {
-
-  #tour .hotspot--arrow {
-    padding: 6px;
-    gap: 4px;
+@keyframes primary-arrow-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(139, 52, 64, 0.35);
   }
-
-  #tour .hotspot-arrow-icon {
-    width: 36px;
-    height: 36px;
-    font-size: 24px;
+  50% {
+    box-shadow: 0 0 0 9px rgba(139, 52, 64, 0);
   }
-
-  #tour .hotspot--arrow .hotspot-text {
-    font-size: 10px;
-    padding: 2px 5px;
-  }
-
 }
 
-
-/* ==========================================
-   PORTADA DEL RECORRIDO VIRTUAL
-   ========================================== */
-
+/* Portada */
 #tour .tour-intro {
   position: absolute;
   inset: 0;
   z-index: 10;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   padding: 24px;
-
   pointer-events: none;
-
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(6, 18, 27, 0.15),
-      rgba(6, 18, 27, 0.65)
-    );
-
+  background: linear-gradient(
+    to bottom,
+    rgba(6, 18, 27, 0.15),
+    rgba(6, 18, 27, 0.65)
+  );
   transition: opacity 0.4s ease;
 }
 
@@ -567,11 +485,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-
   gap: 20px;
   max-width: 680px;
-
-  color: white;
+  color: #fff;
   text-align: center;
 }
 
@@ -583,49 +499,34 @@
 
 #tour .tour-intro-title {
   margin: 0;
-
   font-size: clamp(34px, 5vw, 68px);
   font-weight: 700;
   line-height: 1.1;
-
   text-shadow: 0 3px 20px rgba(0, 0, 0, 0.4);
 }
 
 #tour .tour-intro-description {
   max-width: 460px;
-
   font-size: clamp(14px, 2vw, 18px);
   line-height: 1.6;
-
   color: rgba(255, 255, 255, 0.9);
 }
-
-/* Botón principal */
 
 #tour .tour-start-button {
   display: flex;
   align-items: center;
   gap: 24px;
-
   padding: 15px 28px;
-
   border: 1px solid rgba(255, 255, 255, 0.7);
   border-radius: 999px;
-
   background: rgba(255, 255, 255, 0.12);
-  color: white;
-
+  color: #fff;
   font-size: 15px;
   font-weight: 600;
-
   backdrop-filter: blur(12px);
-
   cursor: pointer;
   pointer-events: auto;
-
-  transition:
-    background 0.2s ease,
-    transform 0.2s ease;
+  transition: background 0.2s ease, transform 0.2s ease;
 }
 
 #tour .tour-start-button:hover {
@@ -634,7 +535,7 @@
 }
 
 #tour .tour-start-button:focus-visible {
-  outline: 3px solid white;
+  outline: 3px solid #fff;
   outline-offset: 4px;
 }
 
@@ -642,8 +543,6 @@
   font-size: 12px;
   color: rgba(255, 255, 255, 0.75);
 }
-
-/* Ocultar controles normales durante la portada */
 
 #tour.intro-active .bar,
 #tour.intro-active .zoom-ctl,
@@ -653,9 +552,159 @@
   display: none !important;
 }
 
-/* Pantallas pequeñas */
+/* Estados, carga y mensajes */
+#tour .fade {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
 
+#tour .fade.on {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#tour .toast {
+  position: absolute;
+  top: 64px;
+  left: 50%;
+  z-index: 7;
+  transform: translateX(-50%);
+  padding: 7px 13px;
+  border-radius: 8px;
+  background: #164056;
+  color: #fff;
+  font-size: 13px;
+}
+
+#tour .tour-loading {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  display: grid;
+  place-content: center;
+  gap: 8px;
+  background: rgba(13, 26, 34, 0.72);
+  color: #fff;
+  text-align: center;
+  backdrop-filter: blur(8px);
+}
+
+#tour .tour-loading-spinner {
+  width: 34px;
+  height: 34px;
+  margin: 0 auto 6px;
+  border: 3px solid rgba(255, 255, 255, 0.25);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: tour-spin 0.8s linear infinite;
+}
+
+#tour .tour-loading-title {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+#tour .tour-loading-description {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+@keyframes tour-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#tour .missing {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  gap: 10px;
+  padding: 24px;
+  color: #cfdde5;
+  text-align: center;
+}
+
+#tour .missing strong {
+  color: #fff;
+  font-size: 24px;
+}
+
+#tour .missing p {
+  margin: 0;
+}
+
+#tour .missing code {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: #1a2a35;
+  color: #9fd2e3;
+}
+
+/* Responsive */
 @media (max-width: 700px) {
+  #tour .bar-left {
+    top: max(12px, env(safe-area-inset-top));
+    left: 12px;
+    width: auto;
+    flex-wrap: nowrap;
+  }
+
+  #tour .bar-left .brand {
+    display: none;
+  }
+
+  #tour .bar-right {
+    top: max(12px, env(safe-area-inset-top));
+    right: 12px;
+    bottom: auto;
+  }
+
+  #tour .history-controls {
+    gap: 4px;
+  }
+
+  #tour .history-btn {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    font-size: 21px;
+  }
+
+  #tour [data-act="3d"] {
+    height: 38px;
+    padding: 0 12px;
+    font-size: 12px;
+  }
+
+  #tour .dock {
+    right: 66px;
+    left: 12px;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    max-width: none;
+    transform: none;
+  }
+
+  #tour .dock-label {
+    display: none;
+  }
+
+  #tour .chip {
+    padding: 8px 12px;
+  }
+
+  #tour .zoom-ctl {
+    right: 12px;
+    bottom: max(82px, calc(82px + env(safe-area-inset-bottom)));
+  }
+
   #tour .tour-intro-content {
     gap: 16px;
   }
@@ -664,256 +713,168 @@
     font-size: 10px;
     letter-spacing: 2px;
   }
-}
 
-@media (prefers-reduced-motion: reduce) {
-  #tour .tour-intro,
-  #tour .tour-start-button {
-    transition: none;
+  #tour .hotspot--primary .hotspot-arrow-icon {
+    width: 46px;
+    height: 46px;
+    font-size: 27px;
   }
-}
 
-
-/* ==========================================
-   DISEÑO FINAL DE FLECHAS
-   ========================================== */
-
-/* Botón pequeño y transparente */
-#tour .hotspot.hotspot--arrow {
-  width: 42px;
-  height: 42px;
-  min-width: 42px;
-
-  padding: 0;
-  gap: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background: transparent;
-  border: none;
-  border-radius: 50%;
-  box-shadow: none;
-
-  opacity: 0.65;
-  backdrop-filter: none;
-
-  transition:
-    opacity 0.2s ease,
-    filter 0.2s ease;
-}
-
-/* Solo la flecha */
-#tour .hotspot.hotspot--arrow
-.hotspot-arrow-icon {
-  width: 34px;
-  height: 34px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background: transparent;
-  color: #ffffff;
-
-  font-size: 30px;
-  font-weight: 700;
-  line-height: 1;
-
-  text-shadow:
-    0 2px 5px rgba(0, 0, 0, 0.9);
-
-  pointer-events: none;
-}
-
-/* Ocultar las etiquetas originales */
-#tour .hotspot.hotspot--arrow
-.hotspot-text {
-  display: none;
-}
-
-/* Destacar la flecha al pasar el mouse */
-#tour .hotspot.hotspot--arrow:hover {
-  background: transparent;
-  box-shadow: none;
-  opacity: 1;
-  filter: drop-shadow(
-    0 0 5px rgba(255, 255, 255, 0.7)
-  );
-}
-
-/* Mostrar el destino al pasar el mouse */
-@media (hover: hover) {
-
-  #tour .hotspot.hotspot--arrow::after {
-    content: attr(aria-label);
-
-    position: absolute;
-    bottom: calc(100% + 8px);
-    left: 50%;
-
-    transform: translateX(-50%);
-
-    padding: 6px 10px;
-
-    background: rgba(12, 27, 37, 0.9);
-    color: #ffffff;
-
-    border-radius: 6px;
-
+  #tour .hotspot--primary .hotspot-text {
+    padding: 7px 10px;
     font-size: 11px;
-    font-weight: 500;
-    white-space: nowrap;
-
-    opacity: 0;
-    pointer-events: none;
-
-    transition: opacity 0.2s ease;
   }
-
-  #tour .hotspot.hotspot--arrow:hover::after,
-  #tour .hotspot.hotspot--arrow:focus-visible::after {
-    opacity: 1;
-  }
-}
-
-/* Celulares */
-@media (max-width: 700px) {
 
   #tour .hotspot.hotspot--arrow {
     width: 44px;
     height: 44px;
   }
 
-  #tour .hotspot.hotspot--arrow
-  .hotspot-arrow-icon {
+  #tour .hotspot.hotspot--arrow .hotspot-arrow-icon {
     font-size: 26px;
   }
 }
 
-
-/* ==========================================
-   BARRA SUPERIOR
-   ========================================== */
-
-#tour .bar {
-  top: max(18px, env(safe-area-inset-top));
-  gap: 10px;
+@media (prefers-reduced-motion: reduce) {
+  #tour .tour-intro,
+  #tour .tour-start-button,
+  #tour .tour-loading-spinner,
+  #tour .hotspot--primary .hotspot-arrow-icon {
+    transition: none;
+    animation: none;
+  }
 }
 
-#tour .brand {
-  background: rgba(12, 28, 38, 0.65);
-  color: #ffffff;
 
-  padding: 10px 16px;
+/* ==========================================
+   INDICADOR DE CARGA
+   ========================================== */
 
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 12px;
+#tour .tour-loading {
+  position: absolute;
+  inset: 0;
 
-  backdrop-filter: blur(12px);
+  z-index: 6;
 
-  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+
+  padding: 24px;
+
+  pointer-events: none;
+  color: white;
+}
+
+/* Respetar atributo hidden */
+
+#tour .tour-loading[hidden] {
+  display: none !important;
+}
+
+/* Círculo animado */
+
+#tour .tour-loading-spinner {
+  width: 45px;
+  height: 45px;
+
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #ffffff;
+
+  border-radius: 50%;
+
+  animation: tour-loading-spin 0.8s linear infinite;
+}
+
+/* Textos */
+
+#tour .tour-loading-title {
+  font-size: 16px;
   font-weight: 600;
-  letter-spacing: 0.3px;
+  text-align: center;
 }
 
-#tour .history-btn,
-#tour .bar-right .pill {
-  background: rgba(12, 28, 38, 0.55);
+#tour .tour-loading-description {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+}
+
+/* Animación */
+
+@keyframes tour-loading-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Accesibilidad */
+
+@media (prefers-reduced-motion: reduce) {
+  #tour .tour-loading-spinner {
+    animation: none;
+  }
+}
+
+
+#tour .hotspot.hotspot--arrow.hotspot--primary
+.hotspot-arrow-icon {
+  background: rgba(139, 52, 64, 0.94);
   color: #ffffff;
-
-  border: 1px solid rgba(255,255,255,0.16);
-  border-radius: 12px;
-
-  padding: 10px 14px;
-
-  box-shadow: none;
-  backdrop-filter: blur(12px);
-
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease;
+  width: 48px;
+  height: 48px;
+  animation: primary-arrow-pulse 2.8s ease-in-out infinite;
 }
 
-#tour .history-btn:hover:not(:disabled),
-#tour .bar-right .pill:hover {
-  background: rgba(12, 28, 38, 0.9);
-  border-color: rgba(255,255,255,0.4);
+#tour .hotspot.hotspot--arrow.hotspot--primary
+.hotspot-text {
+  display: block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #tour .hotspot.hotspot--arrow.hotspot--primary
+  .hotspot-arrow-icon {
+    animation: none;
+  }
 }
 
 
 /* ==========================================
-   MENÚ INFERIOR DE PANORÁMICAS
+   ILUMINACIÓN INTERACTIVA DE FACHADAS
    ========================================== */
 
-#tour .dock {
-  background: rgba(12, 28, 38, 0.64);
+/* Estado normal de la imagen */
 
-  padding: 5px;
-  gap: 3px;
-
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 999px;
-
-  backdrop-filter: blur(14px);
-}
-
-#tour .chip {
-  padding: 9px 13px;
-
-  color: rgba(255,255,255,0.8);
-
-  font-size: 12px;
-  font-weight: 500;
+#tour .facade-glow .pz-img {
+  filter:
+    brightness(1)
+    saturate(1);
 
   transition:
-    background 0.2s ease,
-    color 0.2s ease;
+    filter 0.45s ease;
 }
 
-#tour .chip.active {
-  background: rgba(255,255,255,0.95);
-  color: #16303d;
+/* Iluminación al pasar el mouse */
+
+@media (hover: hover) and (pointer: fine) {
+
+  #tour .facade-glow:hover .pz-img {
+    filter:
+      brightness(1.09)
+      saturate(1.07);
+  }
+
 }
 
-#tour .chip:hover:not(.active) {
-  background: rgba(255,255,255,0.15);
-  color: #ffffff;
-}
+/* Accesibilidad */
 
-/* Botones anterior y siguiente */
-#tour .scene-btn {
-  background: rgba(12,28,38,0.55);
-  color: #ffffff;
+@media (prefers-reduced-motion: reduce) {
 
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 999px;
-
-  box-shadow: none;
-  backdrop-filter: blur(10px);
-}
-
-@media (max-width: 700px) {
-
-  #tour .bar-left {
-    left: 8px;
-    right: 8px;
-    flex-wrap: wrap;
+  #tour .facade-glow .pz-img {
+    transition: none;
   }
 
-  #tour .bar-right {
-    top: auto;
-    bottom: 138px;
-    right: 10px;
-  }
-
-  #tour .brand {
-    font-size: 11px;
-    padding: 8px 10px;
-  }
-
-  #tour .dock {
-    max-width: calc(100vw - 90px);
-  }
 }
