@@ -18,16 +18,28 @@ export const interiores = [
   // ----------------------------------------
  
     {
-        id: 'entrada',
-        group: 'interior',
-        title: 'Entrada',
-        image: 'tour/Escena Ingreso.png',
+      id: 'entrada',
+      group: 'interior',
+      title: 'Entrada',
+      image: 'tour/Escena Ingreso.png',
 
-        // Orientación de la cámara
-        yaw: 0,
-        autoRotate: false,
+      // Orientación de la cámara
+      yaw: 0,
+      autoRotate: false,
+      hotspots: [
+      {
+        x: 51,
+        y: 66,
 
+        to: 'galeria',
 
+        style: 'arrow',
+        direction: 'forward',
+
+        label: 'Entrar a Galería',
+
+        arrivalYaw: 0
+      },]
 
     },
 
