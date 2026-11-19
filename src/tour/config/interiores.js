@@ -27,6 +27,7 @@ export const interiores = [
         yaw: 0,
         autoRotate: false,
 
+        /*
         // Puntos interactivos
         hotspots: [
             {
@@ -39,6 +40,7 @@ export const interiores = [
             sub: 'Biblioteca'
             }
         ]
+        */
     },
 
 
@@ -55,6 +57,7 @@ export const interiores = [
         yaw: 0,
         autoRotate: false,
 
+        /*
         hotspots: [
             {
             x: 50,
@@ -66,6 +69,7 @@ export const interiores = [
             sub: 'Entrada principal'
             }
         ]
+        */
     },
 
 

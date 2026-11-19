@@ -36,19 +36,72 @@ export class TourView {
     this.lastExterior = null;
     this.viewer = null;
     this.token = 0;
+    // Historial de vistas visitadas
+    this.history = [];
+    this.historyIndex = -1;
 
     root.classList.add('tv');
     root.innerHTML = `
       <div class="stage"></div>
+      
       <div class="bar bar-left">
         <span class="brand"></span>
-        <button class="pill dark" data-act="exterior" hidden>← Exterior</button>
+
+        <button
+          class="pill dark"
+          data-act="exterior"
+          hidden
+        >
+          ← Exterior
+        </button>
+
+        <div class="history-controls">
+          <button
+            class="pill history-btn"
+            data-act="back"
+            aria-label="Volver a la vista anterior"
+            title="Volver a la vista anterior"
+            disabled
+          >
+            ← Volver
+          </button>
+
+          <button
+            class="pill history-btn"
+            data-act="forward"
+            aria-label="Avanzar en el historial"
+            title="Avanzar en el historial"
+            disabled
+          >
+            Adelante →
+          </button>
+        </div>
       </div>
+
       <div class="bar bar-right"><button class="pill" data-act="3d">Recorrido 3D</button></div>
       <div class="zoom-ctl">
         <button class="round" data-act="in" aria-label="Acercar">+</button>
         <button class="round" data-act="out" aria-label="Alejar">−</button>
       </div>
+
+      <div class="scene-controls">
+        <button
+          class="pill scene-btn"
+          data-act="previous"
+          aria-label="Vista anterior del grupo"
+        >
+          ‹ Anterior
+        </button>
+
+        <button
+          class="pill scene-btn"
+          data-act="next"
+          aria-label="Siguiente vista del grupo"
+        >
+          Siguiente ›
+        </button>
+      </div>
+
       <nav class="dock"></nav>
       <div class="fade on"></div>
       <div class="toast" hidden></div>`;
@@ -61,12 +114,48 @@ export class TourView {
     this.brand = root.querySelector('.brand');
     this.backBtn = root.querySelector('[data-act="exterior"]');
 
+    this.historyBackBtn = root.querySelector(
+      '[data-act="back"]'
+    );
+
+    this.historyForwardBtn = root.querySelector(
+      '[data-act="forward"]'
+    );
+
+    this.previousBtn = root.querySelector(
+      '[data-act="previous"]'
+    );
+
+    this.nextBtn = root.querySelector(
+      '[data-act="next"]'
+    );
+
+
     root.addEventListener('click', (e) => {
       const act = e.target.closest('[data-act]')?.dataset.act;
       if (act === '3d') on3D();
       if (act === 'in') this.viewer?.zoomBy?.(1.4);
       if (act === 'out') this.viewer?.zoomBy?.(1 / 1.4);
       if (act === 'exterior') this.goTo(this.lastExterior ?? this.scenesOf('exterior')[0]?.id);
+      
+      // Recorrer las vistas del grupo actual
+      if (act === 'previous') {
+        this.step(-1);
+      }
+
+      if (act === 'next') {
+        this.step(1);
+      }
+
+      // Recorrer el historial real
+      if (act === 'back') {
+        this.historyStep(-1);
+      }
+
+      if (act === 'forward') {
+        this.historyStep(1);
+      }
+
     });
 
     document.addEventListener('keydown', (e) => {
@@ -99,6 +188,77 @@ export class TourView {
     if (list.length > 1) this.goTo(list[(i + dir + list.length) % list.length].id);
   }
 
+
+  // ==========================================
+  // GUARDAR UNA VISTA EN EL HISTORIAL
+  // ==========================================
+
+  addToHistory(id) {
+    // No guardar dos veces consecutivas
+    // la misma panorámica.
+    if (this.history[this.historyIndex] === id) {
+      return;
+    }
+
+    // Si volvimos hacia atrás y elegimos
+    // una vista nueva, descartamos el
+    // historial que había hacia adelante.
+    this.history = this.history.slice(
+      0,
+      this.historyIndex + 1
+    );
+
+    this.history.push(id);
+    this.historyIndex = this.history.length - 1;
+  }
+
+  // ==========================================
+  // VOLVER O AVANZAR EN EL HISTORIAL
+  // ==========================================
+
+  historyStep(direction) {
+    const newIndex = this.historyIndex + direction;
+
+    if (
+      newIndex < 0 ||
+      newIndex >= this.history.length
+    ) {
+      return;
+    }
+
+    const id = this.history[newIndex];
+
+    // Nos movemos por el historial existente
+    // sin agregar otra entrada.
+    this.historyIndex = newIndex;
+
+    this.goTo(id, false, false);
+  }
+
+  // ==========================================
+  // ACTUALIZAR ESTADO DE LOS BOTONES
+  // ==========================================
+
+  updateNavigationButtons() {
+    const canGoBack = this.historyIndex > 0;
+
+    const canGoForward =
+      this.historyIndex < this.history.length - 1;
+
+    this.historyBackBtn.disabled = !canGoBack;
+    this.historyForwardBtn.disabled = !canGoForward;
+
+    const scenes = this.current
+      ? this.scenesOf(this.current.group)
+      : [];
+
+    const hasMultipleScenes = scenes.length > 1;
+
+    this.previousBtn.disabled = !hasMultipleScenes;
+    this.nextBtn.disabled = !hasMultipleScenes;
+  }
+
+
   clearViewer() {
     this.viewer?.dispose?.();
     this.viewer = null;
@@ -128,7 +288,13 @@ export class TourView {
     return b;
   }
 
-  async goTo(id, instant = false) {
+  
+  async goTo(
+    id,
+    instant = false,
+    saveHistory = true
+  ){
+
     const scene = this.byId.get(id);
     if (!scene) return;
     const token = ++this.token;
@@ -139,8 +305,16 @@ export class TourView {
     const img = await loadImage(url);
     if (token !== this.token) return;
 
+    
     this.clearViewer();
     this.current = scene;
+
+    // Guardamos la escena visitada,
+    // salvo cuando usamos el historial.
+    if (saveHistory) {
+      this.addToHistory(scene.id);
+    }
+
     if (scene.group === 'exterior') this.lastExterior = scene.id;
     const hotspots = (scene.hotspots ?? []).filter((h) => this.available.has(h.to));
 
@@ -191,6 +365,7 @@ export class TourView {
 
     this.updateChrome();
     if (token === this.token) this.fade.classList.remove('on');
+    
   }
 
   // Botones de arriba y barra de abajo según el grupo (exterior / interior)
@@ -214,6 +389,7 @@ export class TourView {
       this.dock.appendChild(chip);
     }
     this.dock.querySelector('.active')?.scrollIntoView?.({ inline: 'center', block: 'nearest' });
+    this.updateNavigationButtons();
   }
 
   pause() { this.viewer?.pause?.(); }

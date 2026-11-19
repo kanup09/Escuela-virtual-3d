@@ -22,7 +22,7 @@ export const exteriores = [
     group: 'exterior',
     title: 'Norte',
     image: 'tour/exterior-norte.jpg',
-
+    
     hotspots: [
       {
         x: 51,
@@ -30,8 +30,8 @@ export const exteriores = [
         to: 'entrada',
         label: 'Ingresar',
         sub: 'Entrada principal'
-      },
-      {
+      },]
+     /*  {
         x: 27,
         y: 63,
         to: 'biblioteca',
@@ -39,6 +39,7 @@ export const exteriores = [
         sub: 'Biblioteca'
       }
     ]
+    */
   },
 
   // ----------------------------------------

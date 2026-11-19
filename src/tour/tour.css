@@ -253,3 +253,91 @@
   #tour .dock { max-width: calc(100vw - 80px); left: 14px; transform: none; }
   #tour .zoom-ctl { bottom: 70px; }
 }
+
+/* ==========================================
+   CONTROLES DE HISTORIAL
+   ========================================== */
+
+#tour .history-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#tour .history-btn {
+  background: rgba(22, 64, 86, 0.9);
+  color: white;
+}
+
+/* Botones deshabilitados */
+
+#tour .history-btn:disabled,
+#tour .scene-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+
+/* ==========================================
+   NAVEGACIÓN ENTRE PANORÁMICAS
+   ========================================== */
+
+#tour .scene-controls {
+  position: absolute;
+
+  left: 50%;
+  bottom: max(
+    82px,
+    calc(82px + env(safe-area-inset-bottom))
+  );
+
+  transform: translateX(-50%);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+
+  z-index: 4;
+}
+
+#tour .scene-btn {
+  background: rgba(13, 26, 34, 0.78);
+  color: #ffffff;
+
+  border: 1px solid rgba(255, 255, 255, 0.18);
+
+  backdrop-filter: blur(8px);
+  white-space: nowrap;
+}
+
+#tour .scene-btn:hover:not(:disabled) {
+  background: rgba(22, 64, 86, 0.95);
+}
+
+
+/* ==========================================
+   PANTALLAS PEQUEÑAS
+   ========================================== */
+
+@media (max-width: 700px) {
+
+  #tour .history-controls {
+    gap: 4px;
+  }
+
+  #tour .history-btn {
+    padding: 7px 9px;
+    font-size: 11px;
+  }
+
+  #tour .scene-controls {
+    bottom: 118px;
+    gap: 8px;
+  }
+
+  #tour .scene-btn {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+}
