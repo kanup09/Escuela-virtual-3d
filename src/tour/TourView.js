@@ -272,28 +272,118 @@ export class TourView {
     try { navigator.clipboard?.writeText(text); } catch { /* ignorar */ }
   }
 
+  
+  // ==========================================
+  // CREAR PUNTOS INTERACTIVOS
+  // ==========================================
+
   makeHotspot(h) {
-    const b = document.createElement('button');
-    b.className = 'hotspot';
-    const dot = document.createElement('i');
+    const button = document.createElement('button');
+
+    button.type = 'button';
+    button.className = 'hotspot';
+
+    const destination = this.byId.get(h.to);
+
+    const label = h.label ?? destination?.title ?? '';
+    const subtitle = h.sub ?? '';
+
+    // ========================================
+    // HOTSPOT CON FLECHA DIRECCIONAL
+    // ========================================
+
+    if (h.style === 'arrow') {
+      button.classList.add('hotspot--arrow');
+
+      const arrowSymbols = {
+        forward: '↑',
+        back: '↓',
+        left: '←',
+        right: '→'
+      };
+
+      const direction = h.direction ?? 'forward';
+
+      const arrow = document.createElement('span');
+      arrow.className = 'hotspot-arrow-icon';
+
+      arrow.textContent =
+        arrowSymbols[direction] ?? '↑';
+
+      button.appendChild(arrow);
+
+    } else {
+
+      // ======================================
+      // HOTSPOT ORIGINAL
+      // ======================================
+
+      const dot = document.createElement('i');
+
+      button.appendChild(dot);
+    }
+
+    // ========================================
+    // TEXTO DEL DESTINO
+    // ========================================
+
     const text = document.createElement('span');
-    text.textContent = h.label ?? this.byId.get(h.to)?.title ?? '';
-    if (h.sub) {
+
+    text.className = 'hotspot-text';
+    text.textContent = label;
+
+    if (subtitle) {
       const small = document.createElement('small');
-      small.textContent = h.sub;
+
+      small.textContent = subtitle;
       text.appendChild(small);
     }
-    b.append(dot, text);
-    b.addEventListener('click', () => this.goTo(h.to));
-    return b;
+
+    button.appendChild(text);
+
+    // Accesibilidad
+    button.setAttribute(
+      'aria-label',
+      [label, subtitle].filter(Boolean).join(' - ')
+    );
+
+    // ========================================
+    // CAMBIAR DE PANORÁMICA
+    // ========================================
+
+    
+    button.addEventListener('click', (event) => {
+      event.stopPropagation();
+
+      if (!destination) {
+        return;
+      }
+
+      // Abrir la panorámica de destino
+      // con la orientación definida
+      // para esta conexión.
+      this.goTo(
+        h.to,
+        false,
+        true,
+        h.arrivalYaw ?? null
+      );
+    });
+
+
+    return button;
   }
 
+
+  
   
   async goTo(
     id,
     instant = false,
-    saveHistory = true
+    saveHistory = true,
+    arrivalYaw = null
   ){
+
 
     const scene = this.byId.get(id);
     if (!scene) return;
@@ -334,15 +424,31 @@ export class TourView {
         : null;
 
       if (type === 'pano') {
-        this.viewer = new PanoViewer(this.stage, img, {
-          yaw: scene.yaw ?? 0,
-          autoRotate: scene.autoRotate ?? false,
-          minYaw: scene.minYaw,
-          maxYaw: scene.maxYaw,
-          minPitch: scene.minPitch,
-          maxPitch: scene.maxPitch,
-          onPick: pick,
-        });
+        
+        this.viewer = new PanoViewer(
+          this.stage,
+          img,
+          {
+            // Dirección inicial de la cámara
+            yaw: arrivalYaw ?? scene.yaw ?? 0,
+
+            // Giro automático desactivado,
+            // salvo que la escena indique lo contrario
+            autoRotate: scene.autoRotate ?? false,
+
+            // Límites horizontales
+            minYaw: scene.minYaw,
+            maxYaw: scene.maxYaw,
+
+            // Límites verticales
+            minPitch: scene.minPitch,
+            maxPitch: scene.maxPitch,
+
+            // Herramienta de depuración
+            onPick: pick,
+          }
+        );
+
         for (const h of hotspots) this.viewer.addHotspot(this.makeHotspot(h), h.x, h.y);
       } else {
         this.viewer = new PanZoomImage(this.stage, url, { maxScale: 4 });

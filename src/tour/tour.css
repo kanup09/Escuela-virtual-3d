@@ -341,3 +341,130 @@
     font-size: 12px;
   }
 }
+
+
+/* ==========================================
+   HOTSPOTS CON FLECHAS DIRECCIONALES
+   ========================================== */
+
+#tour .hotspot--arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+  padding: 8px;
+
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 16px;
+
+  background: rgba(13, 42, 58, 0.88);
+  color: #ffffff;
+
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.3);
+
+  backdrop-filter: blur(8px);
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    opacity 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+/* ==========================================
+   ICONO DE LA FLECHA
+   ========================================== */
+
+#tour .hotspot-arrow-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 40px;
+  height: 40px;
+
+  border-radius: 50%;
+
+  background: #ffffff;
+  color: #164056;
+
+  font-size: 27px;
+  font-weight: 700;
+  line-height: 1;
+
+  flex-shrink: 0;
+}
+
+
+/* ==========================================
+   ETIQUETA DEL DESTINO
+   ========================================== */
+
+#tour .hotspot--arrow .hotspot-text {
+  display: block;
+
+  padding: 2px 8px;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  text-align: center;
+  white-space: nowrap;
+}
+
+#tour .hotspot--arrow small {
+  display: block;
+
+  margin-top: 3px;
+
+  font-size: 10px;
+  font-weight: 400;
+
+  color: #cbdde5;
+}
+
+
+/* ==========================================
+   INTERACCIÓN CON EL MOUSE
+   ========================================== */
+
+#tour .hotspot--arrow:hover {
+  background: rgba(22, 64, 86, 0.98);
+  color: #ffffff;
+
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+}
+
+#tour .hotspot--arrow:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
+}
+
+
+/* ==========================================
+   ADAPTACIÓN A CELULARES
+   ========================================== */
+
+@media (max-width: 700px) {
+
+  #tour .hotspot--arrow {
+    padding: 6px;
+    gap: 4px;
+  }
+
+  #tour .hotspot-arrow-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 24px;
+  }
+
+  #tour .hotspot--arrow .hotspot-text {
+    font-size: 10px;
+    padding: 2px 5px;
+  }
+
+}

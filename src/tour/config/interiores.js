@@ -27,20 +27,26 @@ export const interiores = [
         yaw: 0,
         autoRotate: false,
 
-        /*
-        // Puntos interactivos
+        
+        
         hotspots: [
-            {
+        {
             x: 50,
             y: 50,
 
             to: 'biblioteca',
 
-            label: 'Ir a',
-            sub: 'Biblioteca'
-            }
+            style: 'arrow',
+            direction: 'forward',
+
+            label: 'Ir a Biblioteca',
+
+            // Dirección inicial al llegar
+            arrivalYaw: 45
+        }
         ]
-        */
+
+
     },
 
 
@@ -57,19 +63,25 @@ export const interiores = [
         yaw: 0,
         autoRotate: false,
 
-        /*
         hotspots: [
-            {
+        {
             x: 50,
-            y: 90,
+            y: 50,
 
             to: 'entrada',
 
+            style: 'arrow',
+            direction: 'back',
+
             label: 'Volver',
-            sub: 'Entrada principal'
-            }
+            sub: 'Entrada principal',
+
+            // Dirección inicial al regresar
+            arrivalYaw: -60
+        }
         ]
-        */
+
+
     },
 
 
