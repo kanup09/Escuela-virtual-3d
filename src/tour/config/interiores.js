@@ -65,7 +65,7 @@ export const interiores = [
     id: 'aula compartida',
     group: 'interior',
     title: 'Aula Compartida',
-    image: 'tour/Aula Planta Alta.png'
+    image: 'tour/Aulas Planta Alta.png'
   },
 
   // ----------------------------------------
