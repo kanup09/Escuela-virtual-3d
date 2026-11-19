@@ -1,6 +1,7 @@
 import { PanZoomImage } from './PanZoomImage.js';
 import { PanoViewer } from './PanoViewer.js';
 import { assetUrl } from './tourConfig.js';
+import { obtenerTransicion, fachadaVecina } from './config/transiciones.js';
 
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -118,6 +119,15 @@ export class TourView {
         </button>
       </div>
 
+      <button class="exterior-nav exterior-nav--prev" data-act="exterior-prev" aria-label="Fachada anterior">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+        <span class="exterior-nav-label"></span>
+      </button>
+      <button class="exterior-nav exterior-nav--next" data-act="exterior-next" aria-label="Fachada siguiente">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        <span class="exterior-nav-label"></span>
+      </button>
+
       <div class="dock"></div>
 
       <div class="fade on"></div>
@@ -192,7 +202,34 @@ export class TourView {
     root.querySelector('.brand').textContent = tour.title;
 
     this.stage = root.querySelector('.stage');
+
+    this.transitioning = false;
+
+    this.videoOverlay = document.createElement('div');
+    this.videoOverlay.className = 'travel-overlay';
+    this.videoOverlay.hidden = true;
+
+    this.videoOverlay.innerHTML = `
+      <video
+        class="travel-video"
+        muted
+        playsinline
+        preload="none"
+      ></video>
+
+      <button
+        type="button"
+        class="travel-skip"
+      >
+        Omitir animación →
+      </button>
+    `;
+
+    this.root.appendChild(this.videoOverlay);
+
     this.dock = root.querySelector('.dock');
+    this.exteriorPrevBtn = root.querySelector('[data-act="exterior-prev"]');
+    this.exteriorNextBtn = root.querySelector('[data-act="exterior-next"]');
     this.fade = root.querySelector('.fade');
     this.loading = root.querySelector('.tour-loading');
     this.toast = root.querySelector('.toast');
@@ -226,6 +263,10 @@ export class TourView {
       if (act === 'in') this.viewer?.zoomBy?.(1.4);
       if (act === 'out') this.viewer?.zoomBy?.(1 / 1.4);
       if (act === 'exterior') this.goTo(this.lastExterior ?? this.scenesOf('exterior')[0]?.id);
+
+      // Flechas laterales del exterior: pasar a la fachada vecina con video
+      if (act === 'exterior-prev') this.goToExteriorRelative(-1);
+      if (act === 'exterior-next') this.goToExteriorRelative(1);
       
       // Recorrer las vistas del grupo actual
       if (act === 'previous') {
@@ -251,8 +292,9 @@ export class TourView {
       if (this.root.hidden || !this.current) return;
       if (e.key === 'Escape') this.sheetModal.hidden = true;
       if (!this.sheetModal.hidden) return;
-      if (e.key === 'ArrowLeft') this.step(-1);
-      if (e.key === 'ArrowRight') this.step(1);
+      const enExterior = this.current.group === 'exterior';
+      if (e.key === 'ArrowLeft') enExterior ? this.goToExteriorRelative(-1) : this.step(-1);
+      if (e.key === 'ArrowRight') enExterior ? this.goToExteriorRelative(1) : this.step(1);
     });
 
     this.ready = this.init();
@@ -584,6 +626,101 @@ export class TourView {
   }
 
 
+  // ==========================================
+  // REPRODUCIR DESPLAZAMIENTO EXTERIOR
+  // ==========================================
+
+  playTravelVideo(path) {
+    return new Promise((resolve) => {
+      const overlay = this.videoOverlay;
+      const video = overlay.querySelector('video');
+      const skip = overlay.querySelector('.travel-skip');
+
+      let finished = false;
+
+      const finish = () => {
+        if (finished) return;
+        finished = true;
+
+        video.pause();
+        video.removeAttribute('src');
+        video.load();
+
+        video.onended = null;
+        video.onerror = null;
+        skip.onclick = null;
+
+        overlay.hidden = true;
+        resolve();
+      };
+
+      video.onended = finish;
+      video.onerror = finish;
+      skip.onclick = finish;
+
+      overlay.hidden = false;
+
+      video.src = assetUrl(path);
+      video.currentTime = 0;
+
+      video.play().catch(finish);
+    });
+  }
+
+  // ==========================================
+  // CAMBIAR DE FACHADA CON ANIMACIÓN
+  // ==========================================
+
+  // Fachada vecina en el círculo (dir: 1 = siguiente, -1 = anterior)
+  async goToExteriorRelative(dir) {
+    if (this.transitioning || this.current?.group !== 'exterior') return;
+
+    const id = this.vecinaDisponible(this.current.id, dir);
+    if (id) await this.goToExterior(id);
+  }
+
+  // Salta las fachadas que no tengan imagen cargada
+  vecinaDisponible(id, dir) {
+    let candidata = fachadaVecina(id, dir);
+    for (let i = 0; i < 4 && candidata; i++) {
+      if (this.available.has(candidata)) return candidata;
+      candidata = fachadaVecina(candidata, dir);
+    }
+    return null;
+  }
+
+  async goToExterior(id) {
+    if (this.transitioning) return;
+    if (this.current?.id === id) return;
+
+    const destination = this.byId.get(id);
+
+    if (!destination || destination.group !== 'exterior') {
+      return;
+    }
+
+    const clip = obtenerTransicion(
+      this.current?.id,
+      id
+    );
+
+    if (!clip) {
+      await this.goTo(id);
+      return;
+    }
+
+    this.transitioning = true;
+    this.root.classList.add('is-traveling');
+
+    try {
+      await this.playTravelVideo(clip);
+      await this.goTo(id);
+    } finally {
+      this.transitioning = false;
+      this.root.classList.remove('is-traveling');
+    }
+  }
+
  
   async goTo(
     id,
@@ -727,6 +864,17 @@ export class TourView {
     const exterior = this.current.group === 'exterior';
     this.brand.hidden = !exterior;
     this.currentPlace.textContent = this.current.title;
+    this.root.classList.toggle('is-exterior', exterior);
+
+    // Flechas laterales: muestran el nombre de la fachada a la que llevan
+    if (exterior) {
+      const anterior = this.byId.get(this.vecinaDisponible(this.current.id, -1));
+      const siguiente = this.byId.get(this.vecinaDisponible(this.current.id, 1));
+      this.exteriorPrevBtn.querySelector('.exterior-nav-label').textContent = anterior?.title ?? '';
+      this.exteriorNextBtn.querySelector('.exterior-nav-label').textContent = siguiente?.title ?? '';
+      this.exteriorPrevBtn.hidden = !anterior || anterior.id === this.current.id;
+      this.exteriorNextBtn.hidden = !siguiente || siguiente.id === this.current.id;
+    }
     this.backBtn.hidden = exterior;
     this.toast.hidden = true;
 
@@ -740,7 +888,17 @@ export class TourView {
       chip.className = 'chip';
       chip.textContent = s.title;
       chip.classList.toggle('active', s.id === this.current.id);
-      chip.addEventListener('click', () => { if (s.id !== this.current.id) this.goTo(s.id); });
+      
+      chip.addEventListener('click', () => {
+        if (s.id === this.current.id) return;
+
+        if (s.group === 'exterior') {
+          this.goToExterior(s.id);
+        } else {
+          this.goTo(s.id);
+        }
+      });
+
       this.dock.appendChild(chip);
     }
     this.dock.querySelector('.active')?.scrollIntoView?.({ inline: 'center', block: 'nearest' });

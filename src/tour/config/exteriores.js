@@ -43,12 +43,12 @@ export const exteriores = [
   },
   
   // ----------------------------------------
-  // FACHADA SUR
+  // FACHADA ESTE
   // ----------------------------------------
   {
-    id: 'sur',
+    id: 'este',
     group: 'exterior',
-    title: 'Sur',
+    title: 'Este',
     image: 'tour/Fachada-Sur.jpg',
 
     hotspots: [
@@ -72,12 +72,12 @@ export const exteriores = [
   },
 
   // ----------------------------------------
-  // FACHADA ESTE
+  // FACHADA SUR
   // ----------------------------------------
   {
-    id: 'este',
+    id: 'sur',
     group: 'exterior',
-    title: 'Este',
+    title: 'Sur',
     image: 'tour/Escena SUM.jpg',
 
     hoverGlow: true
