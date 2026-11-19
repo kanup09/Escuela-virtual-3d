@@ -131,18 +131,7 @@ export class InteriorView {
       const ratio = img.naturalWidth / img.naturalHeight;
       const type = scene.type ?? (Math.abs(ratio - 2) < 0.03 ? 'pano' : 'flat');
       if (type === 'pano') {
-        
-        this.viewer = new PanoViewer(
-          this.stage,
-          img,
-          {
-            yaw: scene.yaw ?? 0,
-            autoRotate: scene.autoRotate ?? true,
-            minYaw: scene.minYaw,
-            maxYaw: scene.maxYaw
-          }
-        );
-
+        this.viewer = new PanoViewer(this.stage, img, { yaw: scene.yaw ?? 0 });
       } else {
         this.viewer = new PanZoomImage(this.stage, url, { maxScale: 4 });
         await this.viewer.ready;

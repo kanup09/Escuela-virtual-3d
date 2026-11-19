@@ -1,47 +1,48 @@
 import * as THREE from 'three';
 
+// Posición de un punto de la imagen (u, v entre 0 y 1) como dirección 3D
+function directionFromImage(u, v) {
+  const lon = THREE.MathUtils.degToRad(-270 + 360 * u);
+  const lat = THREE.MathUtils.degToRad((0.5 - v) * 180);
+  return new THREE.Vector3(Math.sin(lon) * Math.cos(lat), Math.sin(lat), -Math.cos(lon) * Math.cos(lat));
+}
+
 // Visor de panoramas 360° (imagen equirectangular, proporción 2:1).
 export class PanoViewer {
-  
-  constructor(
-    container,
-    image,
-    {
-      yaw = 0,
-      autoRotate = true,
-      minYaw = null,
-      maxYaw = null
-    } = {}
-  ){
-
+  constructor(container, image, {
+    yaw = 0,
+    autoRotate = false,
+    minYaw = null,   // límite hacia la izquierda, en grados desde el centro inicial
+    maxYaw = null,   // límite hacia la derecha
+    minPitch = null, // límite hacia abajo (como máximo -85)
+    maxPitch = null, // límite hacia arriba (como máximo 85)
+    onPick = null,
+  } = {}) {
     this.container = container;
-    
-    this.lon = -90 + yaw;
+    this.lon = -90 + yaw; // -90 = centro de la imagen
     this.lat = 0;
     this.fov = 75;
 
-    // Centro inicial de la panorámica
-    this.initialLon = this.lon;
-
-    // Activar o desactivar giro automático
+    // Límites de giro (relativos al centro inicial de la imagen)
+    const center = this.lon;
+    this.minLon = minYaw == null ? -Infinity : center + minYaw;
+    this.maxLon = maxYaw == null ? Infinity : center + maxYaw;
+    this.minLat = Math.max(-85, minPitch ?? -85);
+    this.maxLat = Math.min(85, maxPitch ?? 85);
     this.autoRotate = autoRotate;
-
-    // Límites horizontales relativos al centro
-    this.minLon = minYaw === null
-      ? -Infinity
-      : this.initialLon + minYaw;
-
-    this.maxLon = maxYaw === null
-      ? Infinity
-      : this.initialLon + maxYaw;
-
     this.running = true;
+    this.hotspots = [];
+    this.onPick = onPick;
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     this.canvas = this.renderer.domElement;
     this.canvas.className = 'pano-canvas';
     container.appendChild(this.canvas);
+
+    this.layer = document.createElement('div');
+    this.layer.className = 'pano-layer';
+    container.appendChild(this.layer);
 
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(this.fov, 1, 0.1, 1100);
@@ -66,56 +67,89 @@ export class PanoViewer {
     this.mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ map: this.texture }));
     this.scene.add(this.mesh);
 
+    const raycaster = new THREE.Raycaster();
     let drag = null;
-    this.onDown = (e) => { drag = { x: e.clientX, y: e.clientY }; this.autoRotate = false; this.canvas.setPointerCapture?.(e.pointerId); };
+    this.onDown = (e) => {
+      drag = { x: e.clientX, y: e.clientY, sx: e.clientX, sy: e.clientY };
+      this.autoRotate = false;
+      this.canvas.setPointerCapture?.(e.pointerId);
+    };
     this.onMove = (e) => {
       if (!drag) return;
       const k = 0.12 * (this.fov / 75);
       this.lon -= (e.clientX - drag.x) * k;
-
-      this.lon = Math.max(
-        this.minLon,
-        Math.min(this.maxLon, this.lon)
-      );
-
       this.lat += (e.clientY - drag.y) * k;
-      this.lat = Math.max(-85, Math.min(85, this.lat));
-      drag = { x: e.clientX, y: e.clientY };
+      this.clampView();
+      drag.x = e.clientX; drag.y = e.clientY;
     };
-    this.onUp = () => { drag = null; };
+    this.onUp = (e) => {
+      if (drag && this.onPick && Math.hypot(e.clientX - drag.sx, e.clientY - drag.sy) < 5) {
+        // Clic sin arrastrar (modo ?debug): devuelve la posición en la imagen
+        const rect = this.canvas.getBoundingClientRect();
+        const ndc = new THREE.Vector2(
+          ((e.clientX - rect.left) / rect.width) * 2 - 1,
+          -((e.clientY - rect.top) / rect.height) * 2 + 1
+        );
+        raycaster.setFromCamera(ndc, this.camera);
+        const hit = raycaster.intersectObject(this.mesh)[0];
+        if (hit?.uv) this.onPick({ x: hit.uv.x, y: 1 - hit.uv.y });
+      }
+      drag = null;
+    };
     this.onWheel = (e) => { e.preventDefault(); this.setFov(this.fov + e.deltaY * 0.05); this.autoRotate = false; };
     this.canvas.addEventListener('pointerdown', this.onDown);
     this.canvas.addEventListener('pointermove', this.onMove);
     this.canvas.addEventListener('pointerup', this.onUp);
-    this.canvas.addEventListener('pointercancel', this.onUp);
+    this.canvas.addEventListener('pointercancel', () => { drag = null; });
     this.canvas.addEventListener('wheel', this.onWheel, { passive: false });
 
     this.resizeObserver = new ResizeObserver(() => this.resize());
     this.resizeObserver.observe(container);
     this.resize();
 
+    const forward = new THREE.Vector3();
+    const point = new THREE.Vector3();
     this.last = performance.now();
     this.loop = (now) => {
       this.raf = requestAnimationFrame(this.loop);
       const dt = Math.min((now - this.last) / 1000, 0.1);
       this.last = now;
       if (!this.running) return;
-      
-      if (this.autoRotate) {
-        this.lon += 4 * dt;
-
-        this.lon = Math.max(
-          this.minLon,
-          Math.min(this.maxLon, this.lon)
-        );
-      }
- // gira despacio hasta que lo tocan
+      if (this.autoRotate) this.lon += 4 * dt;
+      this.clampView();
       const phi = THREE.MathUtils.degToRad(this.lat);
       const theta = THREE.MathUtils.degToRad(this.lon);
       this.camera.lookAt(Math.sin(theta) * Math.cos(phi), Math.sin(phi), -Math.cos(theta) * Math.cos(phi));
+      this.camera.updateMatrixWorld();
       this.renderer.render(this.scene, this.camera);
+
+      // Botones sobre la imagen: siguen su punto al girar
+      if (this.hotspots.length) {
+        const w = this.container.clientWidth;
+        const h = this.container.clientHeight;
+        this.camera.getWorldDirection(forward);
+        for (const hs of this.hotspots) {
+          if (hs.dir.dot(forward) < 0.05) { hs.el.style.display = 'none'; continue; }
+          point.copy(hs.dir).multiplyScalar(100).project(this.camera);
+          hs.el.style.display = '';
+          hs.el.style.transform = `translate(${(point.x * 0.5 + 0.5) * w}px, ${(-point.y * 0.5 + 0.5) * h}px) translate(-50%, -50%)`;
+        }
+      }
     };
     this.raf = requestAnimationFrame(this.loop);
+  }
+
+  // x, y en % de la imagen
+  addHotspot(el, x, y) {
+    el.classList.add('pano');
+    el.style.display = 'none';
+    this.layer.appendChild(el);
+    this.hotspots.push({ el, dir: directionFromImage(x / 100, y / 100) });
+  }
+
+  clampView() {
+    this.lon = Math.max(this.minLon, Math.min(this.maxLon, this.lon));
+    this.lat = Math.max(this.minLat, Math.min(this.maxLat, this.lat));
   }
 
   setFov(value) {
@@ -145,5 +179,6 @@ export class PanoViewer {
     this.mesh.material.dispose();
     this.renderer.dispose();
     this.canvas.remove();
+    this.layer.remove();
   }
 }
