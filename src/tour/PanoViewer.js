@@ -147,6 +147,62 @@ export class PanoViewer {
     this.hotspots.push({ el, dir: directionFromImage(x / 100, y / 100) });
   }
 
+
+  // ==========================================
+  // OBTENER ESTADO ACTUAL DE LA CÁMARA
+  // ==========================================
+
+  getViewState() {
+    return {
+      lon: this.lon,
+      lat: this.lat,
+      fov: this.fov,
+
+      // Conservamos los límites originales
+      minLon: this.minLon,
+      maxLon: this.maxLon
+    };
+  }
+
+  // ==========================================
+  // RESTAURAR ESTADO DE LA CÁMARA
+  // ==========================================
+
+  setViewState(state) {
+    if (!state) {
+      return;
+    }
+
+    // Recuperar límites anteriores
+    if (typeof state.minLon === 'number') {
+      this.minLon = state.minLon;
+    }
+
+    if (typeof state.maxLon === 'number') {
+      this.maxLon = state.maxLon;
+    }
+
+    // Recuperar orientación
+    if (Number.isFinite(state.lon)) {
+      this.lon = state.lon;
+    }
+
+    if (Number.isFinite(state.lat)) {
+      this.lat = state.lat;
+    }
+
+    // Recuperar zoom
+    if (Number.isFinite(state.fov)) {
+      this.setFov(state.fov);
+    }
+
+    // Respetar límites de giro
+    this.clampView();
+
+    // Evitar movimiento automático
+    this.autoRotate = false;
+  }
+
   clampView() {
     this.lon = Math.max(this.minLon, Math.min(this.maxLon, this.lon));
     this.lat = Math.max(this.minLat, Math.min(this.maxLat, this.lat));

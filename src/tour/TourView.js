@@ -193,32 +193,84 @@ export class TourView {
   // GUARDAR UNA VISTA EN EL HISTORIAL
   // ==========================================
 
+  
+  // ==========================================
+  // AGREGAR UNA VISITA AL HISTORIAL
+  // ==========================================
+
   addToHistory(id) {
-    // No guardar dos veces consecutivas
-    // la misma panorámica.
-    if (this.history[this.historyIndex] === id) {
+    const currentEntry =
+      this.history[this.historyIndex];
+
+    // Evitar duplicados consecutivos
+    if (currentEntry?.id === id) {
       return;
     }
 
-    // Si volvimos hacia atrás y elegimos
-    // una vista nueva, descartamos el
-    // historial que había hacia adelante.
+    // Si el usuario volvió hacia atrás
+    // y elige otra vista, descartar
+    // las visitas futuras.
     this.history = this.history.slice(
       0,
       this.historyIndex + 1
     );
 
-    this.history.push(id);
-    this.historyIndex = this.history.length - 1;
+    // Nueva visita
+    this.history.push({
+      id: id,
+      view: null
+    });
+
+    this.historyIndex =
+      this.history.length - 1;
   }
+
+  // ==========================================
+  // GUARDAR LA POSICIÓN ACTUAL
+  // ==========================================
+
+  saveCurrentView() {
+    const entry =
+      this.history[this.historyIndex];
+
+    if (!entry || !this.current) {
+      return;
+    }
+
+    // Verificar que el historial
+    // corresponda a la escena abierta
+    if (entry.id !== this.current.id) {
+      return;
+    }
+
+    // Solo el visor panorámico tiene
+    // getViewState por el momento.
+    if (
+      typeof this.viewer?.getViewState !==
+      'function'
+    ) {
+      return;
+    }
+
+    // Guardar la posición de la cámara
+    entry.view = this.viewer.getViewState();
+  }
+
 
   // ==========================================
   // VOLVER O AVANZAR EN EL HISTORIAL
   // ==========================================
 
-  historyStep(direction) {
-    const newIndex = this.historyIndex + direction;
+  
+  // ==========================================
+  // RECORRER HISTORIAL
+  // ==========================================
 
+  historyStep(direction) {
+    const newIndex =
+      this.historyIndex + direction;
+
+    // Verificar los límites
     if (
       newIndex < 0 ||
       newIndex >= this.history.length
@@ -226,14 +278,26 @@ export class TourView {
       return;
     }
 
-    const id = this.history[newIndex];
+    // Guardar la posición de la
+    // panorámica que estamos dejando
+    this.saveCurrentView();
 
-    // Nos movemos por el historial existente
-    // sin agregar otra entrada.
+    // Recuperar la visita de destino
+    const entry = this.history[newIndex];
+
     this.historyIndex = newIndex;
 
-    this.goTo(id, false, false);
+    // Abrir la panorámica sin
+    // crear otra entrada en el historial
+    this.goTo(
+      entry.id,
+      false,
+      false,
+      null,
+      entry.view
+    );
   }
+
 
   // ==========================================
   // ACTUALIZAR ESTADO DE LOS BOTONES
@@ -375,18 +439,27 @@ export class TourView {
   }
 
 
-  
-  
+ 
   async goTo(
     id,
     instant = false,
     saveHistory = true,
-    arrivalYaw = null
+    arrivalYaw = null,
+    restoreView = null
   ){
-
 
     const scene = this.byId.get(id);
     if (!scene) return;
+
+    // Guardar la posición de la vista anterior
+    // cuando se inicia una navegación nueva.
+    //
+    // Al recorrer el historial, historyStep()
+    // ya realiza este guardado.
+    if (saveHistory) {
+      this.saveCurrentView();
+    }
+
     const token = ++this.token;
     this.fade.classList.add('on');
     if (!instant) await wait(250);
@@ -448,7 +521,13 @@ export class TourView {
             onPick: pick,
           }
         );
+        // ==========================================
+        // RESTAURAR CÁMARA DESDE EL HISTORIAL
+        // ==========================================
 
+        if (restoreView) {
+          this.viewer.setViewState(restoreView);
+        }
         for (const h of hotspots) this.viewer.addHotspot(this.makeHotspot(h), h.x, h.y);
       } else {
         this.viewer = new PanZoomImage(this.stage, url, { maxScale: 4 });

@@ -21,66 +21,29 @@ export const interiores = [
         id: 'entrada',
         group: 'interior',
         title: 'Entrada',
-        image: 'tour/entrada.jpg',
+        image: 'tour/Escena Ingreso.png',
 
         // Orientación de la cámara
         yaw: 0,
         autoRotate: false,
 
-        
-        
-        hotspots: [
-        {
-            x: 50,
-            y: 50,
-
-            to: 'biblioteca',
-
-            style: 'arrow',
-            direction: 'forward',
-
-            label: 'Ir a Biblioteca',
-
-            // Dirección inicial al llegar
-            arrivalYaw: 45
-        }
-        ]
 
 
     },
 
 
   // ----------------------------------------
-  // BIBLIOTECA
+  // Taller
   // ----------------------------------------
 
     {
-        id: 'biblioteca',
+        id: 'talller',
         group: 'interior',
-        title: 'Biblioteca',
-        image: 'tour/biblioteca.jpg',
+        title: 'Talleres y Galeria',
+        image: 'tour/Talleres y Galeria_1.png',
 
         yaw: 0,
         autoRotate: false,
-
-        hotspots: [
-        {
-            x: 50,
-            y: 50,
-
-            to: 'entrada',
-
-            style: 'arrow',
-            direction: 'back',
-
-            label: 'Volver',
-            sub: 'Entrada principal',
-
-            // Dirección inicial al regresar
-            arrivalYaw: -60
-        }
-        ]
-
 
     },
 
@@ -89,23 +52,31 @@ export const interiores = [
   // AULAS
   // ----------------------------------------
   {
-    id: 'aulas',
+    id: 'aula individual',
     group: 'interior',
-    title: 'Aulas',
-    image: 'tour/aulas.jpg'
+    title: 'Aula Individual',
+    image: 'tour/Aula Individual.png'
   },
 
   // ----------------------------------------
-  // VISTA DESDE EL EDIFICIO
+  // AULAS Compartidas
   // ----------------------------------------
   {
-    id: 'vista-edificio',
+    id: 'aula compartida',
     group: 'interior',
-    title: 'Vista desde el edificio',
-    image: 'tour/vista-edificio.jpg',
+    title: 'Aula Compartida',
+    image: 'tour/Aula Planta Alta.png'
+  },
 
-    minYaw: -30,
-    maxYaw: 100
+  // ----------------------------------------
+  // Espacio ludico
+  // ----------------------------------------
+  {
+    id: 'espacio ludico',
+    group: 'interior',
+    title: 'Espacio Ludico',
+    image: 'tour/Espacio Ludico.png',
+
   },
 
   // ----------------------------------------
@@ -119,13 +90,13 @@ export const interiores = [
   },
 
   // ----------------------------------------
-  // COMEDOR
+  // Rampa
   // ----------------------------------------
   {
-    id: 'comedor',
+    id: 'rampa',
     group: 'interior',
-    title: 'Comedor',
-    image: 'tour/comedor.jpg'
+    title: 'Rampa',
+    image: 'tour/Rampa.png'
   },
 
   // ----------------------------------------
@@ -135,7 +106,7 @@ export const interiores = [
     id: 'patio',
     group: 'interior',
     title: 'Patio',
-    image: 'tour/patio.jpg'
+    image: 'tour/Patio.png'
   },
 
   // ----------------------------------------
@@ -145,7 +116,7 @@ export const interiores = [
     id: 'gimnasio',
     group: 'interior',
     title: 'Gimnasio',
-    image: 'tour/gimnasio.jpg'
+    image: 'tour/Escena 5_1.png'
   }
 
 ];

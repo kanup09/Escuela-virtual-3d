@@ -21,7 +21,7 @@ export const exteriores = [
     id: 'norte',
     group: 'exterior',
     title: 'Norte',
-    image: 'tour/exterior-norte.jpg',
+    image: 'tour/Escena Principal.png',
     
     hotspots: [
       {
@@ -41,6 +41,28 @@ export const exteriores = [
     ]
     */
   },
+  
+  // ----------------------------------------
+  // FACHADA SUR
+  // ----------------------------------------
+  {
+    id: 'sur',
+    group: 'exterior',
+    title: 'Sur',
+    image: 'tour/Fachada-Sur.png',
+
+    hotspots: [
+      {
+        x: 51,
+        y: 66,
+        to: 'entrada',
+        label: 'Ingresar',
+        sub: 'Entrada secundaria'
+      },
+    
+    ]
+    
+  },
 
   // ----------------------------------------
   // FACHADA ESTE
@@ -49,18 +71,9 @@ export const exteriores = [
     id: 'este',
     group: 'exterior',
     title: 'Este',
-    image: 'tour/exterior-este.jpg'
+    image: 'tour/Escena SUM.png'
   },
 
-  // ----------------------------------------
-  // FACHADA SUR
-  // ----------------------------------------
-  {
-    id: 'sur',
-    group: 'exterior',
-    title: 'Sur',
-    image: 'tour/exterior-sur.jpg'
-  },
 
   // ----------------------------------------
   // FACHADA OESTE
@@ -69,7 +82,7 @@ export const exteriores = [
     id: 'oeste',
     group: 'exterior',
     title: 'Oeste',
-    image: 'tour/exterior-oeste.jpg'
+    image: 'tour/Fachada-Oeste.png'
   },
 
   // ----------------------------------------
