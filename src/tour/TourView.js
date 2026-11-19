@@ -81,7 +81,20 @@ export class TourView {
 
       </div>
 
-      <div class="bar bar-right"><button class="pill" data-act="3d">Recorrido 3D</button></div>
+      <div class="bar bar-right"><span class="tour-current-place" aria-live="polite"></span></div>
+      <button class="sheet-open" type="button" data-act="sheet" title="Consultar planos y fachadas">
+        <span aria-hidden="true">▦</span> Plano
+      </button>
+      <div class="sheet-modal" hidden role="dialog" aria-modal="true" aria-label="Lámina de planos de la escuela">
+        <div class="sheet-panel">
+          <div class="sheet-head">
+            <strong>Planos y fachadas de la escuela</strong>
+            <button type="button" data-act="sheet-close" aria-label="Cerrar planos">✕</button>
+          </div>
+          <img src="${assetUrl('plano-lamina.jpg')}" alt="Lámina general de la escuela con plantas, fachadas y renders" loading="lazy"/>
+          <p>Podés ampliar la lámina con el zoom del navegador.</p>
+        </div>
+      </div>
       <div class="zoom-ctl">
         <button class="round" data-act="in" aria-label="Acercar">+</button>
         <button class="round" data-act="out" aria-label="Alejar">−</button>
@@ -140,14 +153,13 @@ export class TourView {
       <div class="tour-intro-content">
 
         <span class="tour-intro-subtitle">
-          BIENVENIDOS A NUESTRA INSTITUCIÓN
+          UNA EXPERIENCIA PARA DESCUBRIR
         </span>
 
         <h1 class="tour-intro-title"></h1>
 
         <p class="tour-intro-description">
-          Descubrí nuestros espacios a través de
-          un recorrido virtual interactivo.
+          Recorré sus espacios, conocé su arquitectura y explorá cada ambiente a tu ritmo.
         </p>
 
         <button
@@ -159,7 +171,7 @@ export class TourView {
         </button>
 
         <span class="tour-intro-hint">
-          Arrastrá para explorar la panorámica
+          Mové el mouse o deslizá el dedo para explorar
         </span>
 
       </div>
@@ -185,6 +197,8 @@ export class TourView {
     this.loading = root.querySelector('.tour-loading');
     this.toast = root.querySelector('.toast');
     this.brand = root.querySelector('.brand');
+    this.currentPlace = root.querySelector('.tour-current-place');
+    this.sheetModal = root.querySelector('.sheet-modal');
     this.backBtn = root.querySelector('[data-act="exterior"]');
 
     this.historyBackBtn = root.querySelector(
@@ -207,6 +221,8 @@ export class TourView {
     root.addEventListener('click', (e) => {
       const act = e.target.closest('[data-act]')?.dataset.act;
       if (act === '3d') on3D();
+      if (act === 'sheet') this.sheetModal.hidden = false;
+      if (act === 'sheet-close') this.sheetModal.hidden = true;
       if (act === 'in') this.viewer?.zoomBy?.(1.4);
       if (act === 'out') this.viewer?.zoomBy?.(1 / 1.4);
       if (act === 'exterior') this.goTo(this.lastExterior ?? this.scenesOf('exterior')[0]?.id);
@@ -233,6 +249,8 @@ export class TourView {
 
     document.addEventListener('keydown', (e) => {
       if (this.root.hidden || !this.current) return;
+      if (e.key === 'Escape') this.sheetModal.hidden = true;
+      if (!this.sheetModal.hidden) return;
       if (e.key === 'ArrowLeft') this.step(-1);
       if (e.key === 'ArrowRight') this.step(1);
     });
@@ -253,6 +271,7 @@ export class TourView {
     }
 
     this.tourStarted = true;
+    this.intro.querySelector('.tour-start-button').disabled = true;
 
     // Desvanecer título y botón de inicio
     this.intro.classList.add('leaving');
@@ -677,6 +696,7 @@ export class TourView {
       } else {
         this.viewer = new PanZoomImage(this.stage, url, { maxScale: 4 });
         await this.viewer.ready;
+        if (token !== this.token) return;
         for (const h of hotspots) {
           const b = this.makeHotspot(h);
           b.style.left = `${h.x}%`;
@@ -706,6 +726,7 @@ export class TourView {
   updateChrome() {
     const exterior = this.current.group === 'exterior';
     this.brand.hidden = !exterior;
+    this.currentPlace.textContent = this.current.title;
     this.backBtn.hidden = exterior;
     this.toast.hidden = true;
 

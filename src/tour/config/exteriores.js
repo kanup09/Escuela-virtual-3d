@@ -21,7 +21,7 @@ export const exteriores = [
     id: 'norte',
     group: 'exterior',
     title: 'Norte',
-    image: 'tour/Escena Principal.png',
+    image: 'tour/Escena Principal.jpg',
     
     hotspots: [
     {
@@ -36,11 +36,7 @@ export const exteriores = [
       label: 'Entrar a Galería',
 
       arrivalYaw: 0,
-
-      style: 'arrow',
-      direction: 'forward',
       prominent: true,
-      label: 'Entrar a Galería',
     },],
 
     hoverGlow: true
@@ -53,7 +49,7 @@ export const exteriores = [
     id: 'sur',
     group: 'exterior',
     title: 'Sur',
-    image: 'tour/Fachada-Sur.png',
+    image: 'tour/Fachada-Sur.jpg',
 
     hotspots: [
       {
@@ -69,11 +65,7 @@ export const exteriores = [
         label: 'Entrar al Espacio Lúdico',
 
         arrivalYaw: 0,
-
-        style: 'arrow',
-        direction: 'forward',
         prominent: true,
-        label: 'Espacio Lúdico',
       }
     ],
     hoverGlow: true
@@ -86,7 +78,7 @@ export const exteriores = [
     id: 'este',
     group: 'exterior',
     title: 'Este',
-    image: 'tour/Escena SUM.png',
+    image: 'tour/Escena SUM.jpg',
 
     hoverGlow: true
   },
@@ -99,26 +91,7 @@ export const exteriores = [
     id: 'oeste',
     group: 'exterior',
     title: 'Oeste',
-    image: 'tour/Fachada-Oeste.png',
+    image: 'tour/Fachada-Oeste.jpg',
     hoverGlow: true
   },
-
- 
-    //ejemplo
-  // ----------------------------------------
-  // PANORÁMICA EXTERIOR 2
-  // ----------------------------------------
-  {
-    id: 'vista-exterior-2',
-    group: 'exterior',
-    title: 'Vista exterior 2',
-    image: 'tour/vista-exterior-2.jpg',
-
-    yaw: 0,
-    autoRotate: false,
-
-    minYaw: -90,
-    maxYaw: 90
-  }
-
 ];

@@ -52,10 +52,10 @@ import { interiores } from './config/interiores.js';
 export const TOUR = {
 
   // Nombre de la escuela
-  title: 'Nombre de la Escuela',
+  title: 'Escuela · Recorrido Virtual',
 
   // Vista inicial al abrir el recorrido
-  start: 'norte',
+  start: 'entrada',
 
   // Todas las vistas disponibles
   scenes: [

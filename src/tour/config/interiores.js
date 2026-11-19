@@ -21,7 +21,7 @@ export const interiores = [
     id: 'entrada',
     group: 'interior',
     title: 'Entrada',
-    image: 'tour/Escena Ingreso.png',
+    image: 'tour/Escena Ingreso.jpg',
 
     // Orientación de la cámara
     yaw: 0,
@@ -52,7 +52,7 @@ export const interiores = [
     id: 'galeria',
     group: 'interior',
     title: 'Talleres y Galeria',
-    image: 'tour/Talleres y Galeria_1.png',
+    image: 'tour/Talleres y Galeria_1.jpg',
 
     yaw: 0,
     autoRotate: false,
@@ -66,7 +66,7 @@ export const interiores = [
     id: 'espacio-ludico',
     group: 'interior',
     title: 'Espacio Ludico',
-    image: 'tour/Espacio Ludico.png',
+    image: 'tour/Espacio Ludico.jpg',
     
     yaw: 0,
     autoRotate: false,
@@ -78,7 +78,7 @@ export const interiores = [
     id: 'patio',
     group: 'interior',
     title: 'Patio',
-    image: 'tour/Patio.png'
+    image: 'tour/Patio.jpg'
   },
   
   // ----------------------------------------
@@ -88,7 +88,7 @@ export const interiores = [
     id: 'rampa',
     group: 'interior',
     title: 'Rampa',
-    image: 'tour/Rampa.png'
+    image: 'tour/Rampa.jpg'
   },
   // ----------------------------------------
   // AULAS
@@ -97,7 +97,7 @@ export const interiores = [
     id: 'aula individual',
     group: 'interior',
     title: 'Aula Individual',
-    image: 'tour/Aula Individual.png'
+    image: 'tour/Aula Individual.jpg'
   },
 
   // ----------------------------------------
@@ -107,18 +107,7 @@ export const interiores = [
     id: 'aula compartida',
     group: 'interior',
     title: 'Aula Compartida',
-    image: 'tour/Aulas Planta Alta.png'
-  },
-
-
-  // ----------------------------------------
-  // TALLERES
-  // ----------------------------------------
-  {
-    id: 'talleres',
-    group: 'interior',
-    title: 'Talleres',
-    image: 'tour/talleres.jpg'
+    image: 'tour/Aulas Planta Alta.jpg'
   },
 
 
@@ -130,7 +119,7 @@ export const interiores = [
     id: 'gimnasio',
     group: 'interior',
     title: 'Gimnasio',
-    image: 'tour/Escena 5_1.png'
+    image: 'tour/Escena 5_1.jpg'
   }
 
 ];
