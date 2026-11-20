@@ -50,7 +50,7 @@ export const interiores = [
     id: 'hall',
     group: 'interior',
     title: 'Hall',
-    image: 'tour/Talleres y Galeria_1.jpg', // imagen cambiar
+    image: 'tour/Hall.jpg', // imagen cambiar
 
     yaw: 0,
     autoRotate: false,
@@ -58,16 +58,16 @@ export const interiores = [
       // Escena de origen: galeria
       // Escena de origen: hall
       {
-        "x": 90.62,
-        "y": 65,
-        "to": "planta-alta-1",
+        "x": 99.32,
+        "y": 57.69,
+        "to": "norte",
         "style": "wayfinding",
         "direction": "back",
         "rotateX": 0,
-        "rotateY": 20,
+        "rotateY": 12,
         "rotateZ": 0,
-        "scale": 0.8,
-        "label": "Planta Alta A",
+        "scale": 1,
+        "label": "Entrada",
         "arrivalYaw": 0
       },
       // Escena de origen: hall
@@ -84,45 +84,34 @@ export const interiores = [
         "label": "Comedor Galeria",
         "arrivalYaw": 0
       },
+  
+     
       // Escena de origen: hall
       {
-        "x": 11.64,
-        "y": 64.38,
-        "to": "entrada",
-        "style": "wayfinding",
-        "direction": "right",
-        "rotateX": 0,
-        "rotateY": 31,
-        "rotateZ": 0,
-        "scale": 0.7,
-        "label": "Entrada",
-        "arrivalYaw": 0
-      },
-      // Escena de origen: hall
-      {
-        "x": 50.91,
-        "y": 58.23,
+        "x": 51.79,
+        "y": 61.67,
         "to": "talleresAfuera",
         "style": "wayfinding",
         "direction": "back",
         "rotateX": 0,
-        "rotateY": -39,
+        "rotateY": -16,
         "rotateZ": 0,
         "scale": 1,
         "label": "Talleres",
         "arrivalYaw": 0
       },
       // Escena de origen: hall
+
       {
-        "x": 66.2,
-        "y": 57.61,
+        "x": 63.89,
+        "y": 55.81,
         "to": "patio",
         "style": "wayfinding",
         "direction": "right",
         "rotateX": 0,
-        "rotateY": -27,
+        "rotateY": 0,
         "rotateZ": 0,
-        "scale": 1.15,
+        "scale": 1,
         "label": "Patio",
         "arrivalYaw": 0
       }
@@ -193,7 +182,7 @@ export const interiores = [
     group: 'interior',
     title: 'Espacio Lúdico PA',
 
-    image: 'tour/Espacio-LudicoPA.jpg',
+    image: 'tour/Planta Alta B.jpg',
 
     yaw: 0,
     autoRotate: false,
@@ -218,10 +207,27 @@ export const interiores = [
     id: 'comedor ext',
     group: 'interior',
     title: 'Comedor Galeria',
-    image: 'tour/Comedor.jpeg',
+    image: 'tour/Comedor Galeria.jpeg',
 
     yaw: 0,
     autoRotate: false,
+
+    hotspots : [
+      // Escena de origen: hall
+      {
+        "x": 76.34,
+        "y": 55.64,
+        "to": "comedor ext",
+        "style": "wayfinding",
+        "direction": "forward",
+        "rotateX": 0,
+        "rotateY": 0,
+        "rotateZ": 0,
+        "scale": 1,
+        "label": "Comedor Galeria",
+        "arrivalYaw": 0
+      },
+    ]
   },
   
   {
@@ -293,7 +299,7 @@ export const interiores = [
     id: 'aulaPA',
     group: 'interior',
     title: 'Aula PA',
-    image: 'tour/Aula Individual.jpg'
+    image: 'tour/Aula Individual Planta Alta.jpg'
   },
 
   // ----------------------------------------
@@ -303,14 +309,14 @@ export const interiores = [
     id: 'aula integrada',
     group: 'interior',
     title: 'Aula Integrada',
-    image: 'tour/Aulas Planta Alta.jpg'
+    image: 'tour/Aula 3 Planta Alta.jpg'
   },
 
   {
     id: 'planta-alta-1',
     group: 'interior',
     title: 'Planta Alta A',
-    image: 'tour/PlantaAlta-1.jpeg',
+    image: 'tour/Planta Alta A.jpg',
 
     yaw: 0,
     autoRotate: false,
@@ -320,7 +326,7 @@ export const interiores = [
     id: 'planta-alta-2',
     group: 'interior',
     title: 'Planta Alta B',
-    image: 'tour/PlantaAlta-2.jpeg',
+    image: 'tour/',
 
     yaw: 0,
     autoRotate: false,
@@ -342,7 +348,7 @@ export const interiores = [
     id: 'huerta',
     group: 'interior',
     title: 'Huerta',
-    image: 'tour/Huerta.jpeg',
+    image: 'tour/Huerto.png',
 
     yaw: 0,
     autoRotate: false,
@@ -352,7 +358,7 @@ export const interiores = [
     id: 'talleresAfuera',
     group: 'interior',
     title: 'Talleres',
-    image: 'tour/Talleres-prueba.jpeg',
+    image: 'tour/Talleres.jpg',
 
     yaw: 0,
     autoRotate: false,
@@ -362,7 +368,7 @@ export const interiores = [
     id: 'tallereArt',
     group: 'interior',
     title: 'T. Arte',
-    image: 'tour/Talleres-prueba.jpeg',
+    image: 'tour/',
 
     yaw: 0,
     autoRotate: false,
@@ -371,7 +377,7 @@ export const interiores = [
     id: 'tallereMusic',
     group: 'interior',
     title: 'T. Musica',
-    image: 'tour/Talleres-prueba.jpeg',
+    image: 'tour/',
 
     yaw: 0,
     autoRotate: false,
@@ -381,7 +387,7 @@ export const interiores = [
     id: 'tallereMusic',
     group: 'interior',
     title: 'T. Informatica',
-    image: 'tour/Talleres-prueba.jpeg',
+    image: 'tour/',
 
     yaw: 0,
     autoRotate: false,
@@ -395,7 +401,5 @@ export const interiores = [
     yaw: 0,
     autoRotate: false,
   },
-
-
 
 ];

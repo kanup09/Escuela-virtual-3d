@@ -28,7 +28,7 @@ export const exteriores = [
       x: 51,
       y: 66,
 
-      to: 'entrada',
+      to: 'hall',
 
       style: 'arrow',
       direction: 'forward',
@@ -98,7 +98,7 @@ export const exteriores = [
     id: 'sur',
     group: 'exterior',
     title: 'Sur',
-    image: 'tour/Fachada-Oeste.jpg', // Sin cambiar aun
+    image: 'tour/Fachada Sur.png', 
 
     hoverGlow: true
   },
