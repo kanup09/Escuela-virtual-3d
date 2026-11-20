@@ -755,38 +755,39 @@ export class TourView {
   // REPRODUCIR DESPLAZAMIENTO EXTERIOR
   // ==========================================
 
-  playTravelVideo(path) {
-    return new Promise((resolve) => {
-      const overlay = this.videoOverlay;
-      const video = overlay.querySelector('video');
-      const skip = overlay.querySelector('.travel-skip');
+  async playTravelVideo(path) {
+    const overlay = this.videoOverlay;
+    const video = overlay.querySelector('video');
+    const skip = overlay.querySelector('.travel-skip');
 
+    overlay.hidden = false;
+
+    video.src = assetUrl(path);
+    video.currentTime = 0;
+
+    // El video permanece visible al finalizar.
+    // Se retirará después de preparar
+    // la panorámica de destino.
+
+    await new Promise((resolve) => {
       let finished = false;
 
       const finish = () => {
         if (finished) return;
-        finished = true;
 
+        finished = true;
         video.pause();
-        video.removeAttribute('src');
-        video.load();
 
         video.onended = null;
         video.onerror = null;
         skip.onclick = null;
 
-        overlay.hidden = true;
         resolve();
       };
 
       video.onended = finish;
       video.onerror = finish;
       skip.onclick = finish;
-
-      overlay.hidden = false;
-
-      video.src = assetUrl(path);
-      video.currentTime = 0;
 
       video.play().catch(finish);
     });
@@ -815,16 +816,14 @@ export class TourView {
   }
 
   
+  
   async goToExterior(id) {
     if (this.transitioning) return;
     if (this.current?.id === id) return;
 
     const destination = this.byId.get(id);
 
-    if (
-      !destination ||
-      destination.group !== 'exterior'
-    ) {
+    if (!destination || destination.group !== 'exterior') {
       return;
     }
 
@@ -833,43 +832,58 @@ export class TourView {
       id
     );
 
-    // Si no existe un video para esta
-    // combinación, cambiar normalmente.
     if (!clip) {
       await this.goTo(id);
       return;
     }
 
     this.transitioning = true;
+    this.root.classList.add('is-traveling');
 
     this.updateNavigationButtons();
 
-    try {
-      // Evitar el indicador de carga
-      // durante la animación.
-      this.loading.hidden = true;
+    const video = this.videoOverlay.querySelector('video');
 
+    try {
+      // Reproducir movimiento de cámara
       await this.playTravelVideo(clip);
 
-      // Abrir la fachada sin mostrar
-      // el indicador Cargando panorámica.
+      // Preparar la siguiente fachada
+      // MIENTRAS el último fotograma
+      // del video permanece en pantalla.
       await this.goTo(
         id,
-        false,
+        true,
         true,
         null,
         null,
         false
       );
 
+      // Esperar a que el navegador pueda
+      // mostrar el nuevo fotograma.
+      await new Promise((resolve) => {
+        requestAnimationFrame(() => {
+          requestAnimationFrame(resolve);
+        });
+      });
+
     } finally {
+      // Mostrar la fachada preparada
+      this.videoOverlay.hidden = true;
+
+      video.pause();
+      video.removeAttribute('src');
+      video.load();
+
       this.transitioning = false;
+      this.root.classList.remove('is-traveling');
 
       this.loading.hidden = true;
-
       this.updateNavigationButtons();
     }
   }
+
 
 
  
