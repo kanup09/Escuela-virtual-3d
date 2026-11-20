@@ -1057,8 +1057,8 @@ export class TourView {
     // VELOCIDAD DE LOS VIDEOS DE TRANSICIÓN
     // ==========================================
 
-    video.defaultPlaybackRate = 0.75;
-    video.playbackRate = 0.75;
+    video.defaultPlaybackRate = 0.65;
+    video.playbackRate = 0.65;
     return new Promise((resolveStart) => {
       let ready = false;
       let settled = false;
