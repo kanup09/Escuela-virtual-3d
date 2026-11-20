@@ -36,34 +36,15 @@ export const interiores = [
   // ----------------------------------------
 
   {
-    id: 'galeria',
+    id: 'hall',
     group: 'interior',
-    title: 'Galeria',
-    image: 'tour/Talleres y Galeria_1.jpg',
+    title: 'Hall',
+    image: 'tour/Talleres y Galeria_1.jpg', // imagen cambiar
 
     yaw: 0,
     autoRotate: false,
     hotspots:[
       // Escena de origen: galeria
-      {
-        "x": 13.58,
-        "y": 61.22,
-        "to": "entrada",
-        "style": "wayfinding",
-        "direction": "forward",
-        "label": "Entrada",
-        "arrivalYaw": 0
-      },
-      // Escena de origen: galeria
-      {
-        "x": 93.41,
-        "y": 52.83,
-        "to": "planta-alta-1",
-        "style": "wayfinding",
-        "direction": "left",
-        "label": "Planta Alta 1",
-        "arrivalYaw": 0
-      }
     ],
   },
     
@@ -90,15 +71,23 @@ export const interiores = [
   },
 
   {
-    id: 'comedor',
+    id: 'comedor ext',
     group: 'interior',
-    title: 'Comedor',
+    title: 'Comedor Galeria',
     image: 'tour/Comedor.jpeg',
 
     yaw: 0,
     autoRotate: false,
   },
-  
+    {
+    id: 'comedor int',
+    group: 'interior',
+    title: 'Comedor Interior',
+    image: 'tour/',
+
+    yaw: 0,
+    autoRotate: false,
+  },
   // ----------------------------------------
   // Rampa
   // ----------------------------------------
@@ -112,9 +101,9 @@ export const interiores = [
   // AULAS
   // ----------------------------------------
   {
-    id: 'aula individual',
+    id: 'aulaPA',
     group: 'interior',
-    title: 'Aula Individual',
+    title: 'Aula PA',
     image: 'tour/Aula Individual.jpg'
   },
 
@@ -122,16 +111,16 @@ export const interiores = [
   // AULAS Compartidas
   // ----------------------------------------
   {
-    id: 'aula compartida',
+    id: 'aula integrada',
     group: 'interior',
-    title: 'Aula Compartida',
+    title: 'Aula Integrada',
     image: 'tour/Aulas Planta Alta.jpg'
   },
 
   {
     id: 'planta-alta-1',
     group: 'interior',
-    title: 'Planta Alta 1',
+    title: 'Planta Alta A',
     image: 'tour/PlantaAlta-1.jpeg',
 
     yaw: 0,
@@ -141,32 +130,32 @@ export const interiores = [
   {
     id: 'planta-alta-2',
     group: 'interior',
-    title: 'Planta Alta 2',
+    title: 'Planta Alta B',
     image: 'tour/PlantaAlta-2.jpeg',
 
     yaw: 0,
     autoRotate: false,
   },
+    {
+    id: 'espacio-ludicoPA',
+    group: 'interior',
+    title: 'Espacio Ludico PA',
+    image: 'tour/Espacio-Ludico.jpeg',
+    
+    yaw: 0,
+    autoRotate: false,
+  },
 
   {
-    id: 'aulas-pruebas',
+    id: 'aulaPB',
     group: 'interior',
-    title: 'Aulas Pruebas',
+    title: 'Aulas PB',
     image: 'tour/Aulas-pruebas.jpeg',
 
     yaw: 0,
     autoRotate: false,
   },
 
-  {
-    id: 'planta-baja',
-    group: 'interior',
-    title: 'Planta Baja',
-    image: 'tour/Aula-plantaBaja.jpeg',
-
-    yaw: 0,
-    autoRotate: false,
-  },
 
   {
     id: 'huerta',
@@ -179,15 +168,43 @@ export const interiores = [
   },
 
   {
-    id: 'talleres-prueba',
+    id: 'talleresAfuera',
     group: 'interior',
-    title: 'Talleres Prueba',
+    title: 'Talleres',
     image: 'tour/Talleres-prueba.jpeg',
 
     yaw: 0,
     autoRotate: false,
   },
 
+  {
+    id: 'tallereArt',
+    group: 'interior',
+    title: 'T. Arte',
+    image: 'tour/Talleres-prueba.jpeg',
+
+    yaw: 0,
+    autoRotate: false,
+  },
+  {
+    id: 'tallereMusic',
+    group: 'interior',
+    title: 'T. Musica',
+    image: 'tour/Talleres-prueba.jpeg',
+
+    yaw: 0,
+    autoRotate: false,
+  },
+
+  {
+    id: 'tallereMusic',
+    group: 'interior',
+    title: 'T. Informatica',
+    image: 'tour/Talleres-prueba.jpeg',
+
+    yaw: 0,
+    autoRotate: false,
+  },
   {
     id: 'biblioteca',
     group: 'interior',
@@ -198,15 +215,7 @@ export const interiores = [
     autoRotate: false,
   },
 
-  {
-    id: 'entrada-biblioteca',
-    group: 'interior',
-    title: 'Entrada Biblioteca',
-    image: 'tour/Entrada-biblioteca.jpeg',
 
-    yaw: 0,
-    autoRotate: false,
-  },
   // ----------------------------------------
   // GIMNASIO
   // ----------------------------------------

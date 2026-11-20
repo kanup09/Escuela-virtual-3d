@@ -332,161 +332,205 @@
 }
 
 
+
 /* =========================================================
-   06. CARRUSEL INFERIOR
+   06. NAVEGACIÓN INFERIOR
+   EXTERIOR FIJO + INTERIOR CIRCULAR
    ========================================================= */
 
-/*
-   Este es el único bloque principal del carrusel.
-   No utilizar las reglas anteriores de .chip.
-*/
+/* Base compartida */
 
-#tour .dock.dock-carousel {
+#tour .dock {
   position: absolute;
+  z-index: 4;
 
   left: 50%;
   right: auto;
-
-  bottom: max(
-    18px,
-    env(safe-area-inset-bottom)
-  );
-
-  z-index: 4;
+  bottom: max(18px, env(safe-area-inset-bottom));
 
   transform: translateX(-50%);
 
   display: flex;
   align-items: center;
-  justify-content: center;
 
-  width: min(540px, calc(100vw - 40px));
-  max-width: none;
-  height: 54px;
+  box-sizing: border-box;
 
-  padding: 6px;
+  height: 64px;
+  padding: 7px;
   gap: 7px;
 
   overflow: hidden;
 
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 999px;
 
-  background: var(--surface-dark);
+  background: rgba(20, 36, 46, 0.92);
 
   backdrop-filter: blur(16px);
 
-  box-shadow:
-    0 8px 28px rgba(0, 0, 0, 0.28);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
 }
 
-/* Flechas laterales */
 
-#tour .dock-carousel .carousel-arrow {
-  position: relative;
+/* =========================================================
+   EXTERIOR - CINCO BOTONES FIJOS
+   ========================================================= */
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+#tour .dock.dock--exterior {
+  width: min(760px, calc(100vw - 32px));
 
-  flex: 0 0 38px;
+  justify-content: space-between;
+}
 
-  width: 38px;
-  height: 38px;
+#tour .exterior-dock-item {
+  flex: 1 1 0;
+  min-width: 0;
 
-  padding: 0;
-  margin: 0;
+  height: 48px;
 
-  border: 1px solid rgba(255, 255, 255, 0.17);
-  border-radius: 50%;
+  padding: 0 12px;
 
-  background: rgba(255, 255, 255, 0.13);
+  border: 0;
+  border-radius: 999px;
 
-  /* Ocultar caracteres anteriores */
-  color: transparent;
-  font-size: 0;
-  line-height: 0;
+  background: rgba(255, 255, 255, 0.07);
+  color: #ffffff;
+
+  font-size: 15px;
+  font-weight: 600;
 
   cursor: pointer;
 
   transition:
     background 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.2s ease,
-    opacity 0.2s ease;
+    color 0.2s ease;
 }
 
-/* Chevron dibujado con CSS */
-
-#tour .dock-carousel .carousel-arrow::before {
-  content: "";
-
-  display: block;
-
-  width: 10px;
-  height: 10px;
-
-  border-top: 2px solid #ffffff;
-  border-right: 2px solid #ffffff;
+#tour .exterior-dock-item:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.2);
 }
 
-/* Anterior */
-
-#tour .dock-carousel .carousel-arrow:first-child::before {
-  transform: rotate(-135deg);
-  margin-left: 5px;
+#tour .exterior-dock-item.active {
+  background: #fff9f7;
+  color: #963e43;
+  font-weight: 700;
 }
 
-/* Siguiente */
+#tour .exterior-dock-item.exterior-dock-enter {
+  background: #a84342;
+  color: #ffffff;
 
-#tour .dock-carousel .carousel-arrow:last-child::before {
-  transform: rotate(45deg);
-  margin-right: 5px;
+  font-weight: 700;
 }
 
-#tour .dock-carousel .carousel-arrow:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.27);
-  border-color: rgba(255, 255, 255, 0.55);
-
-  transform: scale(1.06);
+#tour .exterior-dock-enter:hover:not(:disabled) {
+  background: #bd5551;
 }
 
-#tour .dock-carousel .carousel-arrow:disabled {
+#tour .exterior-dock-item:disabled {
   opacity: 0.35;
   cursor: default;
 }
 
-/* Contenedor de tres panorámicas */
 
-#tour .dock-carousel .carousel-viewport {
+/* =========================================================
+   INTERIOR - CARRUSEL DE CINCO ENTRADAS
+   ========================================================= */
+
+#tour .dock.dock--interior {
+  width: min(1100px, calc(100vw - 32px));
+}
+
+#tour .dock--interior .carousel-arrow {
+  position: relative;
+
   display: grid;
+  place-items: center;
 
-  grid-template-columns:
-    repeat(3, minmax(0, 1fr));
+  flex: 0 0 46px;
 
-  align-items: center;
+  width: 46px;
+  height: 46px;
 
+  padding: 0;
+
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.12);
+
+  color: transparent;
+  font-size: 0;
+
+  cursor: pointer;
+
+  transition: background 0.2s ease;
+}
+
+/* Chevron grueso */
+
+#tour .dock--interior .carousel-arrow::before {
+  content: "";
+
+  display: block;
+
+  width: 13px;
+  height: 13px;
+
+  border-top: 3px solid #ffffff;
+  border-right: 3px solid #ffffff;
+}
+
+#tour .dock--interior
+.carousel-arrow:first-child::before {
+  transform: rotate(-135deg);
+  margin-left: 5px;
+}
+
+#tour .dock--interior
+.carousel-arrow:last-child::before {
+  transform: rotate(45deg);
+  margin-right: 5px;
+}
+
+#tour .dock--interior
+.carousel-arrow:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.27);
+}
+
+#tour .dock--interior .carousel-arrow:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+
+/* Contenedor de los destinos */
+
+#tour .dock--interior .carousel-viewport {
   flex: 1;
   min-width: 0;
 
-  gap: 6px;
-  overflow: hidden;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+
+  gap: 7px;
 }
 
-/* Botones de destinos */
 
-#tour .dock-carousel .carousel-scene {
+/* Botones de ambientes */
+
+#tour .dock--interior .carousel-scene {
   display: flex;
   align-items: center;
   justify-content: center;
 
   min-width: 0;
   width: 100%;
-  height: 38px;
+  height: 48px;
 
-  padding: 0 10px;
+  padding: 0 8px;
 
-  border: none;
+  border: 0;
   border-radius: 999px;
 
   background: rgba(255, 255, 255, 0.07);
@@ -496,73 +540,40 @@
   font-size: 14px;
   font-weight: 600;
 
-  letter-spacing: 0.1px;
   line-height: 1.2;
-
   text-align: center;
-  white-space: nowrap;
 
+  white-space: normal;
+  overflow-wrap: anywhere;
   overflow: hidden;
-  text-overflow: ellipsis;
 
   cursor: pointer;
 
   transition:
     background 0.2s ease,
-    color 0.2s ease,
-    transform 0.2s ease;
+    color 0.2s ease;
 }
 
-#tour .dock-carousel .carousel-scene:hover:not(.active) {
-  background: rgba(255, 255, 255, 0.19);
-  transform: translateY(-1px);
+#tour .dock--interior
+.carousel-scene:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.2);
 }
 
-/* Panorámica seleccionada */
-
-#tour .dock-carousel .carousel-scene.active {
+#tour .dock--interior .carousel-scene.active {
   background: #fff9f7;
   color: #963e43;
 
   font-weight: 700;
-
-  box-shadow:
-    0 2px 12px rgba(0, 0, 0, 0.12);
 }
+
 
 /* Accesibilidad */
 
-#tour .dock-carousel .carousel-arrow:focus-visible,
-#tour .dock-carousel .carousel-scene:focus-visible {
+#tour .dock button:focus-visible {
   outline: 2px solid #ffffff;
   outline-offset: -3px;
 }
 
-/* Clases antiguas conservadas por compatibilidad */
-
-#tour .dock-label {
-  display: none;
-}
-
-#tour .chip {
-  padding: 9px 13px;
-
-  border: none;
-  border-radius: 999px;
-
-  background: transparent;
-  color: rgba(255, 255, 255, 0.85);
-
-  font-size: 12px;
-  white-space: nowrap;
-
-  cursor: pointer;
-}
-
-#tour .chip.active {
-  background: #fff4f1;
-  color: #822e30;
-}
 
 
 /* =========================================================
@@ -1772,38 +1783,55 @@
    19. TABLETS
    ========================================================= */
 
+
+/* =========================================================
+   19. TABLETS - NAVEGACIÓN INFERIOR
+   ========================================================= */
+
 @media (max-width: 900px) {
 
-  #tour .dock.dock-carousel {
-    width: min(480px, calc(100vw - 30px));
+  /* Exterior: cinco botones fijos */
 
-    height: 50px;
-    padding: 5px;
-    gap: 5px;
-  }
-
-  #tour .dock-carousel .carousel-arrow {
-    flex-basis: 34px;
-
-    width: 34px;
-    height: 34px;
-  }
-
-  #tour .dock-carousel .carousel-arrow::before {
-    width: 9px;
-    height: 9px;
-  }
-
-  #tour .dock-carousel .carousel-viewport {
+  #tour .dock.dock--exterior {
+    width: calc(100vw - 30px);
+    height: 64px;
+    padding: 7px;
     gap: 6px;
   }
 
-  #tour .dock-carousel .carousel-scene {
-    height: 34px;
-
-    padding: 0 6px;
-    font-size: 13px;
+  #tour .exterior-dock-item {
+    height: 48px;
+    padding: 0 7px;
+    font-size: 14px;
   }
+
+  /* Interior: cinco panorámicas visibles */
+
+  #tour .dock.dock--interior {
+    width: calc(100vw - 30px);
+    height: 64px;
+    padding: 7px;
+    gap: 6px;
+  }
+
+  #tour .dock--interior .carousel-arrow {
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+  }
+
+  #tour .dock--interior .carousel-viewport {
+    grid-template-columns:
+      repeat(5, minmax(0, 1fr));
+    gap: 5px;
+  }
+
+  #tour .dock--interior .carousel-scene {
+    height: 46px;
+    padding: 0 5px;
+    font-size: 12px;
+  }
+
 }
 
 

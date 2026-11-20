@@ -1564,34 +1564,116 @@ export class TourView {
   }
 
   // ==========================================
-  // CARRUSEL DE PANORÁMICAS
+  // MENÚ FIJO PARA EXTERIORES
+  // Norte - Este - Ingresar - Oeste - Sur
+  // ==========================================
+
+  renderExteriorDock() {
+
+    this.dock.replaceChildren();
+
+    this.dock.classList.remove('dock-carousel', 'dock--interior');
+    this.dock.classList.add('dock--exterior');
+
+    const items = [
+      { id: 'norte', label: 'Norte' },
+      { id: 'este', label: 'Este' },
+      { id: 'entrada', label: 'Ingresar', enter: true },
+      { id: 'oeste', label: 'Oeste' },
+      { id: 'sur', label: 'Sur' }
+    ];
+
+    for (const item of items) {
+
+      const button = document.createElement('button');
+
+      button.type = 'button';
+      button.className = 'exterior-dock-item';
+      button.textContent = item.label;
+      button.title = item.label;
+
+      if (item.enter) {
+        button.classList.add('exterior-dock-enter');
+      }
+
+      const isActive = item.id === this.current?.id;
+
+      button.classList.toggle('active', isActive);
+
+      if (isActive) {
+        button.setAttribute('aria-current', 'page');
+      }
+
+      const scene = this.byId.get(item.id);
+
+      button.disabled =
+        !scene ||
+        !this.available.has(item.id);
+
+      button.addEventListener('click', () => {
+
+        if (this.transitioning) return;
+
+        if (item.id === this.current?.id) return;
+
+        if (item.enter) {
+          // Acceso directo al interior
+          this.goTo('entrada');
+        } else {
+          // Mantener transiciones exteriores
+          this.goToExterior(item.id);
+        }
+
+      });
+
+      this.dock.appendChild(button);
+    }
+  }
+
+  
+  // ==========================================
+  // CARRUSEL INTERIOR CIRCULAR
+  // CINCO PANORÁMICAS VISIBLES
   // ==========================================
 
   renderDockCarousel(scenes) {
 
-    const visibleCount = 3;
+    const total = scenes.length;
+    const visibleCount = Math.min(5, total);
 
-    const maxStart = Math.max(
-      0,
-      scenes.length - visibleCount
-    );
-
-    // Evitar posiciones fuera del arreglo
-    this.carouselStart = Math.max(
-      0,
-      Math.min(
-        this.carouselStart ?? 0,
-        maxStart
-      )
-    );
-
-    // Limpiar la barra anterior
     this.dock.replaceChildren();
 
-    this.dock.classList.add('dock-carousel');
+    this.dock.classList.remove('dock--exterior');
+    this.dock.classList.add('dock-carousel', 'dock--interior');
+
+    if (total === 0) return;
+
+    // Normalizar índices negativos y positivos
+    const normalize = (index) => {
+      return ((index % total) + total) % total;
+    };
+
+    this.carouselStart = normalize(
+      this.carouselStart ?? 0
+    );
 
     // ========================================
-    // BOTÓN ANTERIOR DEL CARRUSEL
+    // FUNCIÓN PARA DESPLAZAR LA LISTA
+    // ========================================
+
+    const move = (direction) => {
+
+      if (total <= 1) return;
+
+      this.carouselStart = normalize(
+        this.carouselStart + direction
+      );
+
+      this.renderDockCarousel(scenes);
+    };
+
+    // ========================================
+    // FLECHA IZQUIERDA
     // ========================================
 
     const previous = document.createElement('button');
@@ -1600,36 +1682,36 @@ export class TourView {
     previous.className = 'carousel-arrow';
     previous.textContent = '‹';
 
-    previous.title = 'Mostrar espacios anteriores';
     previous.setAttribute(
       'aria-label',
       'Mostrar espacios anteriores'
     );
 
-    previous.disabled = this.carouselStart === 0;
+    previous.title = 'Espacios anteriores';
+    previous.disabled = total <= 1;
 
     previous.addEventListener('click', () => {
-      if (this.carouselStart === 0) return;
-
-      this.carouselStart--;
-
-      this.renderDockCarousel(scenes);
+      move(-1);
     });
 
     // ========================================
-    // CONTENEDOR DE LAS TRES VISTAS
+    // CINCO OPCIONES VISIBLES
     // ========================================
 
     const viewport = document.createElement('div');
 
     viewport.className = 'carousel-viewport';
 
-    const visibleScenes = scenes.slice(
-      this.carouselStart,
-      this.carouselStart + visibleCount
-    );
+    viewport.style.gridTemplateColumns =
+      `repeat(${visibleCount}, minmax(0, 1fr))`;
 
-    for (const scene of visibleScenes) {
+    for (let i = 0; i < visibleCount; i++) {
+
+      const index = normalize(
+        this.carouselStart + i
+      );
+
+      const scene = scenes[index];
 
       const button = document.createElement('button');
 
@@ -1639,36 +1721,29 @@ export class TourView {
       button.textContent = scene.title;
       button.title = scene.title;
 
-      // Marcar la panorámica actual
-      const isActive = scene.id === this.current.id;
+      const active = scene.id === this.current?.id;
 
-      button.classList.toggle('active', isActive);
+      button.classList.toggle('active', active);
 
-      if (isActive) {
-        button.setAttribute('aria-current', 'true');
+      if (active) {
+        button.setAttribute('aria-current', 'page');
       }
 
       button.addEventListener('click', () => {
 
-        // No recargar la misma escena
-        if (scene.id === this.current?.id) {
-          return;
-        }
+        if (this.transitioning) return;
 
-        // Mantener las animaciones exteriores
-        if (scene.group === 'exterior') {
-          this.goToExterior(scene.id);
-        } else {
-          this.goTo(scene.id);
-        }
+        if (scene.id === this.current?.id) return;
 
+        // Conserva el historial
+        this.goTo(scene.id);
       });
 
       viewport.appendChild(button);
     }
 
     // ========================================
-    // BOTÓN SIGUIENTE DEL CARRUSEL
+    // FLECHA DERECHA
     // ========================================
 
     const next = document.createElement('button');
@@ -1677,25 +1752,17 @@ export class TourView {
     next.className = 'carousel-arrow';
     next.textContent = '›';
 
-    next.title = 'Mostrar más espacios';
     next.setAttribute(
       'aria-label',
-      'Mostrar más espacios'
+      'Mostrar espacios siguientes'
     );
 
-    next.disabled = this.carouselStart >= maxStart;
+    next.title = 'Espacios siguientes';
+    next.disabled = total <= 1;
 
     next.addEventListener('click', () => {
-      if (this.carouselStart >= maxStart) return;
-
-      this.carouselStart++;
-
-      this.renderDockCarousel(scenes);
+      move(1);
     });
-
-    // ========================================
-    // ARMAR CARRUSEL
-    // ========================================
 
     this.dock.append(
       previous,
@@ -1703,6 +1770,7 @@ export class TourView {
       next
     );
   }
+
 
   // Botones de arriba y barra de abajo según el grupo (exterior / interior)
   updateChrome() {
@@ -1737,27 +1805,34 @@ export class TourView {
     this.toast.hidden = true;
 
 
+    
     // ==========================================
-    // CARRUSEL INFERIOR COMPACTO
+    // NAVEGACIÓN INFERIOR POR TIPO DE ESCENA
     // ==========================================
 
-    const scenes = this.scenesOf(this.current.group);
+    if (exterior) {
 
-    // Centrar el espacio actual cuando
-    // cambiamos de panorámica.
-    const currentIndex = scenes.findIndex(
-      (scene) => scene.id === this.current.id
-    );
+      // Exterior: cinco botones fijos
+      this.renderExteriorDock();
 
-    this.carouselStart = Math.max(
-      0,
-      Math.min(
-        currentIndex - 1,
-        Math.max(0, scenes.length - 3)
-      )
-    );
+    } else {
 
-    this.renderDockCarousel(scenes);
+      // Interior: cinco entradas circulares
+      const scenes = this.scenesOf('interior');
+
+      const currentIndex = scenes.findIndex(
+        (scene) => scene.id === this.current.id
+      );
+
+      // Colocar la panorámica actual en el
+      // centro del conjunto de cinco.
+      this.carouselStart = scenes.length > 0
+        ? (currentIndex - 2 + scenes.length) % scenes.length
+        : 0;
+
+      this.renderDockCarousel(scenes);
+    }
+
 
     this.updateNavigationButtons();
   }
