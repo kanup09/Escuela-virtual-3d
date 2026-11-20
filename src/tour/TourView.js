@@ -3,7 +3,8 @@ import { PanoViewer } from './PanoViewer.js';
 import { assetUrl } from './tourConfig.js';
 import {
   obtenerTransicion,
-  fachadaVecina
+  fachadaVecina,
+  transiciones
 } from './config/transiciones.js';
 
 import('./editor/HotspotEditor.js')
@@ -49,6 +50,53 @@ import('./editor/HotspotEditor.js')
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 const DEBUG = new URLSearchParams(location.search).has('debug');
 
+function waitWithSignal(ms, signal) {
+  return new Promise((resolve) => {
+    if (signal.aborted) {
+      resolve(false);
+      return;
+    }
+
+    const finish = (completed) => {
+      clearTimeout(timer);
+      signal.removeEventListener('abort', onAbort);
+      resolve(completed);
+    };
+    const onAbort = () => finish(false);
+    const timer = setTimeout(() => finish(true), ms);
+
+    signal.addEventListener('abort', onAbort, { once: true });
+  });
+}
+
+function waitForPaint(signal) {
+  return new Promise((resolve) => {
+    if (signal.aborted) {
+      resolve(false);
+      return;
+    }
+
+    let firstFrame = 0;
+    let secondFrame = 0;
+    const finish = (painted) => {
+      cancelAnimationFrame(firstFrame);
+      cancelAnimationFrame(secondFrame);
+      signal.removeEventListener('abort', onAbort);
+      resolve(painted);
+    };
+    const onAbort = () => finish(false);
+
+    signal.addEventListener('abort', onAbort, { once: true });
+    firstFrame = requestAnimationFrame(() => {
+      firstFrame = 0;
+      secondFrame = requestAnimationFrame(() => {
+        secondFrame = 0;
+        finish(true);
+      });
+    });
+  });
+}
+
 // ¿Existe el archivo? (si no se puede comprobar, se intenta igual)
 async function exists(url) {
   try {
@@ -60,11 +108,35 @@ async function exists(url) {
   }
 }
 
-function loadImage(url) {
+function loadImage(url, signal = null) {
   return new Promise((resolve) => {
     const img = new Image();
-    img.onload = () => resolve(img);
-    img.onerror = () => resolve(null);
+
+    const cleanup = () => {
+      img.onload = null;
+      img.onerror = null;
+      signal?.removeEventListener('abort', onAbort);
+    };
+
+    const finish = (result) => {
+      cleanup();
+      resolve(result);
+    };
+
+    const onAbort = () => {
+      img.src = '';
+      finish(null);
+    };
+
+    img.onload = () => finish(img);
+    img.onerror = () => finish(null);
+
+    if (signal?.aborted) {
+      onAbort();
+      return;
+    }
+
+    signal?.addEventListener('abort', onAbort, { once: true });
     img.src = url;
   });
 }
@@ -361,26 +433,31 @@ export class TourView {
     }
 
     this.transitioning = false;
+    this.travelController = null;
+    this.travelVideosPreloaded = false;
+    this.travelVideos = new Map();
 
     this.videoOverlay = document.createElement('div');
     this.videoOverlay.className = 'travel-overlay';
     this.videoOverlay.hidden = true;
 
-    this.videoOverlay.innerHTML = `
-      <video
-        class="travel-video"
-        muted
-        playsinline
-        preload="none"
-      ></video>
+    for (const path of new Set(Object.values(transiciones))) {
+      const video = document.createElement('video');
+      video.className = 'travel-video';
+      video.muted = true;
+      video.playsInline = true;
+      video.controls = false;
+      video.preload = 'auto';
+      video.setAttribute('playsinline', '');
+      this.videoOverlay.appendChild(video);
+      this.travelVideos.set(path, video);
+    }
 
-      <button
-        type="button"
-        class="travel-skip"
-      >
-        Omitir animación →
-      </button>
-    `;
+    const skipButton = document.createElement('button');
+    skipButton.type = 'button';
+    skipButton.className = 'travel-skip';
+    skipButton.textContent = 'Omitir animación →';
+    this.videoOverlay.appendChild(skipButton);
 
     this.root.appendChild(this.videoOverlay);
 
@@ -420,7 +497,14 @@ export class TourView {
       '[data-act="return-exterior"]'
     );
 
-    root.addEventListener('click', (e) => {
+    this.onRootClick = (e) => {
+      if (this.transitioning) {
+        if (e.target.closest('.travel-skip')) return;
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        return;
+      }
+
       const act = e.target.closest('[data-act]')?.dataset.act;
       if (act === '3d') on3D();
       
@@ -522,20 +606,37 @@ export class TourView {
       }
 
 
-    });
+    };
 
-    document.addEventListener('keydown', (e) => {
-      if (this.root.hidden || !this.current) return;
+    this.onDocumentKeyDown = (e) => {
+      if (this.root.hidden || !this.current || this.transitioning) return;
       if (e.key === 'Escape') this.sheetModal.hidden = true;
       if (!this.sheetModal.hidden) return;
       const enExterior = this.current.group === 'exterior';
       if (e.key === 'ArrowLeft') enExterior ? this.goToExteriorRelative(-1) : this.step(-1);
       if (e.key === 'ArrowRight') enExterior ? this.goToExteriorRelative(1) : this.step(1);
-    });
+    };
+
+    this.bindEventListeners();
 
     this.ready = this.init();
   }
 
+  bindEventListeners() {
+    if (this.listenersAttached) return;
+
+    this.root.addEventListener('click', this.onRootClick, true);
+    document.addEventListener('keydown', this.onDocumentKeyDown);
+    this.listenersAttached = true;
+  }
+
+  unbindEventListeners() {
+    if (!this.listenersAttached) return;
+
+    this.root.removeEventListener('click', this.onRootClick, true);
+    document.removeEventListener('keydown', this.onDocumentKeyDown);
+    this.listenersAttached = false;
+  }
 
   // ==========================================
   // INICIAR RECORRIDO DESDE LA PORTADA
@@ -807,7 +908,7 @@ export class TourView {
   // CREAR PUNTOS INTERACTIVOS
   // ==========================================
 
-  makeHotspot(h) {
+  makeHotspot(h, { wayfindingLabel = false } = {}) {
     const button = document.createElement('button');
 
     button.type = 'button';
@@ -832,30 +933,26 @@ export class TourView {
 
     
   if (h.style === 'wayfinding') {
-
     button.classList.add('hotspot--wayfinding');
 
-    // Flecha sólida
-    const arrow = document.createElement('span');
+    if (wayfindingLabel) {
+      button.classList.add('hotspot--wayfinding-label');
+    } else {
+      const direction = {
+        forward: 'up',
+        back: 'down',
+        up: 'up',
+        down: 'down',
+        left: 'left',
+        right: 'right'
+      }[h.direction] ?? 'up';
 
-    const direction = {
-      forward: 'up',
-      back: 'down',
-      up: 'up',
-      down: 'down',
-      left: 'left',
-      right: 'right'
-    }[h.direction] ?? 'up';
-
-    arrow.className =
-      `hotspot-way-arrow dir-${direction}`;
-
-    arrow.setAttribute('aria-hidden', 'true');
-
-    button.appendChild(arrow);
-
+      const arrow = document.createElement('span');
+      arrow.className = `hotspot-way-arrow dir-${direction}`;
+      arrow.setAttribute('aria-hidden', 'true');
+      button.appendChild(arrow);
+    }
   } else if (h.style === 'arrow') {
-
     button.classList.add('hotspot--arrow');
 
       const arrowSymbols = {
@@ -942,42 +1039,134 @@ export class TourView {
   // REPRODUCIR DESPLAZAMIENTO EXTERIOR
   // ==========================================
 
-  async playTravelVideo(path) {
-    const overlay = this.videoOverlay;
-    const video = overlay.querySelector('video');
-    const skip = overlay.querySelector('.travel-skip');
+  preloadTravelVideos() {
+    if (this.travelVideosPreloaded) return;
 
-    overlay.classList.remove('leaving');
-    overlay.hidden = false;
+    for (const [path, video] of this.travelVideos) {
+      video.src = assetUrl(path);
+      video.load();
+    }
 
-    video.src = assetUrl(path);
-    video.currentTime = 0;
+    this.travelVideosPreloaded = true;
+  }
 
-    // El video permanece visible al finalizar.
-    // Se retirará después de preparar
-    // la panorámica de destino.
+  async playTravelVideo(path, signal) {
+    const video = this.travelVideos.get(path);
+    const skip = this.videoOverlay.querySelector('.travel-skip');
 
-    await new Promise((resolve) => {
-      let finished = false;
+    if (!video) return { status: 'failed' };
+    if (signal.aborted) return { status: 'aborted' };
 
-      const finish = () => {
-        if (finished) return;
+    this.videoOverlay.hidden = false;
 
-        finished = true;
-        video.pause();
+    for (const otherVideo of this.travelVideos.values()) {
+      otherVideo.classList.toggle('is-active', otherVideo === video);
+      otherVideo.classList.remove('is-visible');
+    }
 
-        video.onended = null;
-        video.onerror = null;
-        skip.onclick = null;
+    if (video.readyState > 0) video.currentTime = 0;
 
-        resolve();
+    return new Promise((resolveStart) => {
+      let ready = false;
+      let settled = false;
+      let playing = false;
+      let frameCallback = null;
+      let readyTimeout = null;
+      let resolveFinished;
+      const finished = new Promise((resolve) => {
+        resolveFinished = resolve;
+      });
+
+      const cleanup = () => {
+        clearTimeout(readyTimeout);
+        if (
+          frameCallback !== null &&
+          typeof video.cancelVideoFrameCallback === 'function'
+        ) {
+          video.cancelVideoFrameCallback(frameCallback);
+        }
+
+        video.removeEventListener('playing', onPlaying);
+        video.removeEventListener('timeupdate', onTimeUpdate);
+        video.removeEventListener('ended', onEnded);
+        video.removeEventListener('error', onError);
+        skip.removeEventListener('click', onSkip);
+        signal.removeEventListener('abort', onAbort);
       };
 
-      video.onended = finish;
-      video.onerror = finish;
-      skip.onclick = finish;
+      const finish = (status) => {
+        if (settled) return;
+        settled = true;
+        cleanup();
 
-      video.play().catch(finish);
+        if (status !== 'completed') video.pause();
+        if (!ready) {
+          resolveStart({
+            status: status === 'aborted'
+              ? 'aborted'
+              : status === 'skipped'
+                ? 'skipped'
+                : 'failed',
+            video,
+          });
+        } else {
+          resolveFinished({ status, video });
+        }
+      };
+
+      const markReady = () => {
+        if (ready || settled) return;
+        ready = true;
+        clearTimeout(readyTimeout);
+        resolveStart({ status: 'ready', video, finished });
+      };
+      const fail = () => finish('failed');
+
+      const onPlaying = () => {
+        playing = true;
+      };
+      const onTimeUpdate = () => {
+        if (playing && video.currentTime > 0) markReady();
+      };
+      const onEnded = () => {
+        finish('completed');
+      };
+      const onError = () => fail();
+      const onSkip = () => {
+        finish('skipped');
+      };
+      const onAbort = () => {
+        finish('aborted');
+      };
+
+      video.addEventListener('playing', onPlaying);
+      video.addEventListener('timeupdate', onTimeUpdate);
+      video.addEventListener('ended', onEnded);
+      video.addEventListener('error', onError);
+      skip.addEventListener('click', onSkip, { once: true });
+      signal.addEventListener('abort', onAbort, { once: true });
+
+      readyTimeout = setTimeout(() => {
+        if (video.readyState >= 2) {
+          markReady();
+        } else {
+          fail();
+        }
+      }, 1500);
+
+      if (typeof video.requestVideoFrameCallback === 'function') {
+        frameCallback = video.requestVideoFrameCallback(() => {
+          frameCallback = null;
+          markReady();
+        });
+      }
+
+      try {
+        video.play().catch(fail);
+      } catch (error) {
+        console.warn('No se pudo iniciar el video de transición:', error);
+        fail();
+      }
     });
   }
 
@@ -1036,12 +1225,26 @@ export class TourView {
     this.root.classList.add('is-traveling');
 
     this.updateNavigationButtons();
-
-    const video = this.videoOverlay.querySelector('video');
+    const controller = new AbortController();
+    this.travelController = controller;
+    let activeVideo = null;
 
     try {
-      // Reproducir movimiento de cámara
-      await this.playTravelVideo(clip);
+      this.preloadTravelVideos();
+      const playback = await this.playTravelVideo(clip, controller.signal);
+
+      if (controller.signal.aborted || playback.status === 'aborted') return;
+
+      if (playback.status === 'ready') {
+        activeVideo = playback.video;
+        activeVideo.classList.add('is-visible');
+        const result = await playback.finished;
+
+        if (controller.signal.aborted || result.status === 'aborted') return;
+      } else if (playback.status === 'failed') {
+        this.stage.classList.add('travel-fallback');
+        if (!await waitWithSignal(180, controller.signal)) return;
+      }
 
       // Preparar la siguiente fachada
       // MIENTRAS el último fotograma
@@ -1055,26 +1258,25 @@ export class TourView {
         false
       );
 
-      // Esperar a que el navegador pueda
-      // mostrar el nuevo fotograma.
-      await new Promise((resolve) => {
-        requestAnimationFrame(() => {
-          requestAnimationFrame(resolve);
-        });
-      });
+      if (controller.signal.aborted) return;
+
+      if (activeVideo) {
+        if (!await waitForPaint(controller.signal)) return;
+        activeVideo.classList.remove('is-visible');
+        if (!await waitWithSignal(360, controller.signal)) return;
+      } else if (playback.status === 'failed') {
+        this.stage.classList.remove('travel-fallback');
+      }
 
     } finally {
-      // Cambiar suavemente del último fotograma
-      // hacia la panorámica ya preparada.
-      this.videoOverlay.classList.add('leaving');
-      await wait(220);
-
       this.videoOverlay.hidden = true;
-      this.videoOverlay.classList.remove('leaving');
-
-      video.pause();
-      video.removeAttribute('src');
-      video.load();
+      for (const video of this.travelVideos.values()) {
+        video.pause();
+        video.classList.remove('is-active', 'is-visible');
+        if (video.readyState > 0) video.currentTime = 0;
+      }
+      this.stage.classList.remove('travel-fallback');
+      if (this.travelController === controller) this.travelController = null;
 
       this.transitioning = false;
       this.root.classList.remove('is-traveling');
@@ -1133,6 +1335,7 @@ export class TourView {
     
     this.clearViewer();
     this.current = scene;
+    if (scene.group === 'exterior') this.preloadTravelVideos();
 
     this.hotspotEditor?.setScene(scene);
     // ==========================================
@@ -1217,7 +1420,23 @@ export class TourView {
         if (restoreView) {
           this.viewer.setViewState(restoreView);
         }
-        for (const h of hotspots) this.viewer.addHotspot(this.makeHotspot(h), h.x, h.y);
+        for (const h of hotspots) {
+          const wayfinding = h.style === 'wayfinding';
+          const button = this.makeHotspot(h, {
+            wayfindingLabel: wayfinding,
+          });
+
+          if (wayfinding) {
+            this.viewer.addWayfindingHotspot(
+              button,
+              h.x,
+              h.y,
+              h.heading
+            );
+          } else {
+            this.viewer.addHotspot(button, h.x, h.y);
+          }
+        }
       } else {
         this.viewer = new PanZoomImage(this.stage, url, { maxScale: 4 });
         await this.viewer.ready;
@@ -1555,6 +1774,17 @@ export class TourView {
     this.updateNavigationButtons();
   }
 
-  pause() { this.viewer?.pause?.(); }
-  resume() { this.viewer?.resume?.(); }
+  pause() {
+    this.unbindEventListeners();
+    this.travelController?.abort();
+    this.videoOverlay.hidden = true;
+    for (const video of this.travelVideos.values()) video.pause();
+    this.viewer?.pause?.();
+  }
+
+  resume() {
+    this.bindEventListeners();
+    this.viewer?.resume?.();
+    if (this.current?.group === 'exterior') this.preloadTravelVideos();
+  }
 }
