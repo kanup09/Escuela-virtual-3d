@@ -231,7 +231,78 @@ export const interiores = [
         "label": "Gimnasio",
         "arrivalYaw": 0
       },
-      
+      // Escena de origen: patio
+      {
+        "x": 45.5,
+        "y": 52.98,
+        "to": "talleresAfuera",
+        "style": "wayfinding",
+        "direction": "back",
+        "rotateX": 0,
+        "rotateY": 38,
+        "rotateZ": 0,
+        "scale": 1,
+        "label": "Talleres",
+        "arrivalYaw": 0
+      },
+
+      // Escena de origen: patio
+      {
+        "x": 30.53,
+        "y": 55.57,
+        "to": "comedor ext",
+        "style": "wayfinding",
+        "direction": "left",
+        "rotateX": 0,
+        "rotateY": 45,
+        "rotateZ": 0,
+        "scale": 1,
+        "label": "Comedor Galeria",
+        "arrivalYaw": 0
+      },
+      // Escena de origen: talleresAfuera
+      {
+        "x": 0.95,
+        "y": 55.38,
+        "to": "hall",
+        "style": "wayfinding",
+        "direction": "back",
+        "rotateX": 0,
+        "rotateY": 0,
+        "rotateZ": 0,
+        "scale": 1,
+        "label": "Hall",
+        "arrivalYaw": 0
+      },
+
+      // Escena de origen: talleresAfuera
+      {
+        "x": 49.3,
+        "y": 54.05,
+        "to": "biblioteca",
+        "style": "wayfinding",
+        "direction": "back",
+        "rotateX": 0,
+        "rotateY": 0,
+        "rotateZ": 0,
+        "scale": 1,
+        "label": "Biblioteca",
+        "arrivalYaw": 0
+      },
+            // Escena de origen: talleresAfuera
+      {
+        "x": 56.84,
+        "y": 55.89,
+        "to": "rampa",
+        "style": "wayfinding",
+        "direction": "right",
+        "rotateX": 0,
+        "rotateY": 46,
+        "rotateZ": 0,
+        "scale": 1,
+        "label": "Rampa",
+        "arrivalYaw": 0
+      }
     ]
   },
 
@@ -311,6 +382,8 @@ export const interiores = [
     group: 'interior',
     title: 'Rampa',
     image: 'tour/Rampa.jpg'
+    
+    
   },
   // ----------------------------------------
   // AULAS
