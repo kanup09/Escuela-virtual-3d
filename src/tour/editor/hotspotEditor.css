@@ -1,0 +1,126 @@
+
+/* ==========================================
+   EDITOR PRIVADO DE FLECHAS
+   ========================================== */
+
+#tour .hotspot-editor {
+  position: absolute;
+  top: 80px;
+  right: 18px;
+
+  z-index: 100;
+
+  width: 275px;
+  max-width: calc(100vw - 36px);
+  max-height: calc(100vh - 110px);
+
+  overflow-y: auto;
+
+  padding: 16px;
+
+  background: rgba(17, 31, 41, 0.96);
+  color: #ffffff;
+
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 14px;
+
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+
+  backdrop-filter: blur(14px);
+  font-family: Arial, sans-serif;
+}
+
+#tour .hotspot-editor[hidden] {
+  display: none !important;
+}
+
+#tour .he-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+#tour .he-title strong {
+  font-size: 15px;
+}
+
+#tour .he-title button {
+  background: transparent;
+  color: #ffffff;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+#tour .he-scene,
+#tour .he-help,
+#tour .he-message {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #c7d8df;
+}
+
+#tour .he-coordinates {
+  display: flex;
+  gap: 12px;
+
+  padding: 10px;
+  margin: 12px 0;
+
+  border-radius: 8px;
+  background: rgba(255,255,255,0.09);
+
+  font-size: 13px;
+}
+
+#tour .hotspot-editor label {
+  display: flex;
+  flex-direction: column;
+
+  gap: 5px;
+  margin: 12px 0;
+
+  font-size: 12px;
+}
+
+#tour .hotspot-editor select,
+#tour .hotspot-editor input {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 9px;
+
+  background: #ffffff;
+  color: #26343c;
+
+  border: none;
+  border-radius: 7px;
+
+  font-size: 13px;
+}
+
+#tour [data-he="copy"] {
+  width: 100%;
+
+  padding: 11px 14px;
+  margin-top: 8px;
+
+  background: #a84342;
+  color: #ffffff;
+
+  border: none;
+  border-radius: 9px;
+
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@media (max-width: 700px) {
+  #tour .hotspot-editor {
+    top: 60px;
+    right: 10px;
+    width: 240px;
+  }
+}

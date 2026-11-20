@@ -292,6 +292,34 @@ export class TourView {
 
     this.stage = root.querySelector('.stage');
 
+    // ==========================================
+    // EDITOR DE FLECHAS - SOLO DESARROLLO
+    // ==========================================
+
+    this.hotspotEditor = null;
+
+    const editorEnabled =
+      import.meta.env.DEV &&
+      new URLSearchParams(window.location.search)
+        .has('editor');
+
+    if (editorEnabled) {
+      import('./editor/HotspotEditor.js')
+        .then(({ HotspotEditor }) => {
+          this.hotspotEditor = new HotspotEditor(
+            this.root,
+            this.tour.scenes
+          );
+
+          if (this.current) {
+            this.hotspotEditor.setScene(this.current);
+          }
+        })
+        .catch((error) => {
+          console.error('No se pudo abrir el editor:', error);
+        });
+    }
+
     this.transitioning = false;
 
     this.videoOverlay = document.createElement('div');
@@ -1041,7 +1069,7 @@ export class TourView {
     this.clearViewer();
     this.current = scene;
 
-
+    this.hotspotEditor?.setScene(scene);
     // ==========================================
     // EFECTO VISUAL DE FACHADAS
     // ==========================================
@@ -1074,9 +1102,23 @@ export class TourView {
       const ratio = img.naturalWidth / img.naturalHeight;
       // Un panorama 360° es exactamente 2:1. Si una imagen común justo mide 2:1, poner type: 'flat'
       const type = scene.type ?? (Math.abs(ratio - 2) < 0.01 ? 'pano' : 'flat');
-      const pick = DEBUG
-        ? ({ x, y }) => this.showToast(`x: ${(x * 100).toFixed(0)}, y: ${(y * 100).toFixed(0)}`)
-        : null;
+      
+      const pick = this.hotspotEditor
+        ? ({ x, y }) => {
+            this.hotspotEditor.capture(
+              scene,
+              { x, y }
+            );
+          }
+        : DEBUG
+          ? ({ x, y }) => {
+              this.showToast(
+                `x: ${(x * 100).toFixed(0)}, ` +
+                `y: ${(y * 100).toFixed(0)}`
+              );
+            }
+          : null;
+
 
     if (type === 'pano') {
         
@@ -1249,6 +1291,147 @@ export class TourView {
     );
   }
 
+  // ==========================================
+  // CARRUSEL DE PANORÁMICAS
+  // ==========================================
+
+  renderDockCarousel(scenes) {
+
+    const visibleCount = 3;
+
+    const maxStart = Math.max(
+      0,
+      scenes.length - visibleCount
+    );
+
+    // Evitar posiciones fuera del arreglo
+    this.carouselStart = Math.max(
+      0,
+      Math.min(
+        this.carouselStart ?? 0,
+        maxStart
+      )
+    );
+
+    // Limpiar la barra anterior
+    this.dock.replaceChildren();
+
+    this.dock.classList.add('dock-carousel');
+
+    // ========================================
+    // BOTÓN ANTERIOR DEL CARRUSEL
+    // ========================================
+
+    const previous = document.createElement('button');
+
+    previous.type = 'button';
+    previous.className = 'carousel-arrow';
+    previous.textContent = '‹';
+
+    previous.title = 'Mostrar espacios anteriores';
+    previous.setAttribute(
+      'aria-label',
+      'Mostrar espacios anteriores'
+    );
+
+    previous.disabled = this.carouselStart === 0;
+
+    previous.addEventListener('click', () => {
+      if (this.carouselStart === 0) return;
+
+      this.carouselStart--;
+
+      this.renderDockCarousel(scenes);
+    });
+
+    // ========================================
+    // CONTENEDOR DE LAS TRES VISTAS
+    // ========================================
+
+    const viewport = document.createElement('div');
+
+    viewport.className = 'carousel-viewport';
+
+    const visibleScenes = scenes.slice(
+      this.carouselStart,
+      this.carouselStart + visibleCount
+    );
+
+    for (const scene of visibleScenes) {
+
+      const button = document.createElement('button');
+
+      button.type = 'button';
+      button.className = 'carousel-scene';
+
+      button.textContent = scene.title;
+      button.title = scene.title;
+
+      // Marcar la panorámica actual
+      const isActive = scene.id === this.current.id;
+
+      button.classList.toggle('active', isActive);
+
+      if (isActive) {
+        button.setAttribute('aria-current', 'true');
+      }
+
+      button.addEventListener('click', () => {
+
+        // No recargar la misma escena
+        if (scene.id === this.current?.id) {
+          return;
+        }
+
+        // Mantener las animaciones exteriores
+        if (scene.group === 'exterior') {
+          this.goToExterior(scene.id);
+        } else {
+          this.goTo(scene.id);
+        }
+
+      });
+
+      viewport.appendChild(button);
+    }
+
+    // ========================================
+    // BOTÓN SIGUIENTE DEL CARRUSEL
+    // ========================================
+
+    const next = document.createElement('button');
+
+    next.type = 'button';
+    next.className = 'carousel-arrow';
+    next.textContent = '›';
+
+    next.title = 'Mostrar más espacios';
+    next.setAttribute(
+      'aria-label',
+      'Mostrar más espacios'
+    );
+
+    next.disabled = this.carouselStart >= maxStart;
+
+    next.addEventListener('click', () => {
+      if (this.carouselStart >= maxStart) return;
+
+      this.carouselStart++;
+
+      this.renderDockCarousel(scenes);
+    });
+
+    // ========================================
+    // ARMAR CARRUSEL
+    // ========================================
+
+    this.dock.append(
+      previous,
+      viewport,
+      next
+    );
+  }
+
   // Botones de arriba y barra de abajo según el grupo (exterior / interior)
   updateChrome() {
     const exterior = this.current.group === 'exterior';
@@ -1281,30 +1464,29 @@ export class TourView {
     this.backBtn.hidden = exterior;
     this.toast.hidden = true;
 
-    this.dock.replaceChildren();
-    const label = document.createElement('span');
-    label.className = 'dock-label';
-    label.textContent = exterior ? 'Exterior' : 'Ir a';
-    this.dock.appendChild(label);
-    for (const s of this.scenesOf(this.current.group)) {
-      const chip = document.createElement('button');
-      chip.className = 'chip';
-      chip.textContent = s.title;
-      chip.classList.toggle('active', s.id === this.current.id);
-      
-      chip.addEventListener('click', () => {
-        if (s.id === this.current.id) return;
 
-        if (s.group === 'exterior') {
-          this.goToExterior(s.id);
-        } else {
-          this.goTo(s.id);
-        }
-      });
+    // ==========================================
+    // CARRUSEL INFERIOR COMPACTO
+    // ==========================================
 
-      this.dock.appendChild(chip);
-    }
-    this.dock.querySelector('.active')?.scrollIntoView?.({ inline: 'center', block: 'nearest' });
+    const scenes = this.scenesOf(this.current.group);
+
+    // Centrar el espacio actual cuando
+    // cambiamos de panorámica.
+    const currentIndex = scenes.findIndex(
+      (scene) => scene.id === this.current.id
+    );
+
+    this.carouselStart = Math.max(
+      0,
+      Math.min(
+        currentIndex - 1,
+        Math.max(0, scenes.length - 3)
+      )
+    );
+
+    this.renderDockCarousel(scenes);
+
     this.updateNavigationButtons();
   }
 
