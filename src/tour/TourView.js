@@ -284,18 +284,17 @@ export class TourView {
               Planta baja
             </button>
 
+            
             <button
               type="button"
               class="floor-tab"
               data-act="floor-upper"
               aria-pressed="false"
-              disabled
-              title="Disponible próximamente"
             >
               Planta alta
             </button>
+          
           </div>
-
           <!-- Imagen del plano -->
 
           <div class="floor-plan-container">
@@ -309,7 +308,6 @@ export class TourView {
 
           <p class="floor-plan-note">
             Usá la rueda, el pellizco o los botones +/− para acercar; arrastrá para moverte y hacé doble clic para restablecer.
-            La planta alta estará disponible próximamente.
           </p>
 
         </div>
@@ -382,7 +380,7 @@ export class TourView {
       <div class="tour-intro-content">
         <img
           class="tour-intro-logo"
-          src="./IconoDePrueba.jpeg"
+          src="./IconoEscuela.png"
           alt="Logo de la escuela"
         />
 
@@ -410,9 +408,7 @@ export class TourView {
           Mové el mouse o deslizá el dedo para explorar
         </div>
 
-        <div class="tour-intro-credit">
-          Hecho por Palacio Gerez Pablo · UCASAL
-        </div>
+  
       </div>
     `;
 
@@ -437,7 +433,7 @@ export class TourView {
     ).addEventListener('click', () => {
       this.startTour();
     });
-    
+
     root.querySelector('.brand').textContent = 'ESCUELA NUEVA SALTA';
 
     this.stage = root.querySelector('.stage');

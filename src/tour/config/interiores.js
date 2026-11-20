@@ -26,7 +26,18 @@ export const interiores = [
     // Orientación de la cámara
     yaw: 0,
     autoRotate: false,
-  
+    hotspots:[
+      {
+        "x": 0,
+        "y": 0,
+        "to": "hall",
+        "style": "wayfinding",
+        "direction": "forward",
+
+        "label": "Entrada",
+        "arrivalYaw": 0
+      },
+    ],
 
   },
 
@@ -58,6 +69,62 @@ export const interiores = [
         "scale": 0.8,
         "label": "Planta Alta A",
         "arrivalYaw": 0
+      },
+      // Escena de origen: hall
+      {
+        "x": 81.68,
+        "y": 57.33,
+        "to": "comedor ext",
+        "style": "wayfinding",
+        "direction": "forward",
+        "rotateX": 0,
+        "rotateY": -45,
+        "rotateZ": 0,
+        "scale": 1.15,
+        "label": "Comedor Galeria",
+        "arrivalYaw": 0
+      },
+      // Escena de origen: hall
+      {
+        "x": 11.64,
+        "y": 64.38,
+        "to": "entrada",
+        "style": "wayfinding",
+        "direction": "right",
+        "rotateX": 0,
+        "rotateY": 31,
+        "rotateZ": 0,
+        "scale": 0.7,
+        "label": "Entrada",
+        "arrivalYaw": 0
+      },
+      // Escena de origen: hall
+      {
+        "x": 50.91,
+        "y": 58.23,
+        "to": "talleresAfuera",
+        "style": "wayfinding",
+        "direction": "back",
+        "rotateX": 0,
+        "rotateY": -39,
+        "rotateZ": 0,
+        "scale": 1,
+        "label": "Talleres",
+        "arrivalYaw": 0
+      },
+      // Escena de origen: hall
+      {
+        "x": 66.2,
+        "y": 57.61,
+        "to": "patio",
+        "style": "wayfinding",
+        "direction": "right",
+        "rotateX": 0,
+        "rotateY": -27,
+        "rotateZ": 0,
+        "scale": 1.15,
+        "label": "Patio",
+        "arrivalYaw": 0
       }
     ],
   },
@@ -69,11 +136,74 @@ export const interiores = [
     id: 'espacio-ludico',
     group: 'interior',
     title: 'Espacio Ludico',
-    image: 'tour/Espacio-Ludico.jpeg',
+    image: 'tour/Espacio Ludico.jpg',
     
     yaw: 0,
     autoRotate: false,
+
+    hotspots:[
+      // Escena de origen: espacio-ludico
+      {
+        "x": 56.55,
+        "y": 58.52,
+        "to": "espacio-ludicoPA",
+        "style": "wayfinding",
+        "direction": "back",
+        "rotateX": 0,
+        "rotateY": 5,
+        "rotateZ": 0,
+        "scale": 0.8,
+        "label": "Espacio Ludico PA",
+        "arrivalYaw": 0
+      },
+      // Escena de origen: espacio-ludico
+      {
+        "x": 17.04,
+        "y": 51.92,
+        "to": "biblioteca",
+        "style": "wayfinding",
+        "direction": "right",
+        "rotateX": 0,
+        "rotateY": -38,
+        "rotateZ": 0,
+        "scale": 1.2,
+        "label": "Biblioteca",
+        "arrivalYaw": 0
+      },
+      // Escena de origen: espacio-ludico
+      {
+        "x": 66.94,
+        "y": 56.72,
+        "to": "aulaPB",
+        "style": "wayfinding",
+        "direction": "right",
+        "rotateX": 0,
+        "rotateY": -35,
+        "rotateZ": 0,
+        "scale": 1,
+        "label": "Aula PB",
+        "arrivalYaw": 0
+      }
+    ],
   },
+
+
+  {
+    id: 'espacio-ludicoPA',
+    group: 'interior',
+    title: 'Espacio Lúdico PA',
+
+    image: 'tour/Espacio-LudicoPA.jpg',
+
+    yaw: 0,
+    autoRotate: false,
+
+    hotspots: [
+      
+
+    ]
+  },
+
   // ----------------------------------------
   // PATIO
   // ----------------------------------------
@@ -150,15 +280,7 @@ export const interiores = [
     yaw: 0,
     autoRotate: false,
   },
-    {
-    id: 'espacio-ludicoPA',
-    group: 'interior',
-    title: 'Espacio Ludico PA',
-    image: 'tour/Espacio-Ludico.jpeg',
-    
-    yaw: 0,
-    autoRotate: false,
-  },
+  
 
   {
     id: 'aulaPB',
