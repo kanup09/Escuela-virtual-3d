@@ -174,6 +174,61 @@ export class TourView {
       <div class="bar bar-right"><span class="tour-current-place" aria-live="polite"></span></div>
 
       <button
+        class="credits-open"
+        type="button"
+        data-act="credits"
+        title="Créditos"
+      >
+        <span aria-hidden="true">ⓘ</span>
+        Créditos
+      </button>
+
+      <div
+        class="credits-modal"
+        hidden
+        role="dialog"
+        aria-modal="true"
+        aria-label="Créditos"
+        data-act="credits-close"
+      >
+        <div class="credits-card">
+          <button
+            type="button"
+            class="credits-close"
+            data-act="credits-close"
+            aria-label="Cerrar créditos"
+          >
+            ×
+          </button>
+
+          <div class="credits-author">
+            <img
+              class="credits-avatar"
+              src="${assetUrl('tour/credito-avatar.png')}"
+              alt=""
+            />
+            <div>
+              <div class="credits-name">Palacio Gerez Pablo</div>
+              <div class="credits-meta">3° año Ing. Informática · UCASAL</div>
+            </div>
+          </div>
+
+          <p class="credits-thanks">
+            ¡Gracias por recorrer la escuela! Espero que la hayas disfrutado.
+          </p>
+
+          <a
+            class="credits-link"
+            href="https://github.com/kanup09"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            github.com/kanup09
+          </a>
+        </div>
+      </div>
+
+      <button
         class="sheet-open"
         type="button"
         data-act="sheet"
@@ -352,6 +407,8 @@ export class TourView {
         <div class="tour-intro-hint">
           Mové el mouse o deslizá el dedo para explorar
         </div>
+
+      
       </div>
     `;
 
@@ -451,6 +508,7 @@ export class TourView {
     this.brand = root.querySelector('.brand');
     this.currentPlace = root.querySelector('.tour-current-place');
     this.sheetModal = root.querySelector('.sheet-modal');
+    this.creditsModal = root.querySelector('.credits-modal');
     this.planZoom = new PlanZoom(
       root.querySelector('.floor-plan-container'),
       root.querySelector('.floor-plan-image')
@@ -499,6 +557,17 @@ export class TourView {
           this.sheetModal.hidden = false;
           this.planZoom?.reset();
         }
+      }
+
+      // Créditos: abrir, y cerrar con la X o tocando el fondo
+      if (act === 'credits') this.creditsModal.hidden = false;
+
+      if (
+        act === 'credits-close' &&
+        (e.target.closest('.credits-close') ||
+          e.target.classList.contains('credits-modal'))
+      ) {
+        this.creditsModal.hidden = true;
       }
 
       // Cerrar plano
@@ -596,7 +665,10 @@ export class TourView {
 
     this.onDocumentKeyDown = (e) => {
       if (this.root.hidden || !this.current || this.transitioning) return;
-      if (e.key === 'Escape') this.sheetModal.hidden = true;
+      if (e.key === 'Escape') {
+        this.sheetModal.hidden = true;
+        this.creditsModal.hidden = true;
+      }
       if (!this.sheetModal.hidden) return;
       const enExterior = this.current.group === 'exterior';
       if (e.key === 'ArrowLeft') enExterior ? this.goToExteriorRelative(-1) : this.step(-1);

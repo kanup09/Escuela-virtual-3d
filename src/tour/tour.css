@@ -1257,6 +1257,7 @@
 #tour.intro-active .zoom-ctl,
 #tour.intro-active .scene-controls,
 #tour.intro-active .dock,
+#tour.intro-active .credits-open,
 #tour.intro-active .sheet-open,
 #tour.intro-active .hotspot {
   display: none !important;
@@ -2288,5 +2289,182 @@
   #tour .stage.travel-fallback {
     transition: none;
     animation: none;
+  }
+}
+
+
+/* =========================================================
+   CRÉDITOS
+   Botón discreto + tarjeta con autor y agradecimiento.
+   ========================================================= */
+
+#tour .credits-open {
+  position: absolute;
+  left: 18px;
+  bottom: max(24px, calc(10px + env(safe-area-inset-bottom)));
+  z-index: 3;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  height: 32px;
+  padding: 0 12px;
+
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+
+  background: var(--surface-dark);
+  color: rgba(255, 255, 255, 0.85);
+
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 600;
+
+  backdrop-filter: blur(14px);
+  cursor: pointer;
+}
+
+#tour .credits-open:hover {
+  background: var(--surface-hover);
+  color: #ffffff;
+}
+
+#tour .credits-modal {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+
+  display: grid;
+  place-items: center;
+
+  padding: 18px;
+
+  background: rgba(13, 26, 34, 0.84);
+  backdrop-filter: blur(12px);
+}
+
+#tour .credits-card {
+  position: relative;
+
+  width: min(380px, 100%);
+  padding: 26px 24px 22px;
+
+  border-radius: 18px;
+
+  background: var(--cream);
+  color: var(--ink);
+
+  text-align: center;
+
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.45);
+}
+
+#tour .credits-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+
+  width: 32px;
+  height: 32px;
+  padding: 0;
+
+  border: none;
+  border-radius: 50%;
+
+  background: rgba(20, 36, 46, 0.08);
+  color: var(--ink);
+
+  font-size: 20px;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+#tour .credits-close:hover {
+  background: rgba(20, 36, 46, 0.16);
+}
+
+#tour .credits-author {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+
+  text-align: left;
+}
+
+#tour .credits-avatar {
+  flex: 0 0 64px;
+
+  width: 64px;
+  height: 64px;
+
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+
+  background: #ffffff;
+  object-fit: cover;
+}
+
+#tour .credits-name {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+#tour .credits-meta {
+  margin-top: 3px;
+
+  color: var(--accent-dark);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+#tour .credits-thanks {
+  margin: 18px 0 14px;
+
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+#tour .credits-link {
+  display: inline-block;
+
+  padding: 8px 16px;
+
+  border-radius: 999px;
+
+  background: var(--accent);
+  color: #ffffff;
+
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+#tour .credits-link:hover {
+  background: var(--accent-hover);
+}
+
+/* Firma en la portada */
+
+#tour .tour-intro-credit {
+  margin-top: 14px;
+
+  color: rgba(255, 255, 255, 0.75);
+
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+}
+
+/* En pantallas angostas el carrusel ocupa todo el ancho:
+   el botón pasa arriba, debajo de la etiqueta del lugar */
+@media (max-width: 900px) {
+  #tour .credits-open {
+    left: auto;
+    right: 12px;
+    bottom: auto;
+    top: 64px;
   }
 }
