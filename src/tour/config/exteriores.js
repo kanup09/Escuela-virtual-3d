@@ -58,7 +58,7 @@ export const exteriores = [
     id: 'este',
     group: 'exterior',
     title: 'Este',
-    image: 'tour/Fachada-Sur.jpg',
+    image: 'tour/Fachad Este.jpg',
 
     hotspots: [
       {
@@ -98,7 +98,7 @@ export const exteriores = [
     id: 'sur',
     group: 'exterior',
     title: 'Sur',
-    image: 'tour/Fachada-Oeste.jpg',
+    image: 'tour/Fachada-Oeste.jpg', // Sin cambiar aun
 
     hoverGlow: true
   },
@@ -111,7 +111,7 @@ export const exteriores = [
     id: 'oeste',
     group: 'exterior',
     title: 'Oeste',
-    image: 'tour/Escena SUM.jpg',
+    image: 'tour/Escena SUM_2.jpg',
     hoverGlow: true
   },
 ];
