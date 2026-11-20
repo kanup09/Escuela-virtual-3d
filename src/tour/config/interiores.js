@@ -223,7 +223,8 @@ export const interiores = [
     yaw: 0,
     autoRotate: false,
   },
-    {
+  
+  {
     id: 'comedor int',
     group: 'interior',
     title: 'Comedor Interior',
@@ -231,6 +232,50 @@ export const interiores = [
 
     yaw: 0,
     autoRotate: false,
+  },
+
+  // ----------------------------------------
+  // GIMNASIO
+  // ----------------------------------------
+  {
+    id: 'gimnasio',
+    group: 'interior',
+    title: 'Gimnasio',
+    image: 'tour/Sum Panoramica.png',
+    yaw: 0,
+    autoRotate: false,
+
+    hotspots : [
+      // Escena de origen: gimnasio
+      {
+        "x": 39.74,
+        "y": 54.21,
+        "to": "comedor ext",
+        "style": "wayfinding",
+        "direction": "back",
+        "rotateX": 0,
+        "rotateY": 32,
+        "rotateZ": 0,
+        "scale": 1,
+        "label": "Comedor Galeria",
+        "arrivalYaw": 0
+      },
+      // Escena de origen: gimnasio
+      {
+        "x": 56.33,
+        "y": 53.62,
+        "to": "patio",
+        "style": "wayfinding",
+        "direction": "back",
+        "rotateX": 0,
+        "rotateY": -36,
+        "rotateZ": 0,
+        "scale": 1,
+        "label": "Patio",
+        "arrivalYaw": 0
+      }
+    ]
+
   },
   // ----------------------------------------
   // Rampa
@@ -352,14 +397,5 @@ export const interiores = [
   },
 
 
-  // ----------------------------------------
-  // GIMNASIO
-  // ----------------------------------------
-  {
-    id: 'gimnasio',
-    group: 'interior',
-    title: 'Gimnasio',
-    image: 'tour/Escena 5_1.jpg'
-  }
 
 ];
