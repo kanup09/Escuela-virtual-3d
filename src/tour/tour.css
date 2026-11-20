@@ -2468,3 +2468,88 @@
     top: 64px;
   }
 }
+
+
+/* =========================================================
+   CUENTA REGRESIVA DE APERTURA
+   ========================================================= */
+
+#tour .tour-countdown {
+  position: absolute;
+  inset: 0;
+  z-index: 100;
+
+  display: grid;
+  place-items: center;
+
+  padding: 24px;
+
+  background:
+    radial-gradient(circle at 50% 30%, var(--navy), var(--ink-deep) 70%);
+  color: #ffffff;
+
+  text-align: center;
+
+  transition: opacity 0.5s ease;
+}
+
+#tour .tour-countdown.leaving {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#tour .tour-countdown-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+
+  max-width: 520px;
+}
+
+#tour .tour-countdown-logo {
+  width: 84px;
+  height: 84px;
+
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+#tour .tour-countdown-title {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+
+  color: rgba(255, 255, 255, 0.75);
+}
+
+#tour .tour-countdown-text {
+  margin: 0;
+
+  font-size: 20px;
+  font-weight: 600;
+}
+
+#tour .tour-countdown-timer {
+  padding: 10px 26px;
+
+  border-radius: 16px;
+
+  background: var(--accent);
+
+  font-size: clamp(34px, 9vw, 58px);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 2px;
+}
+
+#tour .tour-countdown-credit {
+  margin-top: 8px;
+
+  color: rgba(255, 255, 255, 0.6);
+
+  font-size: 12px;
+  font-weight: 600;
+}
+

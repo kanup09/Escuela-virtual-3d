@@ -1,5 +1,7 @@
 import { PanZoomImage } from './PanZoomImage.js';
 import { PlanZoom } from './PlanZoom.js';
+import { mountCountdown } from './Countdown.js';
+import { APERTURA } from './config/apertura.js';
 import { PanoViewer } from './PanoViewer.js';
 import { assetUrl } from './tourConfig.js';
 import {
@@ -408,7 +410,9 @@ export class TourView {
           Mové el mouse o deslizá el dedo para explorar
         </div>
 
-      
+        <div class="tour-intro-credit">
+          Hecho por Palacio Gerez Pablo · UCASAL
+        </div>
       </div>
     `;
 
@@ -418,13 +422,23 @@ export class TourView {
 
     root.appendChild(this.intro);
 
+    // Cuenta regresiva: el tour queda bloqueado hasta la hora de apertura
+    this.locked =
+      APERTURA.enabled && Date.now() < new Date(APERTURA.fecha).getTime();
+
+    if (this.locked) {
+      mountCountdown(root, APERTURA, () => {
+        this.locked = false;
+      });
+    }
+
     this.intro.querySelector(
       '.tour-start-button'
     ).addEventListener('click', () => {
       this.startTour();
     });
-
-    root.querySelector('.brand').textContent = tour.title;
+    
+    root.querySelector('.brand').textContent = 'ESCUELA NUEVA SALTA';
 
     this.stage = root.querySelector('.stage');
 
@@ -664,6 +678,7 @@ export class TourView {
     };
 
     this.onDocumentKeyDown = (e) => {
+      if (this.locked) return;
       if (this.root.hidden || !this.current || this.transitioning) return;
       if (e.key === 'Escape') {
         this.sheetModal.hidden = true;
