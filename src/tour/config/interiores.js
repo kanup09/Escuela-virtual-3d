@@ -322,42 +322,45 @@ export const interiores = [
 
     hotspots : [
       // SALIDAS (flechas chicas sobre el piso, abajo a la derecha)
+      // Escena de origen: comedor ext
       {
-        "x": 56,
-        "y": 91,
+        "x": 50.79,
+        "y": 57.7,
         "to": "hall",
         "style": "wayfinding",
-        "direction": "back",
+        "direction": "left",
         "rotateX": 0,
-        "rotateY": 0,
+        "rotateY": -31,
         "rotateZ": 0,
-        "scale": 0.75,
+        "scale": 1,
         "label": "Hall",
         "arrivalYaw": 0
       },
+// Escena de origen: comedor ext
       {
-        "x": 68,
-        "y": 87,
+        "x": 56.73,
+        "y": 55.92,
         "to": "patio",
         "style": "wayfinding",
         "direction": "right",
         "rotateX": 0,
-        "rotateY": 0,
+        "rotateY": 36,
         "rotateZ": 0,
-        "scale": 0.75,
+        "scale": 1,
         "label": "Patio",
         "arrivalYaw": 0
       },
+// Escena de origen: comedor ext
       {
-        "x": 80,
-        "y": 83,
+        "x": 81.49,
+        "y": 60.19,
         "to": "gimnasio",
         "style": "wayfinding",
-        "direction": "right",
+        "direction": "left",
         "rotateX": 0,
-        "rotateY": 0,
+        "rotateY": 34,
         "rotateZ": 0,
-        "scale": 0.75,
+        "scale": 1,
         "label": "Gimnasio",
         "arrivalYaw": 0
       }
