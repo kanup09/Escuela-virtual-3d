@@ -127,7 +127,7 @@ export const interiores = [
         "rotateZ": 0,
         "scale": 1,
         "label": "Planta Alta A",
-        "arrivalYaw": 0
+        "arrivalYaw": 180
       }
     ],
   },
@@ -381,8 +381,11 @@ export const interiores = [
     id: 'rampa',
     group: 'interior',
     title: 'Rampa',
-    image: 'tour/Rampa.jpg'
+    image: 'tour/Rampa.jpg',
     
+    hotspots : [
+
+    ]
     
   },
   // ----------------------------------------
@@ -392,7 +395,23 @@ export const interiores = [
     id: 'aulaPA',
     group: 'interior',
     title: 'Aula PA',
-    image: 'tour/Aula Individual Planta Alta.jpg'
+    image: 'tour/Aula Individual Planta Alta.jpg',
+    hotspots:[
+    // Escena de origen: aulaPA
+    {
+      "x": 30.77,
+      "y": 55.91,
+      "to": "planta-alta-1",
+      "style": "wayfinding",
+      "direction": "left",
+      "rotateX": 0,
+      "rotateY": 38,
+      "rotateZ": 0,
+      "scale": 1,
+      "label": "Planta Alta A",
+      "arrivalYaw": 0
+    }
+    ]
   },
 
   // ----------------------------------------
@@ -413,6 +432,50 @@ export const interiores = [
 
     yaw: 0,
     autoRotate: false,
+    hotspots:[
+      // Escena de origen: planta-alta-1
+      {
+        "x": 94.18,
+        "y": 55.29,
+        "to": "aulaPA",
+        "style": "wayfinding",
+        "direction": "back",
+        "rotateX": 0,
+        "rotateY": 41,
+        "rotateZ": 0,
+        "scale": 1,
+        "label": "Aula PA",
+        "arrivalYaw": 0
+      },
+      // Escena de origen: planta-alta-1
+      {
+        "x": 2.26,
+        "y": 57.05,
+        "to": "huerta",
+        "style": "wayfinding",
+        "direction": "right",
+        "rotateX": 0,
+        "rotateY": 0,
+        "rotateZ": 0,
+        "scale": 1,
+        "label": "Huerta",
+        "arrivalYaw": 0
+      },
+      // Escena de origen: planta-alta-1
+      {
+        "x": 64.75,
+        "y": 60.8,
+        "to": "hall",
+        "style": "wayfinding",
+        "direction": "right",
+        "rotateX": 0,
+        "rotateY": -27,
+        "rotateZ": 0,
+        "scale": 1,
+        "label": "Hall",
+        "arrivalYaw": 0
+      }
+    ]
   },
 
   {
@@ -455,6 +518,36 @@ export const interiores = [
 
     yaw: 0,
     autoRotate: false,
+    hotspots:[
+      // Escena de origen: talleresAfuera
+      {
+        "x": 99.92,
+        "y": 56.93,
+        "to": "entrada",
+        "style": "wayfinding",
+        "direction": "back",
+        "rotateX": 0,
+        "rotateY": 8,
+        "rotateZ": 0,
+        "scale": 1,
+        "label": "Entrada",
+        "arrivalYaw": 0
+      },
+      // Escena de origen: talleresAfuera
+      {
+        "x": 52.16,
+        "y": 54.63,
+        "to": "espacio-ludico",
+        "style": "wayfinding",
+        "direction": "back",
+        "rotateX": 0,
+        "rotateY": -32,
+        "rotateZ": 0,
+        "scale": 1,
+        "label": "Espacio Ludico",
+        "arrivalYaw": 0
+      }
+    ]
   },
 
   {
