@@ -581,45 +581,6 @@
   font-size: 13px;
 }
 
-#tour .tour-loading {
-  position: absolute;
-  inset: 0;
-  z-index: 8;
-  display: grid;
-  place-content: center;
-  gap: 8px;
-  background: rgba(13, 26, 34, 0.72);
-  color: #fff;
-  text-align: center;
-  backdrop-filter: blur(8px);
-}
-
-#tour .tour-loading-spinner {
-  width: 34px;
-  height: 34px;
-  margin: 0 auto 6px;
-  border: 3px solid rgba(255, 255, 255, 0.25);
-  border-top-color: #fff;
-  border-radius: 50%;
-  animation: tour-spin 0.8s linear infinite;
-}
-
-#tour .tour-loading-title {
-  font-size: 14px;
-  font-weight: 700;
-}
-
-#tour .tour-loading-description {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.75);
-}
-
-@keyframes tour-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 #tour .missing {
   position: absolute;
   inset: 0;
@@ -739,7 +700,9 @@
   #tour .tour-intro,
   #tour .tour-start-button,
   #tour .tour-loading-spinner,
-  #tour .hotspot--primary .hotspot-arrow-icon {
+  #tour .hotspot i,
+  #tour .hotspot--primary .hotspot-arrow-icon,
+  #tour .travel-overlay {
     transition: none;
     animation: none;
   }
@@ -753,20 +716,18 @@
 #tour .tour-loading {
   position: absolute;
   inset: 0;
-
   z-index: 6;
-
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
   gap: 12px;
-
   padding: 24px;
-
   pointer-events: none;
-  color: white;
+  background: rgba(13, 26, 34, 0.72);
+  color: #fff;
+  text-align: center;
+  backdrop-filter: blur(8px);
 }
 
 /* Respetar atributo hidden */
@@ -782,7 +743,7 @@
   height: 45px;
 
   border: 3px solid rgba(255, 255, 255, 0.2);
-  border-top-color: #ffffff;
+  border-top-color: #efb9ae;
 
   border-radius: 50%;
 
@@ -811,15 +772,6 @@
   }
 }
 
-/* Accesibilidad */
-
-@media (prefers-reduced-motion: reduce) {
-  #tour .tour-loading-spinner {
-    animation: none;
-  }
-}
-
-
 #tour .hotspot.hotspot--arrow.hotspot--primary
 .hotspot-arrow-icon {
   background: rgba(139, 52, 64, 0.94);
@@ -833,14 +785,6 @@
 .hotspot-text {
   display: block;
 }
-
-@media (prefers-reduced-motion: reduce) {
-  #tour .hotspot.hotspot--arrow.hotspot--primary
-  .hotspot-arrow-icon {
-    animation: none;
-  }
-}
-
 
 /* ==========================================
    ILUMINACIÓN INTERACTIVA DE FACHADAS
@@ -920,15 +864,20 @@
   background:rgba(7,15,22,.84);backdrop-filter:blur(12px)
 }
 #tour .sheet-panel {
-  width:min(1160px,96vw);max-height:92vh;overflow:auto;border-radius:18px;
-  background:#f9f8f5;color:#24343c;box-shadow:0 28px 80px rgba(0,0,0,.45);padding:14px;
+  width: min(1100px, 96vw);
+  max-height: 92vh;
+  overflow: auto;
+  padding: 20px;
+  border-radius: 18px;
+  background: #f8f7f5;
+  color: #24343c;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.45);
 }
 #tour .sheet-head {display:flex;align-items:center;justify-content:space-between;gap:12px;padding:4px 4px 14px}
 #tour .sheet-head strong {font-size:14px}
 #tour .sheet-head button {width:36px;height:36px;border:0;border-radius:50%;cursor:pointer;background:#e9e6e2;color:#28363d}
 #tour .sheet-panel img {width:100%;height:auto;display:block;border:1px solid #ddd}
 #tour .sheet-panel p {font-size:11px;color:#66747e;margin:10px 4px 3px}
-#tour .tour-loading-spinner {border-top-color:#efb9ae}
 @media(max-width:700px) {
  #tour .tour-current-place {max-width:42vw;padding:10px 12px;font-size:11px}
  #tour .sheet-open {left:12px;bottom:79px;font-size:11px;padding:9px 12px}
@@ -936,7 +885,7 @@
  #tour .tour-intro-subtitle {letter-spacing:.13em;font-size:9px}
  #tour .tour-intro-title {font-size:clamp(32px,9vw,48px)}
  #tour .tour-intro-description {font-size:13px;line-height:1.45}
- #tour .sheet-panel {padding:9px;max-height:85vh}
+ #tour .sheet-panel {padding:12px;max-height:90vh}
 }
 @media(prefers-reduced-motion:reduce){#tour .tour-start-button{transition:none}}
 
@@ -950,9 +899,14 @@
   position: absolute;
   inset: 0;
   z-index: 30;
-
   background: #101820;
   overflow: hidden;
+  opacity: 1;
+  transition: opacity 220ms ease-out;
+}
+
+#tour .travel-overlay.leaving {
+  opacity: 0;
 }
 
 #tour .travel-overlay[hidden] {
@@ -1177,31 +1131,6 @@
 }
 
 
-#tour .travel-overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 30;
-  background: #101820;
-  overflow: hidden;
-  opacity: 1;
-  transition: opacity 220ms ease-out;
-}
-
-#tour .travel-overlay.leaving {
-  opacity: 0;
-}
-
-#tour .travel-overlay[hidden] {
-  display: none !important;
-}
-
-#tour .travel-video {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
 /* Ocultar interfaz mientras se reproduce
    el desplazamiento exterior */
 
@@ -1275,18 +1204,6 @@
 }
 
 /* Ventana principal */
-
-#tour .sheet-panel {
-  width: min(1100px, 96vw);
-  max-height: 92vh;
-
-  padding: 20px;
-
-  overflow-y: auto;
-
-  background: #f8f7f5;
-  border-radius: 18px;
-}
 
 /* Encabezado */
 
@@ -1382,11 +1299,6 @@
 /* Celulares */
 
 @media (max-width: 700px) {
-  #tour .sheet-panel {
-    padding: 12px;
-    max-height: 90vh;
-  }
-
   #tour .floor-tab {
     padding: 9px 13px;
     font-size: 12px;
