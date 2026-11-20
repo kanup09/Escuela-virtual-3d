@@ -1192,12 +1192,12 @@ export class TourView {
   selectFloor(floor) {
     const floors = {
       ground: {
-        image: 'planos/planta-baja.png',
+        image: 'planos/Plano-plantaBaja.jpg',
         title: 'Plano de planta baja'
       },
 
       upper: {
-        image: 'planos/planta-alta.png',
+        image: 'planos/Plano-plantaAlta.jps',
         title: 'Plano de planta alta'
       }
     };
