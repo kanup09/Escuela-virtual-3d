@@ -78,7 +78,7 @@ export const exteriores = [
     id: 'sur',
     group: 'exterior',
     title: 'Sur',
-    image: 'tour/Escena SUM.jpg',
+    image: 'tour/Fachada-Oeste.jpg',
 
     hoverGlow: true
   },
@@ -91,7 +91,7 @@ export const exteriores = [
     id: 'oeste',
     group: 'exterior',
     title: 'Oeste',
-    image: 'tour/Fachada-Oeste.jpg',
+    image: 'tour/Escena SUM.jpg',
     hoverGlow: true
   },
 ];

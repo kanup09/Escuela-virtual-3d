@@ -1,7 +1,10 @@
 import { PanZoomImage } from './PanZoomImage.js';
 import { PanoViewer } from './PanoViewer.js';
 import { assetUrl } from './tourConfig.js';
-import { obtenerTransicion, fachadaVecina } from './config/transiciones.js';
+import {
+  obtenerTransicion,
+  fachadaVecina
+} from './config/transiciones.js';
 
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 const DEBUG = new URLSearchParams(location.search).has('debug');
@@ -41,6 +44,7 @@ export class TourView {
     this.history = [];
     this.historyIndex = -1;
 
+
     root.classList.add('tv', 'intro-active');
     this.tourStarted = false;
     root.innerHTML = `
@@ -59,26 +63,38 @@ export class TourView {
 
         <div class="history-controls">
 
+          <!-- Botón Volver -->
           <button
             class="pill history-btn"
             data-act="back"
-            aria-label="Volver a la vista anterior"
+            aria-label="Volver"
             title="Volver"
             disabled
           >
-            ←
+            ← Volver
           </button>
 
+          <!-- Botón Adelante -->
           <button
             class="pill history-btn"
             data-act="forward"
-            aria-label="Avanzar en el historial"
+            aria-label="Adelante"
             title="Adelante"
             disabled
           >
-            →
+            Adelante →
           </button>
+
         </div>
+
+        <button
+          type="button"
+          class="pill dark return-exterior"
+          data-act="return-exterior"
+          hidden
+        >
+          ← Volver al exterior
+        </button>
 
       </div>
 
@@ -254,6 +270,9 @@ export class TourView {
       '[data-act="next"]'
     );
 
+    this.returnExteriorBtn = root.querySelector(
+      '[data-act="return-exterior"]'
+    );
 
     root.addEventListener('click', (e) => {
       const act = e.target.closest('[data-act]')?.dataset.act;
@@ -277,14 +296,64 @@ export class TourView {
         this.step(1);
       }
 
-      // Recorrer el historial real
+
+      // ==========================================
+      // VOLVER
+      // ==========================================
+
       if (act === 'back') {
-        this.historyStep(-1);
+
+        if (this.current?.group === 'exterior') {
+
+          const destino = fachadaVecina(
+            this.current.id,
+            1
+          );
+
+          if (destino) {
+            this.goToExterior(destino);
+          }
+
+        } else {
+          this.historyStep(-1);
+        }
       }
 
+
+      // ==========================================
+      // ADELANTE
+      // ==========================================
+
       if (act === 'forward') {
-        this.historyStep(1);
+
+        if (this.current?.group === 'exterior') {
+
+          const destino = fachadaVecina(
+            this.current.id,
+            -1
+          );
+
+          if (destino) {
+            this.goToExterior(destino);
+          }
+
+        } else {
+          this.historyStep(1);
+        }
       }
+
+
+      // ==========================================
+      // REGRESAR AL EXTERIOR
+      // ==========================================
+
+      if (act === 'return-exterior') {
+
+        const destino = this.lastExterior ?? 'norte';
+
+        this.goTo(destino);
+      }
+
 
     });
 
@@ -361,11 +430,43 @@ export class TourView {
     return this.tour.scenes.filter((s) => s.group === group && this.available.has(s.id));
   }
 
+
   step(dir) {
+    if (!this.current || this.transitioning) {
+      return;
+    }
+
+    // Exterior: utilizar videos
+    if (this.current.group === 'exterior') {
+
+      const destino = fachadaVecina(
+        this.current.id,
+        -dir
+      );
+
+      if (destino) {
+        this.goToExterior(destino);
+      }
+
+      return;
+    }
+
+    // Interior: navegación normal
     const list = this.scenesOf(this.current.group);
-    const i = list.findIndex((s) => s.id === this.current.id);
-    if (list.length > 1) this.goTo(list[(i + dir + list.length) % list.length].id);
+
+    const i = list.findIndex(
+      (s) => s.id === this.current.id
+    );
+
+    if (list.length > 1) {
+      const next = (
+        i + dir + list.length
+      ) % list.length;
+
+      this.goTo(list[next].id);
+    }
   }
+
 
 
   // ==========================================
@@ -482,14 +583,36 @@ export class TourView {
   // ACTUALIZAR ESTADO DE LOS BOTONES
   // ==========================================
 
+
   updateNavigationButtons() {
+    const exterior = this.current?.group === 'exterior';
+
     const canGoBack = this.historyIndex > 0;
 
     const canGoForward =
       this.historyIndex < this.history.length - 1;
 
-    this.historyBackBtn.disabled = !canGoBack;
-    this.historyForwardBtn.disabled = !canGoForward;
+    // En el exterior, los botones recorren
+    // el circuito de fachadas.
+    // En el interior, utilizan el historial.
+
+    this.historyBackBtn.disabled = exterior
+      ? this.transitioning
+      : !canGoBack;
+
+    this.historyForwardBtn.disabled = exterior
+      ? this.transitioning
+      : !canGoForward;
+
+
+    // Mostrar regreso al exterior
+    // solamente en vistas interiores.
+
+    this.returnExteriorBtn.hidden = exterior;
+
+
+    // Conservar referencias originales
+    // de Anterior / Siguiente.
 
     const scenes = this.current
       ? this.scenesOf(this.current.group)
@@ -498,8 +621,10 @@ export class TourView {
     const hasMultipleScenes = scenes.length > 1;
 
     this.previousBtn.disabled = !hasMultipleScenes;
+
     this.nextBtn.disabled = !hasMultipleScenes;
   }
+
 
 
   clearViewer() {
@@ -681,21 +806,25 @@ export class TourView {
 
   // Salta las fachadas que no tengan imagen cargada
   vecinaDisponible(id, dir) {
-    let candidata = fachadaVecina(id, dir);
+    let candidata = fachadaVecina(id, -dir);
     for (let i = 0; i < 4 && candidata; i++) {
       if (this.available.has(candidata)) return candidata;
-      candidata = fachadaVecina(candidata, dir);
+      candidata = fachadaVecina(candidata, -dir);
     }
     return null;
   }
 
+  
   async goToExterior(id) {
     if (this.transitioning) return;
     if (this.current?.id === id) return;
 
     const destination = this.byId.get(id);
 
-    if (!destination || destination.group !== 'exterior') {
+    if (
+      !destination ||
+      destination.group !== 'exterior'
+    ) {
       return;
     }
 
@@ -704,31 +833,56 @@ export class TourView {
       id
     );
 
+    // Si no existe un video para esta
+    // combinación, cambiar normalmente.
     if (!clip) {
       await this.goTo(id);
       return;
     }
 
     this.transitioning = true;
-    this.root.classList.add('is-traveling');
+
+    this.updateNavigationButtons();
 
     try {
+      // Evitar el indicador de carga
+      // durante la animación.
+      this.loading.hidden = true;
+
       await this.playTravelVideo(clip);
-      await this.goTo(id);
+
+      // Abrir la fachada sin mostrar
+      // el indicador Cargando panorámica.
+      await this.goTo(
+        id,
+        false,
+        true,
+        null,
+        null,
+        false
+      );
+
     } finally {
       this.transitioning = false;
-      this.root.classList.remove('is-traveling');
+
+      this.loading.hidden = true;
+
+      this.updateNavigationButtons();
     }
   }
 
+
  
+  
   async goTo(
     id,
     instant = false,
     saveHistory = true,
     arrivalYaw = null,
-    restoreView = null
-  ){
+    restoreView = null,
+    showLoading = true
+  ) {
+
 
     const scene = this.byId.get(id);
     if (!scene) return;
@@ -748,7 +902,7 @@ export class TourView {
     // Activar transición y mostrar carga
     this.fade.classList.add('on');
 
-    this.loading.hidden = false;
+    this.loading.hidden = !showLoading;
 
     if (!instant) await wait(250);
 
