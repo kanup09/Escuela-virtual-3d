@@ -380,7 +380,7 @@ export class TourView {
       <div class="tour-intro-content">
         <img
           class="tour-intro-logo"
-          src="./IconoEscuela.png"
+          src="./iconoEscuela2.png"
           alt="Logo de la escuela"
         />
 
