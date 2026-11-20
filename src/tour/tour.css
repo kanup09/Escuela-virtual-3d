@@ -1072,12 +1072,12 @@
   left: 50%;
   transform: translateX(-50%);
   margin-top: 8px;
-  padding: 4px 11px;
+  padding: 3px 8px;
   border-radius: 999px;
   background: rgba(13, 26, 34, 0.74);
   color: #fff;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 10px;
+  font-weight: 500;
   white-space: nowrap;
   pointer-events: none;
 }
@@ -1090,7 +1090,7 @@
   #tour .exterior-nav--prev { left: 8px; }
   #tour .exterior-nav--next { right: 8px; }
   #tour .exterior-nav svg { width: 22px; height: 22px; }
-  #tour .exterior-nav-label { font-size: 11px; padding: 3px 9px; }
+  #tour .exterior-nav-label { font-size: 9px; padding: 2px 7px; }
 }
 
 /* ==========================================
@@ -1173,5 +1173,92 @@
 
   #tour .brand {
     display: none;
+  }
+}
+
+
+#tour .travel-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  background: #101820;
+  overflow: hidden;
+  opacity: 1;
+  transition: opacity 220ms ease-out;
+}
+
+#tour .travel-overlay.leaving {
+  opacity: 0;
+}
+
+#tour .travel-overlay[hidden] {
+  display: none !important;
+}
+
+#tour .travel-video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Ocultar interfaz mientras se reproduce
+   el desplazamiento exterior */
+
+#tour.is-traveling .bar,
+#tour.is-traveling .dock,
+#tour.is-traveling .zoom-ctl,
+#tour.is-traveling .sheet-open {
+  opacity: 0;
+  pointer-events: none;
+}
+
+
+/* ==========================================
+   ACCESO VISIBLE AL EXPLORAR EL EDIFICIO
+   ========================================== */
+
+/* Solo dispositivos con mouse */
+
+@media (hover: hover) and (pointer: fine) {
+
+  /* Ocultar el botón inicialmente */
+  #tour .building-hover-enabled
+  .hotspot--primary {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    transition:
+      opacity 0.25s ease,
+      visibility 0.25s ease;
+  }
+
+  /* Mostrar cuando el mouse está
+     sobre la zona del edificio */
+  #tour .building-hover-active
+  .hotspot--primary {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  /* Permitir uso mediante teclado */
+  #tour .building-hover-enabled
+  .hotspot--primary:focus-visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+}
+
+/* En celulares siempre visible */
+@media (hover: none) {
+
+  #tour .building-hover-enabled
+  .hotspot--primary {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
   }
 }

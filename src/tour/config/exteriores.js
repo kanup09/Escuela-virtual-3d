@@ -39,7 +39,16 @@ export const exteriores = [
       prominent: true,
     },],
 
-    hoverGlow: true
+    hoverGlow: true,
+    
+    hoverArea: {
+      // Límites iniciales de la zona del edificio
+      xMin: 0,
+      xMax: 100,
+      yMin: 27,
+      yMax: 77
+    }
+
   },
   
   // ----------------------------------------
@@ -68,7 +77,18 @@ export const exteriores = [
         prominent: true,
       }
     ],
-    hoverGlow: true
+    hoverGlow: true,
+
+    hoverArea: {
+      // Límites iniciales de la zona del edificio
+      xMin: 0,
+      xMax: 100,
+      yMin: 27,
+      yMax: 77
+    }
+
+
+    
   },
 
   // ----------------------------------------

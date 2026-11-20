@@ -262,6 +262,10 @@ export class TourView {
       '[data-act="forward"]'
     );
 
+    this.historyControls = root.querySelector(
+      '.history-controls'
+    );
+
     this.previousBtn = root.querySelector(
       '[data-act="previous"]'
     );
@@ -592,17 +596,12 @@ export class TourView {
     const canGoForward =
       this.historyIndex < this.history.length - 1;
 
-    // En el exterior, los botones recorren
-    // el circuito de fachadas.
-    // En el interior, utilizan el historial.
+    // Los controles de historial solo pertenecen
+    // a las vistas interiores.
+    this.historyControls.hidden = exterior;
 
-    this.historyBackBtn.disabled = exterior
-      ? this.transitioning
-      : !canGoBack;
-
-    this.historyForwardBtn.disabled = exterior
-      ? this.transitioning
-      : !canGoForward;
+    this.historyBackBtn.disabled = !canGoBack;
+    this.historyForwardBtn.disabled = !canGoForward;
 
 
     // Mostrar regreso al exterior
@@ -760,6 +759,7 @@ export class TourView {
     const video = overlay.querySelector('video');
     const skip = overlay.querySelector('.travel-skip');
 
+    overlay.classList.remove('leaving');
     overlay.hidden = false;
 
     video.src = assetUrl(path);
@@ -833,7 +833,14 @@ export class TourView {
     );
 
     if (!clip) {
-      await this.goTo(id);
+      await this.goTo(
+        id,
+        true,
+        true,
+        null,
+        null,
+        false
+      );
       return;
     }
 
@@ -869,8 +876,13 @@ export class TourView {
       });
 
     } finally {
-      // Mostrar la fachada preparada
+      // Cambiar suavemente del último fotograma
+      // hacia la panorámica ya preparada.
+      this.videoOverlay.classList.add('leaving');
+      await wait(220);
+
       this.videoOverlay.hidden = true;
+      this.videoOverlay.classList.remove('leaving');
 
       video.pause();
       video.removeAttribute('src');
@@ -913,8 +925,14 @@ export class TourView {
     
     const token = ++this.token;
 
-    // Activar transición y mostrar carga
-    this.fade.classList.add('on');
+    // Las cargas normales usan desvanecido.
+    // Las fachadas preparadas durante el video
+    // cambian sin activar el fondo negro.
+    if (!instant) {
+      this.fade.classList.add('on');
+    } else {
+      this.fade.classList.remove('on');
+    }
 
     this.loading.hidden = !showLoading;
 
@@ -965,31 +983,31 @@ export class TourView {
         ? ({ x, y }) => this.showToast(`x: ${(x * 100).toFixed(0)}, y: ${(y * 100).toFixed(0)}`)
         : null;
 
-      if (type === 'pano') {
+    if (type === 'pano') {
         
-        this.viewer = new PanoViewer(
-          this.stage,
-          img,
-          {
-            // Dirección inicial de la cámara
-            yaw: arrivalYaw ?? scene.yaw ?? 0,
+      this.viewer = new PanoViewer(
+        this.stage,
+        img,
+        {
+          // Dirección inicial de la cámara
+          yaw: arrivalYaw ?? scene.yaw ?? 0,
 
-            // Giro automático desactivado,
-            // salvo que la escena indique lo contrario
-            autoRotate: scene.autoRotate ?? false,
+          // Giro automático desactivado,
+          // salvo que la escena indique lo contrario
+          autoRotate: scene.autoRotate ?? false,
 
-            // Límites horizontales
-            minYaw: scene.minYaw,
-            maxYaw: scene.maxYaw,
+          // Límites horizontales
+          minYaw: scene.minYaw,
+          maxYaw: scene.maxYaw,
 
-            // Límites verticales
-            minPitch: scene.minPitch,
-            maxPitch: scene.maxPitch,
+          // Límites verticales
+          minPitch: scene.minPitch,
+          maxPitch: scene.maxPitch,
 
-            // Herramienta de depuración
-            onPick: pick,
-          }
-        );
+          // Herramienta de depuración
+          onPick: pick,
+        }
+      );
         // ==========================================
         // RESTAURAR CÁMARA DESDE EL HISTORIAL
         // ==========================================
@@ -1008,6 +1026,51 @@ export class TourView {
           b.style.top = `${h.y}%`;
           this.viewer.wrap.appendChild(b);
         }
+
+        // ==========================================
+        // MOSTRAR ACCESOS AL PASAR SOBRE EDIFICIO
+        // ==========================================
+
+        if (scene.hoverArea) {
+          const wrap = this.viewer.wrap;
+          const area = scene.hoverArea;
+
+          wrap.classList.add('building-hover-enabled');
+
+          wrap.addEventListener('pointermove', (event) => {
+            if (event.pointerType === 'touch') return;
+
+            // Coordenadas visibles de la imagen
+            // incluyendo zoom y desplazamiento.
+            const rect = wrap.getBoundingClientRect();
+
+            const x = (
+              (event.clientX - rect.left) /
+              rect.width
+            ) * 100;
+
+            const y = (
+              (event.clientY - rect.top) /
+              rect.height
+            ) * 100;
+
+            const sobreEdificio =
+              x >= area.xMin &&
+              x <= area.xMax &&
+              y >= area.yMin &&
+              y <= area.yMax;
+
+            wrap.classList.toggle(
+              'building-hover-active',
+              sobreEdificio
+            );
+          });
+
+          wrap.addEventListener('pointerleave', () => {
+            wrap.classList.remove('building-hover-active');
+          });
+        }
+
         if (pick) {
           this.viewer.wrap.addEventListener('click', (e) => {
             if (e.target.closest('button')) return;

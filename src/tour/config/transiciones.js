@@ -1,8 +1,7 @@
 
 /**
- * Transiciones exteriores
+ * Movimiento alrededor de la escuela
  *
- * Orden:
  * Norte → Este → Sur → Oeste → Norte
  */
 
@@ -14,56 +13,31 @@ export const ordenFachadas = [
 ];
 
 export const transiciones = {
-
-  // =====================================
-  // SENTIDO ADELANTE
-  // =====================================
-
+  // Videos originales
   'norte-este': 'videos/Clip 1.mp4',
-
   'este-sur': 'videos/Clip 2.mp4',
-
   'sur-oeste': 'videos/Clip 4.mp4',
-
   'oeste-norte': 'videos/Clip 5.mp4',
 
-
-  // =====================================
-  // SENTIDO INVERSO
-  // =====================================
-
+  // Videos inversos
   'este-norte': 'videos/Clip-1-inverso.mp4',
-
   'sur-este': 'videos/Clip-2-inverso.mp4',
-
   'oeste-sur': 'videos/Clip-4-inverso.mp4',
-
   'norte-oeste': 'videos/Clip-5-inverso.mp4'
 };
 
-
-// Obtener el video correspondiente
 export function obtenerTransicion(origen, destino) {
-  const clave = `${origen}-${destino}`;
-
-  return transiciones[clave] ?? null;
+  return transiciones[`${origen}-${destino}`] ?? null;
 }
 
-
-// Obtener fachada vecina en el recorrido circular
-// Norte -> Este -> Sur -> Oeste -> Norte
 export function fachadaVecina(id, direccion) {
   const indice = ordenFachadas.indexOf(id);
 
-  if (indice === -1) {
-    return null;
-  }
+  if (indice === -1) return null;
 
   const total = ordenFachadas.length;
 
-  const siguiente = (
-    indice + direccion + total
-  ) % total;
-
-  return ordenFachadas[siguiente];
+  return ordenFachadas[
+    (indice + direccion + total) % total
+  ];
 }
