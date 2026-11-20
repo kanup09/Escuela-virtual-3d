@@ -66,12 +66,12 @@ export const exteriores = [
         x: 47,
         y: 65,
 
-        to: 'espacio-ludico',
+        to: 'biblioteca',
 
         style: 'arrow',
         direction: 'forward',
 
-        label: 'Entrar al Espacio Lúdico',
+        label: 'Entrar a la biblioteca',
 
         arrivalYaw: 0,
         prominent: true,
