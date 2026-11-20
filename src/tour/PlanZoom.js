@@ -20,7 +20,6 @@ export class PlanZoom {
     this.controls.innerHTML = `
       <button type="button" data-pz="in" aria-label="Acercar plano">+</button>
       <button type="button" data-pz="out" aria-label="Alejar plano">−</button>
-      <button type="button" data-pz="reset" aria-label="Restablecer plano">⟲</button>
     `;
     container.appendChild(this.controls);
 
@@ -28,7 +27,6 @@ export class PlanZoom {
       const act = e.target.closest('[data-pz]')?.dataset.pz;
       if (act === 'in') this.zoomAt(1.5);
       if (act === 'out') this.zoomAt(1 / 1.5);
-      if (act === 'reset') this.reset();
     });
     this.controls.addEventListener('pointerdown', (e) => e.stopPropagation());
 

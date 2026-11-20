@@ -251,7 +251,7 @@ export class TourView {
           </div>
 
           <p class="floor-plan-note">
-            Usá la rueda, el pellizco o los botones para acercar; arrastrá para moverte.
+            Usá la rueda, el pellizco o los botones +/− para acercar; arrastrá para moverte y hacé doble clic para restablecer.
             La planta alta estará disponible próximamente.
           </p>
 
