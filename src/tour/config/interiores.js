@@ -262,6 +262,8 @@ export const interiores = [
         "label": "Gimnasio",
         "arrivalYaw": 0
       },
+      
+
       // Escena de origen: patio
       {
         "x": 45.5,
@@ -291,33 +293,19 @@ export const interiores = [
         "label": "Comedor Galeria",
         "arrivalYaw": 0
       },
-
-      // Escena de origen: talleresAfuera
+    
+      // Escena de origen: patio
       {
-        "x": 49.3,
-        "y": 54.05,
-        "to": "biblioteca",
+        "x": 76.84,
+        "y": 53.39,
+        "to": "aulaPB",
         "style": "wayfinding",
-        "direction": "back",
+        "direction": "forward",
         "rotateX": 0,
         "rotateY": 0,
         "rotateZ": 0,
         "scale": 1,
-        "label": "Biblioteca",
-        "arrivalYaw": 0
-      },
-            // Escena de origen: talleresAfuera
-      {
-        "x": 56.84,
-        "y": 55.89,
-        "to": "rampa",
-        "style": "wayfinding",
-        "direction": "right",
-        "rotateX": 0,
-        "rotateY": 46,
-        "rotateZ": 0,
-        "scale": 1,
-        "label": "Rampa",
+        "label": "Aulas PB",
         "arrivalYaw": 0
       }
     ]
@@ -414,6 +402,20 @@ export const interiores = [
         "scale": 1,
         "label": "Talleres",
         "arrivalYaw": 0
+      },
+      // Escena de origen: rampa
+      {
+        "x": 75.09,
+        "y": 55.83,
+        "to": "espacio-ludicoPA",
+        "style": "wayfinding",
+        "direction": "forward",
+        "rotateX": 0,
+        "rotateY": 25,
+        "rotateZ": 0,
+        "scale": 1,
+        "label": "Espacio Lúdico PA",
+        "arrivalYaw": 0
       }
 
     ]
@@ -452,7 +454,23 @@ export const interiores = [
     id: 'aula integrada',
     group: 'interior',
     title: 'Aula Integrada',
-    image: 'tour/Aula 3 Planta Alta.jpg'
+    image: 'tour/Aula 3 Planta Alta.jpg',
+    hotspots:[
+      // Escena de origen: aula integrada
+      {
+        "x": 31.2,
+        "y": 56.29,
+        "to": "espacio-ludicoPA",
+        "style": "wayfinding",
+        "direction": "left",
+        "rotateX": 0,
+        "rotateY": -22,
+        "rotateZ": 0,
+        "scale": 1,
+        "label": "Espacio Lúdico PA",
+        "arrivalYaw": 0
+      }
+    ]
   },
 
   {
@@ -568,6 +586,33 @@ export const interiores = [
         "rotateZ": 0,
         "scale": 1,
         "label": "Entrada",
+        "arrivalYaw": 0
+      },
+      // Escena de origen: talleresAfuera
+      {
+        "x": 0.22,
+        "y": 57.1,
+        "to": "hall",
+        "style": "wayfinding",
+        "direction": "back",
+        "rotateX": 0,
+        "rotateY": 0,
+        "rotateZ": 0,
+        "scale": 1,
+        "label": "Hall",
+        "arrivalYaw": 0
+      },
+      {
+        "x": 74.04,
+        "y": 60.61,
+        "to": "patio",
+        "style": "wayfinding",
+        "direction": "forward",
+        "rotateX": 0,
+        "rotateY": 0,
+        "rotateZ": 0,
+        "scale": 1,
+        "label": "Patio",
         "arrivalYaw": 0
       },
       // Escena de origen: talleresAfuera
