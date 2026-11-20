@@ -99,19 +99,92 @@ export class TourView {
       </div>
 
       <div class="bar bar-right"><span class="tour-current-place" aria-live="polite"></span></div>
-      <button class="sheet-open" type="button" data-act="sheet" title="Consultar planos y fachadas">
-        <span aria-hidden="true">▦</span> Plano
+
+      <button
+        class="sheet-open"
+        type="button"
+        data-act="sheet"
+        title="Ver plano de la escuela"
+        hidden
+      >
+        <span aria-hidden="true">▦</span>
+        Plano
       </button>
-      <div class="sheet-modal" hidden role="dialog" aria-modal="true" aria-label="Lámina de planos de la escuela">
+
+
+      <div
+        class="sheet-modal"
+        hidden
+        role="dialog"
+        aria-modal="true"
+        aria-label="Planos de la escuela"
+      >
         <div class="sheet-panel">
+
+          <!-- Encabezado -->
+
           <div class="sheet-head">
-            <strong>Planos y fachadas de la escuela</strong>
-            <button type="button" data-act="sheet-close" aria-label="Cerrar planos">✕</button>
+            <div>
+              <strong>Planos de la escuela</strong>
+              <p>Conocé la distribución de los espacios</p>
+            </div>
+
+            <button
+              type="button"
+              data-act="sheet-close"
+              aria-label="Cerrar plano"
+            >
+              ✕
+            </button>
           </div>
-          <img src="${assetUrl('plano-lamina.jpg')}" alt="Lámina general de la escuela con plantas, fachadas y renders" loading="lazy"/>
-          <p>Podés ampliar la lámina con el zoom del navegador.</p>
+
+          <!-- Selector de plantas -->
+
+          <div
+            class="floor-tabs"
+            role="group"
+            aria-label="Seleccionar planta"
+          >
+            <button
+              type="button"
+              class="floor-tab active"
+              data-act="floor-ground"
+              aria-pressed="true"
+            >
+              Planta baja
+            </button>
+
+            <button
+              type="button"
+              class="floor-tab"
+              data-act="floor-upper"
+              aria-pressed="false"
+              disabled
+              title="Disponible próximamente"
+            >
+              Planta alta
+            </button>
+          </div>
+
+          <!-- Imagen del plano -->
+
+          <div class="floor-plan-container">
+            <img
+              class="floor-plan-image"
+              src="${assetUrl('planos/planta-baja.png')}"
+              alt="Plano arquitectónico de planta baja"
+              loading="lazy"
+            />
+          </div>
+
+          <p class="floor-plan-note">
+            Desplazá el plano para explorarlo.
+            La planta alta estará disponible próximamente.
+          </p>
+
         </div>
       </div>
+
       <div class="zoom-ctl">
         <button class="round" data-act="in" aria-label="Acercar">+</button>
         <button class="round" data-act="out" aria-label="Alejar">−</button>
@@ -252,6 +325,7 @@ export class TourView {
     this.brand = root.querySelector('.brand');
     this.currentPlace = root.querySelector('.tour-current-place');
     this.sheetModal = root.querySelector('.sheet-modal');
+    this.sheetBtn = root.querySelector('.sheet-open');
     this.backBtn = root.querySelector('[data-act="exterior"]');
 
     this.historyBackBtn = root.querySelector(
@@ -281,8 +355,29 @@ export class TourView {
     root.addEventListener('click', (e) => {
       const act = e.target.closest('[data-act]')?.dataset.act;
       if (act === '3d') on3D();
-      if (act === 'sheet') this.sheetModal.hidden = false;
-      if (act === 'sheet-close') this.sheetModal.hidden = true;
+      
+      // Abrir plano únicamente en interiores
+      if (act === 'sheet') {
+        if (this.current?.group === 'interior') {
+          this.sheetModal.hidden = false;
+        }
+      }
+
+      // Cerrar plano
+      if (act === 'sheet-close') {
+        this.sheetModal.hidden = true;
+      }
+
+      // Seleccionar planta baja
+      if (act === 'floor-ground') {
+        this.selectFloor('ground');
+      }
+
+      // Seleccionar planta alta
+      if (act === 'floor-upper') {
+        this.selectFloor('upper');
+      }
+
       if (act === 'in') this.viewer?.zoomBy?.(1.4);
       if (act === 'out') this.viewer?.zoomBy?.(1 / 1.4);
       if (act === 'exterior') this.goTo(this.lastExterior ?? this.scenesOf('exterior')[0]?.id);
@@ -1090,9 +1185,86 @@ export class TourView {
     }
   }
 
+  // ==========================================
+  // SELECCIONAR PLANTA DEL EDIFICIO
+  // ==========================================
+
+  selectFloor(floor) {
+    const floors = {
+      ground: {
+        image: 'planos/planta-baja.png',
+        title: 'Plano de planta baja'
+      },
+
+      upper: {
+        image: 'planos/planta-alta.png',
+        title: 'Plano de planta alta'
+      }
+    };
+
+    const selected = floors[floor];
+
+    if (!selected) {
+      return;
+    }
+
+    const groundBtn = this.root.querySelector(
+      '[data-act="floor-ground"]'
+    );
+
+    const upperBtn = this.root.querySelector(
+      '[data-act="floor-upper"]'
+    );
+
+    // No seleccionar plantas deshabilitadas.
+    if (floor === 'upper' && upperBtn.disabled) {
+      return;
+    }
+
+    const image = this.root.querySelector(
+      '.floor-plan-image'
+    );
+
+    image.src = assetUrl(selected.image);
+    image.alt = selected.title;
+
+    groundBtn.classList.toggle(
+      'active',
+      floor === 'ground'
+    );
+
+    upperBtn.classList.toggle(
+      'active',
+      floor === 'upper'
+    );
+
+    groundBtn.setAttribute(
+      'aria-pressed',
+      String(floor === 'ground')
+    );
+
+    upperBtn.setAttribute(
+      'aria-pressed',
+      String(floor === 'upper')
+    );
+  }
+
   // Botones de arriba y barra de abajo según el grupo (exterior / interior)
   updateChrome() {
     const exterior = this.current.group === 'exterior';
+
+    // ==========================================
+    // PLANO DISPONIBLE SOLO EN INTERIORES
+    // ==========================================
+
+    this.sheetBtn.hidden = exterior;
+
+    // Si regresamos al exterior con el plano
+    // abierto, cerrar automáticamente el visor.
+    if (exterior) {
+      this.sheetModal.hidden = true;
+    }
+
     this.brand.hidden = !exterior;
     this.currentPlace.textContent = this.current.title;
     this.root.classList.toggle('is-exterior', exterior);

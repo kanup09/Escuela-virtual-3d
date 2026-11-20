@@ -28,12 +28,12 @@ export const exteriores = [
       x: 51,
       y: 66,
 
-      to: 'galeria',
+      to: 'entrada',
 
       style: 'arrow',
       direction: 'forward',
 
-      label: 'Entrar a Galería',
+      label: 'Entrar a la escuela',
 
       arrivalYaw: 0,
       prominent: true,

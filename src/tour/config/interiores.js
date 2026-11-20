@@ -56,7 +56,44 @@ export const interiores = [
 
     yaw: 0,
     autoRotate: false,
-
+    hotspots: [
+      {
+        x: 12,
+        y: 62,
+        to: 'talleres-prueba',
+        style: 'arrow',
+        direction: 'forward',
+        label: 'Ir a Talleres',
+        prominent: true,
+      },
+      {
+        x: 42,
+        y: 62,
+        to: 'patio',
+        style: 'arrow',
+        direction: 'forward',
+        label: 'Ir al Patio',
+        prominent: true,
+      },
+      {
+        x: 60,
+        y: 62,
+        to: 'comedor',
+        style: 'arrow',
+        direction: 'forward',
+        label: 'Ir al Comedor',
+        prominent: true,
+      },
+      {
+        x: 80,
+        y: 62,
+        to: 'planta-alta-1',
+        style: 'arrow',
+        direction: 'forward',
+        label: 'Ir a Planta Alta 1',
+        prominent: true,
+      },
+    ],
   },
     
     // ----------------------------------------
@@ -79,6 +116,16 @@ export const interiores = [
     group: 'interior',
     title: 'Patio',
     image: 'tour/Patio.jpg'
+  },
+
+  {
+    id: 'comedor',
+    group: 'interior',
+    title: 'Comedor',
+    image: 'tour/Comedor.jpeg',
+
+    yaw: 0,
+    autoRotate: false,
   },
   
   // ----------------------------------------
@@ -110,8 +157,85 @@ export const interiores = [
     image: 'tour/Aulas Planta Alta.jpg'
   },
 
+  {
+    id: 'planta-alta-1',
+    group: 'interior',
+    title: 'Planta Alta 1',
+    image: 'tour/PlantaAlta-1.jpeg',
 
+    yaw: 0,
+    autoRotate: false,
+  },
 
+  {
+    id: 'planta-alta-2',
+    group: 'interior',
+    title: 'Planta Alta 2',
+    image: 'tour/PlantaAlta-2.jpeg',
+
+    yaw: 0,
+    autoRotate: false,
+  },
+
+  {
+    id: 'aulas-pruebas',
+    group: 'interior',
+    title: 'Aulas Pruebas',
+    image: 'tour/Aulas-pruebas.jpeg',
+
+    yaw: 0,
+    autoRotate: false,
+  },
+
+  {
+    id: 'planta-baja',
+    group: 'interior',
+    title: 'Planta Baja',
+    image: 'tour/Aula-plantaBaja.jpeg',
+
+    yaw: 0,
+    autoRotate: false,
+  },
+
+  {
+    id: 'huerta',
+    group: 'interior',
+    title: 'Huerta',
+    image: 'tour/Huerta.jpeg',
+
+    yaw: 0,
+    autoRotate: false,
+  },
+
+  {
+    id: 'talleres-prueba',
+    group: 'interior',
+    title: 'Talleres Prueba',
+    image: 'tour/Talleres-prueba.jpeg',
+
+    yaw: 0,
+    autoRotate: false,
+  },
+
+  {
+    id: 'biblioteca',
+    group: 'interior',
+    title: 'Biblioteca',
+    image: 'tour/Biblioteca.jpeg',
+
+    yaw: 0,
+    autoRotate: false,
+  },
+
+    {
+    id: 'entrada-biblioteca',
+    group: 'interior',
+    title: 'Entrada Biblioteca',
+    image: 'tour/Entrada-biblioteca.jpeg',
+
+    yaw: 0,
+    autoRotate: false,
+  },
   // ----------------------------------------
   // GIMNASIO
   // ----------------------------------------
