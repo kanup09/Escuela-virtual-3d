@@ -186,6 +186,20 @@ export const interiores = [
         "scale": 1,
         "label": "Aula PB",
         "arrivalYaw": 0
+      },
+      // Escena de origen: espacio-ludico
+      {
+        "x": 17.11,
+        "y": 53.57,
+        "to": "talleresAfuera",
+        "style": "wayfinding",
+        "direction": "forward",
+        "rotateX": 0,
+        "rotateY": 58,
+        "rotateZ": 0,
+        "scale": 1,
+        "label": "Talleres",
+        "arrivalYaw": 0
       }
     ],
   },
@@ -202,6 +216,21 @@ export const interiores = [
     autoRotate: false,
 
     hotspots: [
+      
+      // Escena de origen: espacio-ludicoPA
+      {
+        "x": 85.92,
+        "y": 56.1,
+        "to": "aula integrada",
+        "style": "wayfinding",
+        "direction": "left",
+        "rotateX": 0,
+        "rotateY": 10,
+        "rotateZ": 0,
+        "scale": 1,
+        "label": "Aula Integrada",
+        "arrivalYaw": 0
+      }
       
 
     ]
@@ -384,6 +413,20 @@ export const interiores = [
     image: 'tour/Rampa.jpg',
     
     hotspots : [
+      // Escena de origen: rampa
+      {
+        "x": 70.49,
+        "y": 56.39,
+        "to": "talleresAfuera",
+        "style": "wayfinding",
+        "direction": "forward",
+        "rotateX": 0,
+        "rotateY": 22,
+        "rotateZ": 0,
+        "scale": 1,
+        "label": "Talleres",
+        "arrivalYaw": 0
+      }
 
     ]
     
@@ -478,25 +521,31 @@ export const interiores = [
     ]
   },
 
-  {
-    id: 'planta-alta-2',
-    group: 'interior',
-    title: 'Planta Alta B',
-    image: 'tour/',
-
-    yaw: 0,
-    autoRotate: false,
-  },
-  
 
   {
     id: 'aulaPB',
     group: 'interior',
     title: 'Aulas PB',
-    image: 'tour/Aulas-pruebas.jpeg',
+    image: 'tour/Aula Planta Baja.jpg',
 
     yaw: 0,
     autoRotate: false,
+    hotspots:[
+      // Escena de origen: aulaPB
+  {
+    "x": 49.65,
+    "y": 56.21,
+    "to": "espacio-ludico",
+    "style": "wayfinding",
+    "direction": "right",
+    "rotateX": 0,
+    "rotateY": 32,
+    "rotateZ": 0,
+    "scale": 1,
+    "label": "Espacio Ludico",
+    "arrivalYaw": 0
+  }
+    ]
   },
 
 
