@@ -82,12 +82,7 @@ export const interiores = [
   // ----------------------------------------
   // PATIO
   // ----------------------------------------
-  {
-    id: 'patio',
-    group: 'interior',
-    title: 'Patio',
-    image: 'tour/Patio.jpg'
-  },
+
 
   {
     id: 'comedor',
