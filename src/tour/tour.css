@@ -360,12 +360,12 @@
   align-items: center;
   justify-content: center;
 
-  width: min(760px, calc(100vw - 40px));
+  width: min(540px, calc(100vw - 40px));
   max-width: none;
-  height: 72px;
+  height: 54px;
 
-  padding: 9px;
-  gap: 10px;
+  padding: 6px;
+  gap: 7px;
 
   overflow: hidden;
 
@@ -389,10 +389,10 @@
   align-items: center;
   justify-content: center;
 
-  flex: 0 0 52px;
+  flex: 0 0 38px;
 
-  width: 52px;
-  height: 52px;
+  width: 38px;
+  height: 38px;
 
   padding: 0;
   margin: 0;
@@ -423,11 +423,11 @@
 
   display: block;
 
-  width: 14px;
-  height: 14px;
+  width: 10px;
+  height: 10px;
 
-  border-top: 3px solid #ffffff;
-  border-right: 3px solid #ffffff;
+  border-top: 2px solid #ffffff;
+  border-right: 2px solid #ffffff;
 }
 
 /* Anterior */
@@ -469,7 +469,7 @@
   flex: 1;
   min-width: 0;
 
-  gap: 10px;
+  gap: 6px;
   overflow: hidden;
 }
 
@@ -482,9 +482,9 @@
 
   min-width: 0;
   width: 100%;
-  height: 50px;
+  height: 38px;
 
-  padding: 0 14px;
+  padding: 0 10px;
 
   border: none;
   border-radius: 999px;
@@ -493,7 +493,7 @@
   color: #ffffff;
 
   font-family: var(--font-ui);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
 
   letter-spacing: 0.1px;
@@ -1458,10 +1458,15 @@
 /* Contenedor del plano */
 
 #tour .floor-plan-container {
+  position: relative;
   width: 100%;
+  height: 60vh;
   max-height: 65vh;
 
-  overflow: auto;
+  overflow: hidden;
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
 
   border: 1px solid #e6e2df;
   border-radius: 12px;
@@ -1475,11 +1480,50 @@
   display: block;
 
   width: 100%;
-  min-width: 680px;
-  max-width: none;
-  height: auto;
+  height: 100%;
+  object-fit: contain;
+  transform-origin: 0 0;
+  will-change: transform;
 
   border: none;
+}
+
+#tour .floor-plan-container.is-grabbing {
+  cursor: grabbing;
+}
+
+/* Botones de zoom del plano */
+
+#tour .plan-zoom-ctl {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 2;
+
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+#tour .plan-zoom-ctl button {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+
+  background: rgba(12, 25, 35, 0.85);
+  color: #ffffff;
+
+  font-size: 20px;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+#tour .plan-zoom-ctl button:hover {
+  background: rgba(12, 25, 35, 1);
 }
 
 #tour .floor-plan-note {
@@ -1516,8 +1560,18 @@
 
   object-fit: cover;
 
-  opacity: 1;
+  /* Solo se muestra el clip activo y ya reproduciendo */
+  opacity: 0;
+  visibility: hidden;
   pointer-events: none;
+}
+
+#tour .travel-video.is-active {
+  visibility: visible;
+}
+
+#tour .travel-video.is-visible {
+  opacity: 1;
 }
 
 /* Estado de salida del video */
@@ -1721,23 +1775,23 @@
 @media (max-width: 900px) {
 
   #tour .dock.dock-carousel {
-    width: min(650px, calc(100vw - 30px));
+    width: min(480px, calc(100vw - 30px));
 
-    height: 66px;
-    padding: 7px;
-    gap: 7px;
+    height: 50px;
+    padding: 5px;
+    gap: 5px;
   }
 
   #tour .dock-carousel .carousel-arrow {
-    flex-basis: 46px;
+    flex-basis: 34px;
 
-    width: 46px;
-    height: 46px;
+    width: 34px;
+    height: 34px;
   }
 
   #tour .dock-carousel .carousel-arrow::before {
-    width: 13px;
-    height: 13px;
+    width: 9px;
+    height: 9px;
   }
 
   #tour .dock-carousel .carousel-viewport {
@@ -1745,10 +1799,10 @@
   }
 
   #tour .dock-carousel .carousel-scene {
-    height: 46px;
+    height: 34px;
 
-    padding: 0 8px;
-    font-size: 14px;
+    padding: 0 6px;
+    font-size: 13px;
   }
 }
 
@@ -1815,26 +1869,26 @@
 
     transform: translateX(-50%);
 
-    width: calc(100vw - 20px);
+    width: calc(100vw - 24px);
     max-width: none;
-    height: 60px;
+    height: 46px;
 
-    padding: 5px;
-    gap: 4px;
+    padding: 4px;
+    gap: 3px;
   }
 
   #tour .dock-carousel .carousel-arrow {
-    flex: 0 0 42px;
+    flex: 0 0 34px;
 
-    width: 42px;
-    height: 42px;
+    width: 34px;
+    height: 34px;
   }
 
   #tour .dock-carousel .carousel-arrow::before {
-    width: 12px;
-    height: 12px;
+    width: 9px;
+    height: 9px;
 
-    border-width: 3px;
+    border-width: 2px;
   }
 
   #tour .dock-carousel .carousel-viewport {
@@ -1845,7 +1899,7 @@
   }
 
   #tour .dock-carousel .carousel-scene {
-    height: 42px;
+    height: 34px;
 
     padding: 0 4px;
 
@@ -1943,6 +1997,7 @@
   }
 
   #tour .floor-plan-container {
+    height: 55vh;
     max-height: 60vh;
   }
 
@@ -1987,10 +2042,10 @@
 @media (max-width: 380px) {
 
   #tour .dock-carousel .carousel-arrow {
-    flex-basis: 36px;
+    flex-basis: 30px;
 
-    width: 36px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
   }
 
   #tour .dock-carousel .carousel-scene {

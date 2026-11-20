@@ -1,4 +1,5 @@
 import { PanZoomImage } from './PanZoomImage.js';
+import { PlanZoom } from './PlanZoom.js';
 import { PanoViewer } from './PanoViewer.js';
 import { assetUrl } from './tourConfig.js';
 import {
@@ -243,14 +244,14 @@ export class TourView {
           <div class="floor-plan-container">
             <img
               class="floor-plan-image"
-              src="${assetUrl('planos/planta-baja.png')}"
+              src="${assetUrl('planos/Plano-plantaBaja.jpg')}"
               alt="Plano arquitectónico de planta baja"
               loading="lazy"
             />
           </div>
 
           <p class="floor-plan-note">
-            Desplazá el plano para explorarlo.
+            Usá la rueda, el pellizco o los botones para acercar; arrastrá para moverte.
             La planta alta estará disponible próximamente.
           </p>
 
@@ -444,6 +445,10 @@ export class TourView {
     this.brand = root.querySelector('.brand');
     this.currentPlace = root.querySelector('.tour-current-place');
     this.sheetModal = root.querySelector('.sheet-modal');
+    this.planZoom = new PlanZoom(
+      root.querySelector('.floor-plan-container'),
+      root.querySelector('.floor-plan-image')
+    );
     this.sheetBtn = root.querySelector('.sheet-open');
     this.backBtn = root.querySelector('[data-act="exterior"]');
 
@@ -486,6 +491,7 @@ export class TourView {
       if (act === 'sheet') {
         if (this.current?.group === 'interior') {
           this.sheetModal.hidden = false;
+          this.planZoom?.reset();
         }
       }
 
@@ -1505,7 +1511,7 @@ export class TourView {
       },
 
       upper: {
-        image: 'planos/Plano-plantaAlta.jps',
+        image: 'planos/Plano-plantaAlta.jpg',
         title: 'Plano de planta alta'
       }
     };

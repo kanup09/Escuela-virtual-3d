@@ -361,12 +361,45 @@ export class HotspotEditor {
       return;
     }
 
+    let copied = false;
+
     try {
-      await navigator.clipboard.writeText(code);
-      this.message.textContent = 'Configuración copiada.';
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(code);
+        copied = true;
+      }
     } catch {
-      this.message.textContent =
-        'No se pudo copiar. Revisá los permisos del navegador.';
+      copied = false;
     }
+
+    // Plan B: textarea temporal + execCommand (funciona sin permisos)
+    if (!copied) copied = this.copyFallback(code);
+
+    this.message.textContent = copied
+      ? 'Configuración copiada.'
+      : 'No se pudo copiar. Se imprimió en la consola (F12): copiala desde ahí.';
+
+    if (!copied) console.log(code);
+  }
+
+  copyFallback(text) {
+    const area = document.createElement('textarea');
+    area.value = text;
+    area.setAttribute('readonly', '');
+    area.style.cssText =
+      'position:fixed;top:0;left:0;opacity:0;pointer-events:none;';
+    (this.panel || document.body).appendChild(area);
+    area.focus();
+    area.select();
+
+    let ok = false;
+    try {
+      ok = document.execCommand('copy');
+    } catch {
+      ok = false;
+    }
+
+    area.remove();
+    return ok;
   }
 }
