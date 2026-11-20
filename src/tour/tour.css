@@ -1508,3 +1508,128 @@
   }
 
 }
+
+/* ==========================================
+   FLECHAS INTERIORES - WAYFINDING
+   ========================================== */
+
+#tour .hotspot.hotspot--wayfinding {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: auto;
+  height: auto;
+  min-width: 48px;
+
+  gap: 6px;
+  padding: 5px;
+
+  background: transparent;
+  border: none;
+  box-shadow: none;
+
+  opacity: 0.9;
+  cursor: pointer;
+}
+
+/* Flecha blanca sólida */
+
+#tour .hotspot-way-arrow {
+  display: block;
+
+  width: 38px;
+  height: 38px;
+
+  background: #ffffff;
+
+  clip-path: polygon(
+    0% 0%,
+    100% 50%,
+    0% 100%,
+    25% 50%
+  );
+
+  transition:
+    opacity 0.2s ease,
+    filter 0.2s ease;
+}
+
+/* Orientaciones */
+
+#tour .hotspot-way-arrow.dir-right {
+  transform: rotate(0deg);
+}
+
+#tour .hotspot-way-arrow.dir-left {
+  transform: rotate(180deg);
+}
+
+#tour .hotspot-way-arrow.dir-up {
+  transform: rotate(-90deg);
+}
+
+#tour .hotspot-way-arrow.dir-down {
+  transform: rotate(90deg);
+}
+
+/* Etiqueta del destino */
+
+#tour .hotspot.hotspot--wayfinding .hotspot-text {
+  display: block;
+
+  padding: 6px 12px;
+
+  background: rgba(20, 32, 42, 0.88);
+  color: #ffffff;
+
+  border-radius: 999px;
+
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+
+  box-shadow: 0 3px 10px rgba(0,0,0,0.25);
+}
+
+/* Evitar etiquetas duplicadas */
+
+#tour .hotspot--wayfinding::after {
+  display: none !important;
+}
+
+/* Interacción */
+
+#tour .hotspot.hotspot--wayfinding:hover {
+  background: transparent;
+  box-shadow: none;
+  opacity: 1;
+}
+
+#tour .hotspot--wayfinding:hover
+.hotspot-way-arrow {
+  filter: brightness(0.82);
+}
+
+/* Accesibilidad */
+
+#tour .hotspot--wayfinding:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 3px;
+}
+
+/* Celulares */
+
+@media (max-width: 700px) {
+  #tour .hotspot-way-arrow {
+    width: 32px;
+    height: 32px;
+  }
+
+  #tour .hotspot.hotspot--wayfinding .hotspot-text {
+    padding: 5px 9px;
+    font-size: 11px;
+  }
+}

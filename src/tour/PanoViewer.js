@@ -70,9 +70,12 @@ export class PanoViewer {
     const raycaster = new THREE.Raycaster();
     let drag = null;
     this.onDown = (e) => {
+      if (e.target.closest?.('.hotspot')) {
+        return;
+      }
       drag = { x: e.clientX, y: e.clientY, sx: e.clientX, sy: e.clientY };
       this.autoRotate = false;
-      this.canvas.setPointerCapture?.(e.pointerId);
+      this.container.setPointerCapture?.(e.pointerId);
     };
     this.onMove = (e) => {
       if (!drag) return;
@@ -97,11 +100,47 @@ export class PanoViewer {
       drag = null;
     };
     this.onWheel = (e) => { e.preventDefault(); this.setFov(this.fov + e.deltaY * 0.05); this.autoRotate = false; };
-    this.canvas.addEventListener('pointerdown', this.onDown);
-    this.canvas.addEventListener('pointermove', this.onMove);
-    this.canvas.addEventListener('pointerup', this.onUp);
-    this.canvas.addEventListener('pointercancel', () => { drag = null; });
-    this.canvas.addEventListener('wheel', this.onWheel, { passive: false });
+    
+    // ==========================================
+    // CONTROLES Y CAPTURA DE COORDENADAS
+    // ==========================================
+
+    // Escuchar sobre el contenedor completo:
+    // funciona incluso si pano-layer está
+    // por encima del canvas.
+
+    this.container.style.touchAction = 'none';
+
+    this.container.addEventListener(
+      'pointerdown',
+      this.onDown
+    );
+
+    this.container.addEventListener(
+      'pointermove',
+      this.onMove
+    );
+
+    this.container.addEventListener(
+      'pointerup',
+      this.onUp
+    );
+
+    this.onCancel = () => {
+      drag = null;
+    };
+
+    this.container.addEventListener(
+      'pointercancel',
+      this.onCancel
+    );
+
+    this.container.addEventListener(
+      'wheel',
+      this.onWheel,
+      { passive: false }
+    );
+
 
     this.resizeObserver = new ResizeObserver(() => this.resize());
     this.resizeObserver.observe(container);
@@ -137,6 +176,17 @@ export class PanoViewer {
       }
     };
     this.raf = requestAnimationFrame(this.loop);
+  }
+
+  // ==========================================
+  // ACTIVAR O ACTUALIZAR EL EDITOR
+  // ==========================================
+
+  setPickHandler(callback) {
+    this.onPick =
+      typeof callback === 'function'
+        ? callback
+        : null;
   }
 
   // x, y en % de la imagen
@@ -227,14 +277,47 @@ export class PanoViewer {
     this.camera.updateProjectionMatrix();
   }
 
+  
   dispose() {
     cancelAnimationFrame(this.raf);
+
     this.resizeObserver.disconnect();
+
+    // Eliminar controles del visor
+    this.container.removeEventListener(
+      'pointerdown',
+      this.onDown
+    );
+
+    this.container.removeEventListener(
+      'pointermove',
+      this.onMove
+    );
+
+    this.container.removeEventListener(
+      'pointerup',
+      this.onUp
+    );
+
+    this.container.removeEventListener(
+      'pointercancel',
+      this.onCancel
+    );
+
+    this.container.removeEventListener(
+      'wheel',
+      this.onWheel
+    );
+
+    // Liberar recursos de Three.js
     this.texture.dispose();
     this.mesh.geometry.dispose();
     this.mesh.material.dispose();
+
     this.renderer.dispose();
+
     this.canvas.remove();
     this.layer.remove();
   }
+
 }

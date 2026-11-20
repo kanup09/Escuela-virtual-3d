@@ -6,6 +6,46 @@ import {
   fachadaVecina
 } from './config/transiciones.js';
 
+import('./editor/HotspotEditor.js')
+  .then(({ HotspotEditor }) => {
+
+    this.hotspotEditor = new HotspotEditor(
+      this.root,
+      this.tour.scenes
+    );
+
+    // Identificar la panorámica actual
+    if (this.current) {
+      this.hotspotEditor.setScene(this.current);
+    }
+
+    // Activar el editor aunque el
+    // visor ya se haya creado.
+    if (
+      this.viewer &&
+      typeof this.viewer.setPickHandler === 'function'
+    ) {
+      this.viewer.setPickHandler(({ x, y }) => {
+
+        if (!this.current) {
+          return;
+        }
+
+        this.hotspotEditor.capture(
+          this.current,
+          { x, y }
+        );
+      });
+    }
+
+  })
+  .catch((error) => {
+    console.error(
+      'Error al iniciar el editor:',
+      error
+    );
+  });
+
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 const DEBUG = new URLSearchParams(location.search).has('debug');
 
@@ -790,8 +830,33 @@ export class TourView {
     // HOTSPOT CON FLECHA DIRECCIONAL
     // ========================================
 
-    if (h.style === 'arrow') {
-      button.classList.add('hotspot--arrow');
+    
+  if (h.style === 'wayfinding') {
+
+    button.classList.add('hotspot--wayfinding');
+
+    // Flecha sólida
+    const arrow = document.createElement('span');
+
+    const direction = {
+      forward: 'up',
+      back: 'down',
+      up: 'up',
+      down: 'down',
+      left: 'left',
+      right: 'right'
+    }[h.direction] ?? 'up';
+
+    arrow.className =
+      `hotspot-way-arrow dir-${direction}`;
+
+    arrow.setAttribute('aria-hidden', 'true');
+
+    button.appendChild(arrow);
+
+  } else if (h.style === 'arrow') {
+
+    button.classList.add('hotspot--arrow');
 
       const arrowSymbols = {
         forward: '↑',

@@ -26,20 +26,7 @@ export const interiores = [
     // Orientación de la cámara
     yaw: 0,
     autoRotate: false,
-    hotspots: [
-    {
-      x: 51,
-      y: 66,
-
-      to: 'galeria',
-
-      style: 'arrow',
-      direction: 'forward',
-
-      label: 'Entrar a Galería',
-
-      arrivalYaw: 0
-    },]
+  
 
   },
 
@@ -51,48 +38,32 @@ export const interiores = [
   {
     id: 'galeria',
     group: 'interior',
-    title: 'Talleres y Galeria',
+    title: 'Galeria',
     image: 'tour/Talleres y Galeria_1.jpg',
 
     yaw: 0,
     autoRotate: false,
-    hotspots: [
+    hotspots:[
+      // Escena de origen: galeria
       {
-        x: 12,
-        y: 62,
-        to: 'talleres-prueba',
-        style: 'arrow',
-        direction: 'forward',
-        label: 'Ir a Talleres',
-        prominent: true,
+        "x": 13.58,
+        "y": 61.22,
+        "to": "entrada",
+        "style": "wayfinding",
+        "direction": "forward",
+        "label": "Entrada",
+        "arrivalYaw": 0
       },
+      // Escena de origen: galeria
       {
-        x: 42,
-        y: 62,
-        to: 'patio',
-        style: 'arrow',
-        direction: 'forward',
-        label: 'Ir al Patio',
-        prominent: true,
-      },
-      {
-        x: 60,
-        y: 62,
-        to: 'comedor',
-        style: 'arrow',
-        direction: 'forward',
-        label: 'Ir al Comedor',
-        prominent: true,
-      },
-      {
-        x: 80,
-        y: 62,
-        to: 'planta-alta-1',
-        style: 'arrow',
-        direction: 'forward',
-        label: 'Ir a Planta Alta 1',
-        prominent: true,
-      },
+        "x": 93.41,
+        "y": 52.83,
+        "to": "planta-alta-1",
+        "style": "wayfinding",
+        "direction": "left",
+        "label": "Planta Alta 1",
+        "arrivalYaw": 0
+      }
     ],
   },
     
