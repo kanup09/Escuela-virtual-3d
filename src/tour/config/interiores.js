@@ -21,7 +21,7 @@ export const interiores = [
     id: 'entrada',
     group: 'interior',
     title: 'Entrada',
-    image: 'tour/Escena Ingreso.jpg',
+    image: 'tour/Escena Ingreso.jg',
 
     // Orientación de la cámara
     yaw: 0,
@@ -128,7 +128,9 @@ export const interiores = [
         "scale": 1,
         "label": "Planta Alta A",
         "arrivalYaw": 180
-      }
+      },
+   
+ 
     ],
   },
     
@@ -287,20 +289,6 @@ export const interiores = [
         "rotateZ": 0,
         "scale": 1,
         "label": "Comedor Galeria",
-        "arrivalYaw": 0
-      },
-      // Escena de origen: talleresAfuera
-      {
-        "x": 0.95,
-        "y": 55.38,
-        "to": "hall",
-        "style": "wayfinding",
-        "direction": "back",
-        "rotateX": 0,
-        "rotateY": 0,
-        "rotateZ": 0,
-        "scale": 1,
-        "label": "Hall",
         "arrivalYaw": 0
       },
 
@@ -584,16 +572,30 @@ export const interiores = [
       },
       // Escena de origen: talleresAfuera
       {
+        "x": 48.73,
+        "y": 54.37,
+        "to": "biblioteca",
+        "style": "wayfinding",
+        "direction": "back",
+        "rotateX": 0,
+        "rotateY": 0,
+        "rotateZ": 0,
+        "scale": 1,
+        "label": "Biblioteca",
+        "arrivalYaw": 0
+      },
+      // Escena de origen: talleresAfuera
+      {
         "x": 52.16,
         "y": 54.63,
-        "to": "espacio-ludico",
+        "to": "rampa",
         "style": "wayfinding",
         "direction": "back",
         "rotateX": 0,
         "rotateY": -32,
         "rotateZ": 0,
         "scale": 1,
-        "label": "Espacio Ludico",
+        "label": "Rampa",
         "arrivalYaw": 0
       }
     ]
@@ -631,7 +633,7 @@ export const interiores = [
     id: 'biblioteca',
     group: 'interior',
     title: 'Biblioteca',
-    image: 'tour/Biblioteca.jpeg',
+    image: 'tour/Biblioteca.png',
 
     yaw: 0,
     autoRotate: false,
