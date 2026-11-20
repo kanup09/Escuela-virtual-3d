@@ -1672,7 +1672,7 @@ export class TourView {
     const items = [
       { id: 'norte', label: 'Norte' },
       { id: 'este', label: 'Este' },
-      { id: 'entrada', label: 'Ingresar', enter: true },
+      { id: 'hall', label: 'Ingresar', enter: true },
       { id: 'oeste', label: 'Oeste' },
       { id: 'sur', label: 'Sur' }
     ];
@@ -1712,7 +1712,7 @@ export class TourView {
 
         if (item.enter) {
           // Acceso directo al interior
-          this.goTo('entrada');
+          this.goTo('hall');
         } else {
           // Mantener transiciones exteriores
           this.goToExterior(item.id);

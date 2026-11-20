@@ -321,8 +321,46 @@ export const interiores = [
     autoRotate: false,
 
     hotspots : [
-      // Escena de origen: hall
-      
+      // SALIDAS (flechas chicas sobre el piso, abajo a la derecha)
+      {
+        "x": 56,
+        "y": 91,
+        "to": "hall",
+        "style": "wayfinding",
+        "direction": "back",
+        "rotateX": 0,
+        "rotateY": 0,
+        "rotateZ": 0,
+        "scale": 0.75,
+        "label": "Hall",
+        "arrivalYaw": 0
+      },
+      {
+        "x": 68,
+        "y": 87,
+        "to": "patio",
+        "style": "wayfinding",
+        "direction": "right",
+        "rotateX": 0,
+        "rotateY": 0,
+        "rotateZ": 0,
+        "scale": 0.75,
+        "label": "Patio",
+        "arrivalYaw": 0
+      },
+      {
+        "x": 80,
+        "y": 83,
+        "to": "gimnasio",
+        "style": "wayfinding",
+        "direction": "right",
+        "rotateX": 0,
+        "rotateY": 0,
+        "rotateZ": 0,
+        "scale": 0.75,
+        "label": "Gimnasio",
+        "arrivalYaw": 0
+      }
     ]
   },
   
@@ -563,6 +601,22 @@ export const interiores = [
 
     yaw: 0,
     autoRotate: false,
+    hotspots: [
+      // SALIDA (flecha chica sobre el piso, abajo a la derecha)
+      {
+        "x": 72,
+        "y": 91,
+        "to": "planta-alta-1",
+        "style": "wayfinding",
+        "direction": "back",
+        "rotateX": 0,
+        "rotateY": 0,
+        "rotateZ": 0,
+        "scale": 0.75,
+        "label": "Planta Alta A",
+        "arrivalYaw": 0
+      }
+    ],
   },
 
   {
@@ -682,6 +736,35 @@ export const interiores = [
 
     yaw: 0,
     autoRotate: false,
+    hotspots: [
+      // SALIDAS (flechas chicas sobre la alfombra, abajo)
+      {
+        "x": 80,
+        "y": 30,
+        "to": "espacio-ludico",
+        "style": "wayfinding",
+        "direction": "back",
+        "rotateX": 0,
+        "rotateY": 0,
+        "rotateZ": 0,
+        "scale": 0.75,
+        "label": "Espacio Ludico",
+        "arrivalYaw": 0
+      },
+      {
+        "x": 48,
+        "y": 95,
+        "to": "",
+        "style": "wayfinding",
+        "direction": "back",
+        "rotateX": 0,
+        "rotateY": 0,
+        "rotateZ": 0,
+        "scale": 0.75,
+        "label": "Talleres",
+        "arrivalYaw": 0
+      }
+    ],
   },
 
 ];
