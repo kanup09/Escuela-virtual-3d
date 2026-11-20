@@ -1,6 +1,7 @@
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vite'
+// Si usas React, mantén la importación que corresponda a tu package.json
 
-// Nombre del repositorio en GitHub (GitHub Pages sirve el sitio desde esa carpeta)
 export default defineConfig({
-  base: '/Escuela-virtual-3d/',
-});
+  // Si se compila en Vercel usa '/', si es en GitHub Pages usa '/Escuela-virtual-3d/'
+  base: process.env.VERCEL ? '/' : '/Escuela-virtual-3d/',
+})

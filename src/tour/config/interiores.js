@@ -74,7 +74,7 @@ export const interiores = [
     id: 'espacio-ludico',
     group: 'interior',
     title: 'Espacio Ludico',
-    image: 'tour/Espacio Ludico.jpg',
+    image: 'tour/Espacio-Ludico.jpeg',
     
     yaw: 0,
     autoRotate: false,
