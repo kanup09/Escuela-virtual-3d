@@ -70,17 +70,17 @@ export const interiores = [
         "label": "Entrada",
         "arrivalYaw": 0
       },
-      // Escena de origen: hall
+
       {
-        "x": 81.68,
-        "y": 57.33,
+        "x": 76.34,
+        "y": 55.64,
         "to": "comedor ext",
         "style": "wayfinding",
         "direction": "forward",
         "rotateX": 0,
-        "rotateY": -45,
+        "rotateY": 0,
         "rotateZ": 0,
-        "scale": 1.15,
+        "scale": 1,
         "label": "Comedor Galeria",
         "arrivalYaw": 0
       },
@@ -113,6 +113,20 @@ export const interiores = [
         "rotateZ": 0,
         "scale": 1,
         "label": "Patio",
+        "arrivalYaw": 0
+      },
+      // Escena de origen: hall
+      {
+        "x": 87.68,
+        "y": 56.35,
+        "to": "planta-alta-1",
+        "style": "wayfinding",
+        "direction": "left",
+        "rotateX": 0,
+        "rotateY": -47,
+        "rotateZ": 0,
+        "scale": 1,
+        "label": "Planta Alta A",
         "arrivalYaw": 0
       }
     ],
@@ -200,33 +214,39 @@ export const interiores = [
     id: 'patio',
     group: 'interior',
     title: 'Patio',
-    image: 'tour/Patio.jpg'
+    image: 'tour/Patio.jpg',
+
+    hotspots:[
+      // Escena de origen: patio
+      {
+        "x": 3.8,
+        "y": 55.56,
+        "to": "gimnasio",
+        "style": "wayfinding",
+        "direction": "back",
+        "rotateX": 0,
+        "rotateY": -23,
+        "rotateZ": 0,
+        "scale": 1,
+        "label": "Gimnasio",
+        "arrivalYaw": 0
+      },
+      
+    ]
   },
 
   {
     id: 'comedor ext',
     group: 'interior',
     title: 'Comedor Galeria',
-    image: 'tour/Comedor Galeria.jpeg',
+    image: 'tour/Comedor galeria.jpg',
 
     yaw: 0,
     autoRotate: false,
 
     hotspots : [
       // Escena de origen: hall
-      {
-        "x": 76.34,
-        "y": 55.64,
-        "to": "comedor ext",
-        "style": "wayfinding",
-        "direction": "forward",
-        "rotateX": 0,
-        "rotateY": 0,
-        "rotateZ": 0,
-        "scale": 1,
-        "label": "Comedor Galeria",
-        "arrivalYaw": 0
-      },
+      
     ]
   },
   
