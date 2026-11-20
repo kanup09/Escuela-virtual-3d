@@ -198,7 +198,7 @@ export const interiores = [
     autoRotate: false,
   },
 
-    {
+  {
     id: 'entrada-biblioteca',
     group: 'interior',
     title: 'Entrada Biblioteca',

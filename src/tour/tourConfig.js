@@ -52,7 +52,7 @@ import { interiores } from './config/interiores.js';
 export const TOUR = {
 
   // Nombre de la escuela
-  title: 'Escuela · Recorrido Virtual',
+  title: 'Escuela Nueva Salta · Recorrido Virtual',
 
   // Vista inicial al abrir el recorrido
   start: 'entrada',
