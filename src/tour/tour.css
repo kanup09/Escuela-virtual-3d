@@ -259,18 +259,24 @@
   display: none !important;
 }
 
-/* Nombre de la panorámica actual */
+
+/* ==========================================
+   NOMBRE DE PANORÁMICA ACTUAL
+   ========================================== */
 
 #tour .tour-current-place {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  box-sizing: border-box;
+
+  min-width: 92px;
+  min-height: 40px;
 
   max-width: min(35vw, 300px);
 
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-
-  padding: 10px 17px;
+  padding: 0 16px;
 
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 999px;
@@ -278,11 +284,19 @@
   background: rgba(20, 36, 45, 0.7);
   color: #ffffff;
 
-  backdrop-filter: blur(16px);
-
+  font-family: var(--font-ui);
   font-size: 12px;
   font-weight: 600;
+
+  text-align: center;
+  white-space: nowrap;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  backdrop-filter: blur(16px);
 }
+
 
 
 /* =========================================================
@@ -481,17 +495,101 @@
   border-right: 3px solid #ffffff;
 }
 
+
+
+/* ==========================================
+   FLECHAS DEL CARRUSEL
+   CENTRADO CORREGIDO
+   ========================================== */
+
+/* Botón circular */
+
+#tour .dock--interior .carousel-arrow {
+  position: relative;
+
+  display: block;
+
+  flex: 0 0 46px;
+
+  width: 46px;
+  height: 46px;
+
+  padding: 0;
+  margin: 0;
+
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.12);
+
+  /* Oculta los caracteres originales */
+  color: transparent;
+  font-size: 0;
+  line-height: 0;
+
+  overflow: hidden;
+
+  cursor: pointer;
+}
+
+/* Chevron centrado exactamente */
+
+#tour .dock--interior .carousel-arrow::before {
+  content: "";
+
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  display: block;
+
+  width: 13px;
+  height: 13px;
+
+  margin: 0;
+  padding: 0;
+
+  border-top: 3px solid #ffffff;
+  border-right: 3px solid #ffffff;
+
+  box-sizing: border-box;
+
+  pointer-events: none;
+}
+
+/* Izquierda */
+
 #tour .dock--interior
 .carousel-arrow:first-child::before {
-  transform: rotate(-135deg);
-  margin-left: 5px;
+  transform:
+    translate(-37%, -50%)
+    rotate(-135deg);
 }
+
+/* Derecha */
 
 #tour .dock--interior
 .carousel-arrow:last-child::before {
-  transform: rotate(45deg);
-  margin-right: 5px;
+  transform:
+    translate(-57%, -50%)
+    rotate(45deg);
 }
+
+/* Hover */
+
+#tour .dock--interior
+.carousel-arrow:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.27);
+}
+
+/* Deshabilitado */
+
+#tour .dock--interior .carousel-arrow:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
 
 #tour .dock--interior
 .carousel-arrow:hover:not(:disabled) {
@@ -1158,6 +1256,39 @@
 }
 
 
+/* LOGO DE LA PORTADA */
+
+#tour .tour-intro-logo {
+  display: block;
+
+  width: clamp(200px, 15vw, 250px);
+  max-width: 100%;
+  height: auto;
+
+  margin: 0 auto 8px;
+
+  object-fit: contain;
+
+  filter: drop-shadow(
+    0 4px 14px rgba(0, 0, 0, 0.28)
+  );
+}
+
+/* ADAPTACIÓN PARA CELULARES */
+
+@media (max-width: 700px) {
+
+  #tour .tour-intro-logo {
+    width: min(160px, 40vw);
+    max-width: 100%;
+
+    margin-bottom: 6px;
+  }
+
+}
+
+
+
 /* =========================================================
    13. FUNDIDO, CARGA Y MENSAJES
    ========================================================= */
@@ -1319,10 +1450,12 @@
 
 /* Botón Plano */
 
+
 #tour .sheet-open {
   position: absolute;
 
-  left: 14px;
+  left: 18px;
+
   bottom: max(
     98px,
     calc(98px + env(safe-area-inset-bottom))
@@ -1330,20 +1463,35 @@
 
   z-index: 4;
 
-  padding: 10px 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
-  border: 1px solid rgba(255, 255, 255, 0.24);
+  gap: 10px;
+
+  min-width: 150px;
+  height: 52px;
+
+  padding: 0 20px;
+
+  border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 999px;
 
-  background: rgba(20, 36, 45, 0.76);
+  background: rgba(20, 36, 46, 0.92);
   color: #ffffff;
 
-  font-size: 12px;
-  font-weight: 600;
+  font-family: var(--font-ui);
+  font-size: 15px;
+  font-weight: 700;
 
-  backdrop-filter: blur(14px);
+  backdrop-filter: blur(16px);
+
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.2);
+
   cursor: pointer;
 }
+
 
 #tour .sheet-open:hover {
   background: rgba(41, 61, 72, 0.92);
@@ -1861,9 +2009,13 @@
   }
 
   #tour .tour-current-place {
+    min-width: 78px;
+    min-height: 38px;
+
     max-width: 42vw;
 
-    padding: 10px 12px;
+    padding: 0 12px;
+
     font-size: 11px;
   }
 
@@ -2006,13 +2158,24 @@
 
   /* Plano */
 
+
   #tour .sheet-open {
     left: 12px;
-    bottom: 79px;
 
-    padding: 9px 12px;
-    font-size: 11px;
+    bottom: max(
+      82px,
+      calc(82px + env(safe-area-inset-bottom))
+    );
+
+    min-width: 120px;
+    height: 44px;
+
+    padding: 0 14px;
+
+    font-size: 13px;
+    gap: 7px;
   }
+
 
   #tour .sheet-panel {
     padding: 12px;
@@ -2067,19 +2230,36 @@
    21. CELULARES PEQUEÑOS
    ========================================================= */
 
+
 @media (max-width: 380px) {
 
-  #tour .dock-carousel .carousel-arrow {
-    flex-basis: 30px;
+  #tour .exterior-dock-item {
+    padding: 0 2px;
+    font-size: 10px;
+  }
+
+  #tour .dock--interior .carousel-arrow {
+    flex: 0 0 30px;
 
     width: 30px;
-    height: 30px;
+    height: 40px;
   }
 
-  #tour .dock-carousel .carousel-scene {
-    padding: 0 2px;
-    font-size: 11px;
+  #tour .dock--interior .carousel-viewport {
+    gap: 2px;
   }
+
+  #tour .dock--interior .carousel-scene {
+    padding: 0 2px;
+    font-size: 9px;
+  }
+
+  #tour .sheet-open {
+    min-width: 110px;
+    height: 42px;
+    font-size: 12px;
+  }
+
 }
 
 

@@ -45,6 +45,20 @@ export const interiores = [
     autoRotate: false,
     hotspots:[
       // Escena de origen: galeria
+      // Escena de origen: hall
+      {
+        "x": 90.62,
+        "y": 65,
+        "to": "planta-alta-1",
+        "style": "wayfinding",
+        "direction": "back",
+        "rotateX": 0,
+        "rotateY": 20,
+        "rotateZ": 0,
+        "scale": 0.8,
+        "label": "Planta Alta A",
+        "arrivalYaw": 0
+      }
     ],
   },
     

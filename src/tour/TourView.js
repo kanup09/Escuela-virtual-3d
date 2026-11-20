@@ -323,29 +323,35 @@ export class TourView {
 
     this.intro.innerHTML = `
       <div class="tour-intro-content">
+        <img
+          class="tour-intro-logo"
+          src="./IconoDePrueba.jpeg"
+          alt="Logo de la escuela"
+        />
 
-        <span class="tour-intro-subtitle">
+        <div class="tour-intro-subtitle">
           UNA EXPERIENCIA PARA DESCUBRIR
-        </span>
+        </div>
 
-        <h1 class="tour-intro-title"></h1>
+        <h1 class="tour-intro-title">
+          Escuela Nueva Salta
+          <br />
+          · Recorrido Virtual
+        </h1>
 
         <p class="tour-intro-description">
-          Recorré sus espacios, conocé su arquitectura y explorá cada ambiente a tu ritmo.
+          Recorré sus espacios, conocé su arquitectura
+          y explorá cada ambiente a tu ritmo.
         </p>
 
-        <button
-          type="button"
-          class="tour-start-button"
-        >
+        <button class="tour-start-button">
           Iniciar tour
-          <span aria-hidden="true">→</span>
+          <span>→</span>
         </button>
 
-        <span class="tour-intro-hint">
+        <div class="tour-intro-hint">
           Mové el mouse o deslizá el dedo para explorar
-        </span>
-
+        </div>
       </div>
     `;
 
