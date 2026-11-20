@@ -1053,7 +1053,12 @@ export class TourView {
     }
 
     if (video.readyState > 0) video.currentTime = 0;
+    // ==========================================
+    // VELOCIDAD DE LOS VIDEOS DE TRANSICIÓN
+    // ==========================================
 
+    video.defaultPlaybackRate = 0.75;
+    video.playbackRate = 0.75;
     return new Promise((resolveStart) => {
       let ready = false;
       let settled = false;
