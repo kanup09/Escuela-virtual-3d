@@ -1,30 +1,72 @@
+
+/* =========================================================
+   ESCUELA VIRTUAL 3D
+   TOUR.CSS - VERSIÓN CONSOLIDADA
+   ========================================================= */
+
+
+/* =========================================================
+   01. VARIABLES Y REGLAS GENERALES
+   ========================================================= */
+
+#tour {
+  --accent: #a84342;
+  --accent-hover: #bd5551;
+
+  --ink: #14242d;
+  --surface-dark: rgba(20, 36, 46, 0.92);
+
+  --text-light: #ffffff;
+  --text-muted: #cbd8df;
+
+  --font-ui: "Trebuchet MS", Verdana, sans-serif;
+
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+
+  overflow: hidden;
+
+  background: #0d1a22;
+  font-family: var(--font-ui);
+}
+
 [hidden] {
   display: none !important;
 }
 
-/* Contenedor y visor */
-#tour {
-  position: fixed;
-  inset: 0;
-  z-index: 20;
-  overflow: hidden;
-  background: #0d1a22;
+#tour *,
+#tour *::before,
+#tour *::after {
+  box-sizing: border-box;
 }
 
+#tour button {
+  font-family: inherit;
+}
+
+
+/* =========================================================
+   02. CONTENEDOR Y VISOR
+   ========================================================= */
+
 #tour .stage,
-.pano-canvas,
-.pano-layer {
+#tour .pano-canvas,
+#tour .pano-layer {
   position: absolute;
   inset: 0;
+
   width: 100%;
   height: 100%;
 }
 
 #tour .stage {
   overflow: hidden;
+
   touch-action: none;
   cursor: grab;
   user-select: none;
+
   background: #0d1a22;
   transition: opacity 180ms ease;
 }
@@ -33,43 +75,53 @@
   opacity: 0;
 }
 
-.pz-wrap {
+#tour .pz-wrap {
   position: absolute;
   left: 0;
   top: 0;
+
   transform-origin: 0 0;
   will-change: transform;
 }
 
-.pz-img {
+#tour .pz-img {
   display: block;
+
   width: 100%;
   height: 100%;
+
   user-select: none;
   pointer-events: none;
 }
 
-.pano-canvas {
+#tour .pano-canvas {
   touch-action: none;
   cursor: grab;
 }
 
-.pano-layer {
+#tour .pano-layer {
   overflow: hidden;
   pointer-events: none;
 }
 
-.pano-layer .hotspot {
+#tour .pano-layer .hotspot {
   pointer-events: auto;
 }
 
-/* Controles superiores */
+
+/* =========================================================
+   03. CONTROLES SUPERIORES
+   ========================================================= */
+
 #tour .bar {
   position: absolute;
+
   top: max(18px, env(safe-area-inset-top));
   z-index: 4;
+
   display: flex;
   align-items: center;
+
   gap: 10px;
 }
 
@@ -86,16 +138,16 @@
 #tour .bar-right .pill {
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 12px;
-  background: rgba(12, 28, 38, 0.55);
-  color: #fff;
+
+  background: rgba(12, 28, 38, 0.65);
+  color: #ffffff;
+
   backdrop-filter: blur(12px);
-  box-shadow: none;
 }
 
 #tour .brand {
   padding: 10px 16px;
-  border-color: rgba(255, 255, 255, 0.12);
-  background: rgba(12, 28, 38, 0.65);
+
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.3px;
@@ -104,960 +156,56 @@
 #tour .pill {
   border: 0;
   border-radius: 999px;
+
   padding: 9px 15px;
+
   background: rgba(255, 255, 255, 0.9);
   color: #16303d;
+
   font-size: 13px;
   font-weight: 600;
+
   cursor: pointer;
+
   box-shadow: 0 1px 8px rgba(0, 0, 0, 0.22);
 }
 
 #tour .pill:hover {
-  background: #fff;
+  background: #ffffff;
 }
 
 #tour .pill.dark {
   background: rgba(22, 64, 86, 0.92);
-  color: #fff;
+  color: #ffffff;
 }
 
 #tour .pill.dark:hover {
   background: #164056;
 }
 
-#tour .history-controls {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-#tour .history-btn {
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  border-radius: 50%;
-  font-size: 22px;
-  line-height: 1;
-  transition: background 0.2s ease, border-color 0.2s ease;
-}
-
-#tour .history-btn:hover:not(:disabled),
-#tour .bar-right .pill:hover {
-  border-color: rgba(255, 255, 255, 0.4);
-  background: rgba(12, 28, 38, 0.9);
-}
+/* El botón exterior antiguo permanece oculto */
 
 #tour [data-act="exterior"] {
   display: none !important;
 }
 
+/* Mantener disponible el estilo del botón 3D */
+
 #tour [data-act="3d"] {
   white-space: nowrap;
 }
 
-#tour .history-btn:disabled,
-#tour .scene-btn:disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
-}
 
-/* Controles de zoom */
-#tour .zoom-ctl {
-  position: absolute;
-  right: 14px;
-  bottom: max(82px, calc(82px + env(safe-area-inset-bottom)));
-  z-index: 4;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
+/* =========================================================
+   04. HISTORIAL Y NAVEGACIÓN SUPERIOR
+   ========================================================= */
 
-#tour .round {
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: rgba(13, 26, 34, 0.62);
-  color: #fff;
-  font-size: 19px;
-  line-height: 1;
-  cursor: pointer;
-  backdrop-filter: blur(6px);
-}
-
-#tour .round:hover {
-  background: rgba(13, 26, 34, 0.85);
-}
-
-/* Menú inferior */
-#tour .dock {
-  position: absolute;
-  left: 50%;
-  bottom: max(12px, env(safe-area-inset-bottom));
-  z-index: 4;
+#tour .history-controls {
   display: flex;
   align-items: center;
-  gap: 3px;
-  max-width: calc(100vw - 136px);
-  padding: 5px;
-  overflow-x: auto;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 999px;
-  background: rgba(12, 28, 38, 0.64);
-  backdrop-filter: blur(14px);
-  scrollbar-width: none;
-  transform: translateX(-50%);
-}
-
-#tour .dock::-webkit-scrollbar {
-  display: none;
-}
-
-#tour .dock-label {
-  padding: 0 8px 0 12px;
-  color: #8fa5b2;
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-#tour .chip {
-  border: 0;
-  border-radius: 999px;
-  padding: 9px 13px;
-  background: transparent;
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 12px;
-  font-weight: 500;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
-}
-
-#tour .chip:hover:not(.active) {
-  background: rgba(255, 255, 255, 0.15);
-  color: #fff;
-}
-
-#tour .chip.active {
-  background: rgba(255, 255, 255, 0.95);
-  color: #16303d;
-}
-
-#tour .scene-controls {
-  display: none !important;
-}
-
-#tour .scene-btn {
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 999px;
-  background: rgba(12, 28, 38, 0.55);
-  color: #fff;
-  box-shadow: none;
-  backdrop-filter: blur(10px);
-  white-space: nowrap;
-}
-
-#tour .scene-btn:hover:not(:disabled) {
-  background: rgba(22, 64, 86, 0.95);
-}
-
-/* Hotspots normales */
-#tour .hotspot {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  transform: translate(-50%, -50%) scale(calc(1 / var(--s, 1)));
-  padding: 5px 12px 5px 9px;
-  border: 0;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.82);
-  color: #16303d;
-  font-size: 12px;
-  font-weight: 700;
-  line-height: 1.15;
-  text-align: left;
-  white-space: nowrap;
-  cursor: pointer;
-  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(4px);
-  opacity: 0.94;
-  transition: background 0.2s, opacity 0.2s;
-}
-
-#tour .hotspot:hover {
-  background: #fff;
-  opacity: 1;
-}
-
-#tour .hotspot.pano {
-  left: 0;
-  top: 0;
-  transform: none;
-}
-
-#tour .hotspot i {
-  flex: none;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: #164056;
-  animation: pulse 2.4s infinite;
-}
-
-#tour .hotspot small {
-  display: block;
-  font-size: 10px;
-  font-weight: 500;
-  opacity: 0.75;
-}
-
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(22, 64, 86, 0.5);
-  }
-  70% {
-    box-shadow: 0 0 0 8px rgba(22, 64, 86, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(22, 64, 86, 0);
-  }
-}
-
-/* Flechas direccionales */
-#tour .hotspot.hotspot--arrow {
-  width: 42px;
-  height: 42px;
-  min-width: 42px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0;
-  padding: 0;
-  border: none;
-  border-radius: 50%;
-  background: transparent;
-  box-shadow: none;
-  backdrop-filter: none;
-  opacity: 0.65;
-  transition: opacity 0.2s ease, filter 0.2s ease;
-}
-
-#tour .hotspot.hotspot--arrow .hotspot-arrow-icon {
-  width: 34px;
-  height: 34px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  background: transparent;
-  color: #fff;
-  font-size: 30px;
-  font-weight: 700;
-  line-height: 1;
-  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.9);
-  pointer-events: none;
-}
-
-#tour .hotspot.hotspot--arrow .hotspot-text {
-  display: none;
-}
-
-#tour .hotspot.hotspot--arrow:hover,
-#tour .hotspot.hotspot--arrow:focus-visible {
-  background: transparent;
-  box-shadow: none;
-  opacity: 1;
-  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.7));
-}
-
-#tour .hotspot--arrow:focus-visible {
-  outline: 2px solid #fff;
-  outline-offset: 3px;
-}
-
-@media (hover: hover) {
-  #tour .hotspot.hotspot--arrow::after {
-    content: attr(aria-label);
-    position: absolute;
-    bottom: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 6px 10px;
-    border-radius: 6px;
-    background: rgba(12, 27, 37, 0.9);
-    color: #fff;
-    font-size: 11px;
-    font-weight: 500;
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s ease;
-  }
-
-  #tour .hotspot.hotspot--arrow:hover::after,
-  #tour .hotspot.hotspot--arrow:focus-visible::after {
-    opacity: 1;
-  }
-}
-
-/* Accesos principales */
-#tour .hotspot.hotspot--primary {
-  width: auto;
-  min-width: 52px;
-  height: auto;
-  flex-direction: column;
-  gap: 6px;
-  padding: 8px;
-  overflow: visible;
-  background: transparent;
-  border: none;
-  box-shadow: none;
-  opacity: 1;
-}
-
-#tour .hotspot--primary .hotspot-arrow-icon {
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: rgba(139, 52, 64, 0.94);
-  color: #fff;
-  font-size: 30px;
-  line-height: 1;
-  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.3);
-  animation: primary-arrow-pulse 2.8s ease-in-out infinite;
-}
-
-#tour .hotspot--primary .hotspot-text {
-  display: block;
-  padding: 7px 13px;
-  border-radius: 999px;
-  background: rgba(17, 31, 41, 0.92);
-  color: #fff;
-  font-size: 12px;
-  font-weight: 600;
-  text-align: center;
-  white-space: nowrap;
-  text-shadow: none;
-}
-
-#tour .hotspot--primary::after {
-  display: none !important;
-}
-
-@keyframes primary-arrow-pulse {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 rgba(139, 52, 64, 0.35);
-  }
-  50% {
-    box-shadow: 0 0 0 9px rgba(139, 52, 64, 0);
-  }
-}
-
-/* Portada */
-#tour .tour-intro {
-  position: absolute;
-  inset: 0;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  pointer-events: none;
-  background: linear-gradient(
-    to bottom,
-    rgba(6, 18, 27, 0.15),
-    rgba(6, 18, 27, 0.65)
-  );
-  transition: opacity 0.4s ease;
-}
-
-#tour .tour-intro.leaving {
-  opacity: 0;
-}
-
-#tour .tour-intro-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-  max-width: 680px;
-  color: #fff;
-  text-align: center;
-}
-
-#tour .tour-intro-subtitle {
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 4px;
-}
-
-#tour .tour-intro-title {
-  margin: 0;
-  font-size: clamp(34px, 5vw, 68px);
-  font-weight: 700;
-  line-height: 1.1;
-  text-shadow: 0 3px 20px rgba(0, 0, 0, 0.4);
-}
-
-#tour .tour-intro-description {
-  max-width: 460px;
-  font-size: clamp(14px, 2vw, 18px);
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.9);
-}
-
-#tour .tour-start-button {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  padding: 15px 28px;
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
-  color: #fff;
-  font-size: 15px;
-  font-weight: 600;
-  backdrop-filter: blur(12px);
-  cursor: pointer;
-  pointer-events: auto;
-  transition: background 0.2s ease, transform 0.2s ease;
-}
-
-#tour .tour-start-button:hover {
-  background: rgba(255, 255, 255, 0.25);
-  transform: translateY(-2px);
-}
-
-#tour .tour-start-button:focus-visible {
-  outline: 3px solid #fff;
-  outline-offset: 4px;
-}
-
-#tour .tour-intro-hint {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.75);
-}
-
-#tour.intro-active .bar,
-#tour.intro-active .zoom-ctl,
-#tour.intro-active .scene-controls,
-#tour.intro-active .dock,
-#tour.intro-active .hotspot {
-  display: none !important;
-}
-
-/* Estados, carga y mensajes */
-#tour .fade {
-  position: absolute;
-  inset: 0;
-  z-index: 5;
-  background: #000;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-}
-
-#tour .fade.on {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-#tour .toast {
-  position: absolute;
-  top: 64px;
-  left: 50%;
-  z-index: 7;
-  transform: translateX(-50%);
-  padding: 7px 13px;
-  border-radius: 8px;
-  background: #164056;
-  color: #fff;
-  font-size: 13px;
-}
-
-#tour .missing {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-content: center;
-  gap: 10px;
-  padding: 24px;
-  color: #cfdde5;
-  text-align: center;
-}
-
-#tour .missing strong {
-  color: #fff;
-  font-size: 24px;
-}
-
-#tour .missing p {
-  margin: 0;
-}
-
-#tour .missing code {
-  display: inline-block;
-  padding: 6px 12px;
-  border-radius: 6px;
-  background: #1a2a35;
-  color: #9fd2e3;
-}
-
-/* Responsive */
-@media (max-width: 700px) {
-  #tour .bar-left {
-    top: max(12px, env(safe-area-inset-top));
-    left: 12px;
-    width: auto;
-    flex-wrap: nowrap;
-  }
-
-  #tour .bar-left .brand {
-    display: none;
-  }
-
-  #tour .bar-right {
-    top: max(12px, env(safe-area-inset-top));
-    right: 12px;
-    bottom: auto;
-  }
-
-  #tour .history-controls {
-    gap: 4px;
-  }
-
-  #tour .history-btn {
-    width: 38px;
-    height: 38px;
-    min-width: 38px;
-    font-size: 21px;
-  }
-
-  #tour [data-act="3d"] {
-    height: 38px;
-    padding: 0 12px;
-    font-size: 12px;
-  }
-
-  #tour .dock {
-    right: 66px;
-    left: 12px;
-    bottom: max(12px, env(safe-area-inset-bottom));
-    max-width: none;
-    transform: none;
-  }
-
-  #tour .dock-label {
-    display: none;
-  }
-
-  #tour .chip {
-    padding: 8px 12px;
-  }
-
-  #tour .zoom-ctl {
-    right: 12px;
-    bottom: max(82px, calc(82px + env(safe-area-inset-bottom)));
-  }
-
-  #tour .tour-intro-content {
-    gap: 16px;
-  }
 
-  #tour .tour-intro-subtitle {
-    font-size: 10px;
-    letter-spacing: 2px;
-  }
-
-  #tour .hotspot--primary .hotspot-arrow-icon {
-    width: 46px;
-    height: 46px;
-    font-size: 27px;
-  }
-
-  #tour .hotspot--primary .hotspot-text {
-    padding: 7px 10px;
-    font-size: 11px;
-  }
-
-  #tour .hotspot.hotspot--arrow {
-    width: 44px;
-    height: 44px;
-  }
-
-  #tour .hotspot.hotspot--arrow .hotspot-arrow-icon {
-    font-size: 26px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #tour .tour-intro,
-  #tour .tour-start-button,
-  #tour .tour-loading-spinner,
-  #tour .hotspot i,
-  #tour .hotspot--primary .hotspot-arrow-icon,
-  #tour .travel-overlay,
-  #tour .travel-video,
-  #tour .stage.travel-fallback {
-    transition: none;
-    animation: none;
-  }
-}
-
-
-/* ==========================================
-   INDICADOR DE CARGA
-   ========================================== */
-
-#tour .tour-loading {
-  position: absolute;
-  inset: 0;
-  z-index: 6;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: 24px;
-  pointer-events: none;
-  background: rgba(13, 26, 34, 0.72);
-  color: #fff;
-  text-align: center;
-  backdrop-filter: blur(8px);
-}
-
-/* Respetar atributo hidden */
-
-#tour .tour-loading[hidden] {
-  display: none !important;
-}
-
-/* Círculo animado */
-
-#tour .tour-loading-spinner {
-  width: 45px;
-  height: 45px;
-
-  border: 3px solid rgba(255, 255, 255, 0.2);
-  border-top-color: #efb9ae;
-
-  border-radius: 50%;
-
-  animation: tour-loading-spin 0.8s linear infinite;
-}
-
-/* Textos */
-
-#tour .tour-loading-title {
-  font-size: 16px;
-  font-weight: 600;
-  text-align: center;
-}
-
-#tour .tour-loading-description {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.7);
-  text-align: center;
-}
-
-/* Animación */
-
-@keyframes tour-loading-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-#tour .hotspot.hotspot--arrow.hotspot--primary
-.hotspot-arrow-icon {
-  background: rgba(139, 52, 64, 0.94);
-  color: #ffffff;
-  width: 48px;
-  height: 48px;
-  animation: primary-arrow-pulse 2.8s ease-in-out infinite;
-}
-
-#tour .hotspot.hotspot--arrow.hotspot--primary
-.hotspot-text {
-  display: block;
-}
-
-/* ==========================================
-   ILUMINACIÓN INTERACTIVA DE FACHADAS
-   ========================================== */
-
-/* Estado normal de la imagen */
-
-#tour .facade-glow .pz-img {
-  filter:
-    brightness(1)
-    saturate(1);
-
-  transition:
-    filter 0.45s ease;
-}
-
-/* Iluminación al pasar el mouse */
-
-@media (hover: hover) and (pointer: fine) {
-
-  #tour .facade-glow:hover .pz-img {
-    filter:
-      brightness(1.09)
-      saturate(1.07);
-  }
-
-}
-
-/* Accesibilidad */
-
-@media (prefers-reduced-motion: reduce) {
-
-  #tour .facade-glow .pz-img {
-    transition: none;
-  }
-
-}
-
-/* ============================================================
-   TERMINACIÓN VISUAL · NOVIEMBRE 2026
-   El recorrido libre 3D permanece en el código, oculto al público.
-   ============================================================ */
-#tour { --accent: #a84342; --ink: #14242d; }
-#tour .tour-intro {
-  background: linear-gradient(180deg, rgba(11,22,27,.20) 0%, rgba(13,27,34,.38) 35%, rgba(13,27,34,.83) 100%);
-}
-#tour .tour-intro-content { max-width: 790px; gap: 17px; }
-#tour .tour-intro-subtitle { color:#f5d5cb; letter-spacing:.26em; font-size:11px; }
-#tour .tour-intro-title { font-size:clamp(36px,6vw,76px); font-weight:750; letter-spacing:-.035em; text-wrap:balance; }
-#tour .tour-intro-description { max-width: 530px; text-wrap:balance; }
-#tour .tour-start-button {
-  background:var(--accent); border:1px solid rgba(255,255,255,.40);
-  padding:15px 25px; box-shadow:0 14px 30px rgba(0,0,0,.27);
+  gap: 8px;
 }
-#tour .tour-start-button:hover {background:#bd5551;box-shadow:0 18px 36px rgba(0,0,0,.35)}
-#tour .tour-start-button:disabled {opacity:.65;cursor:wait}
-#tour .tour-current-place {
-  display:inline-block; max-width:min(35vw,300px); overflow:hidden; text-overflow:ellipsis;
-  border:1px solid rgba(255,255,255,.18); border-radius:999px;
-  padding:10px 17px; color:white; background:rgba(20,36,45,.65);
-  backdrop-filter:blur(16px); font-size:12px; font-weight:650; white-space:nowrap;
-}
-#tour .chip.active { background:#fff4f1; color:#822e30; }
-#tour .hotspot.hotspot--arrow.hotspot--primary .hotspot-arrow-icon { background:var(--accent); }
-#tour .hotspot.hotspot--arrow.hotspot--primary .hotspot-text {background:rgba(17,30,38,.93);max-width:160px;white-space:normal;line-height:1.25}
-#tour .sheet-open {
-  position:absolute;z-index:4;left:14px;bottom:max(84px,calc(84px + env(safe-area-inset-bottom)));
-  padding:10px 15px;border:1px solid rgba(255,255,255,.24);border-radius:999px;
-  background:rgba(20,36,45,.76);backdrop-filter:blur(14px);color:#fff;
-  font-size:12px;font-weight:650;cursor:pointer;
-}
-#tour .sheet-open:hover {background:rgba(41,61,72,.92)}
-#tour.intro-active .sheet-open {display:none!important}
-#tour .sheet-modal[hidden] {display:none!important}
-#tour .sheet-modal {
-  position:absolute;z-index:30;inset:0;display:grid;place-items:center;padding:18px;
-  background:rgba(7,15,22,.84);backdrop-filter:blur(12px)
-}
-#tour .sheet-panel {
-  width: min(1100px, 96vw);
-  max-height: 92vh;
-  overflow: auto;
-  padding: 20px;
-  border-radius: 18px;
-  background: #f8f7f5;
-  color: #24343c;
-  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.45);
-}
-#tour .sheet-head {display:flex;align-items:center;justify-content:space-between;gap:12px;padding:4px 4px 14px}
-#tour .sheet-head strong {font-size:14px}
-#tour .sheet-head button {width:36px;height:36px;border:0;border-radius:50%;cursor:pointer;background:#e9e6e2;color:#28363d}
-#tour .sheet-panel img {width:100%;height:auto;display:block;border:1px solid #ddd}
-#tour .sheet-panel p {font-size:11px;color:#66747e;margin:10px 4px 3px}
-@media(max-width:700px) {
- #tour .tour-current-place {max-width:42vw;padding:10px 12px;font-size:11px}
- #tour .sheet-open {left:12px;bottom:79px;font-size:11px;padding:9px 12px}
- #tour .tour-intro-content {gap:14px}
- #tour .tour-intro-subtitle {letter-spacing:.13em;font-size:9px}
- #tour .tour-intro-title {font-size:clamp(32px,9vw,48px)}
- #tour .tour-intro-description {font-size:13px;line-height:1.45}
- #tour .sheet-panel {padding:12px;max-height:90vh}
-}
-@media(prefers-reduced-motion:reduce){#tour .tour-start-button{transition:none}}
-
-
-
-/* ==========================================
-   TRANSICIONES DE VIDEO
-   ========================================== */
-
-#tour .travel-overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 30;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-#tour .travel-overlay[hidden] {
-  display: none !important;
-}
-
-#tour .travel-video {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0;
-  transition: opacity 360ms ease;
-  pointer-events: none;
-}
-
-#tour .travel-video.is-visible {
-  opacity: 1;
-}
-
-/* Botón para omitir el video */
-
-#tour .travel-skip {
-  position: absolute;
-  pointer-events: auto;
-
-  right: 24px;
-  bottom: max(
-    24px,
-    env(safe-area-inset-bottom)
-  );
-
-  padding: 11px 18px;
-
-  border: 1px solid rgba(255,255,255,0.35);
-  border-radius: 999px;
-
-  background: rgba(12,25,35,0.7);
-  color: white;
-
-  font-size: 13px;
-  font-weight: 600;
-
-  backdrop-filter: blur(10px);
-  cursor: pointer;
-}
-
-#tour .travel-skip:hover {
-  background: rgba(12,25,35,0.95);
-}
-
-#tour .travel-skip:focus-visible {
-  outline: 3px solid white;
-  outline-offset: 3px;
-}
-
-@media (max-width: 700px) {
-  #tour .travel-skip {
-    right: 14px;
-    bottom: 20px;
-  }
-}
-
-/* ==========================================
-   FLECHAS LATERALES DEL EXTERIOR
-   ========================================== */
-
-#tour .exterior-nav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 4;
-  width: 54px;
-  height: 54px;
-  padding: 0;
-  display: none;
-  place-items: center;
-  border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.9);
-  background: rgba(13, 26, 34, 0.55);
-  backdrop-filter: blur(6px);
-  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.4);
-  cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
-}
-
-/* Solo se ven en el exterior, y no mientras corre un video */
-#tour.is-exterior:not(.is-traveling):not(.intro-active) .exterior-nav {
-  display: grid;
-}
-
-#tour .exterior-nav[hidden] { display: none !important; }
-
-#tour .exterior-nav--prev { left: 18px; }
-#tour .exterior-nav--next { right: 18px; }
-
-#tour .exterior-nav svg {
-  width: 26px;
-  height: 26px;
-  fill: none;
-  stroke: #fff;
-  stroke-width: 3;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  transition: stroke 0.2s;
-}
-
-#tour .exterior-nav:hover {
-  background: #fff;
-  transform: translateY(-50%) scale(1.08);
-}
-#tour .exterior-nav:hover svg { stroke: #164056; }
-
-#tour .exterior-nav:focus-visible {
-  outline: 3px solid #fff;
-  outline-offset: 4px;
-}
-
-/* Nombre de la fachada a la que lleva */
-#tour .exterior-nav-label {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-top: 8px;
-  padding: 3px 8px;
-  border-radius: 999px;
-  background: rgba(13, 26, 34, 0.74);
-  color: #fff;
-  font-size: 10px;
-  font-weight: 500;
-  white-space: nowrap;
-  pointer-events: none;
-}
-
-/* En el exterior los botones Anterior / Siguiente sobran */
-#tour.is-exterior .scene-controls { display: none !important; }
-
-@media (max-width: 700px) {
-  #tour .exterior-nav { width: 44px; height: 44px; }
-  #tour .exterior-nav--prev { left: 8px; }
-  #tour .exterior-nav--next { right: 8px; }
-  #tour .exterior-nav svg { width: 22px; height: 22px; }
-  #tour .exterior-nav-label { font-size: 9px; padding: 2px 7px; }
-}
-
-/* ==========================================
-   BOTONES SUPERIORES CON TEXTO
-   ========================================== */
 
 #tour .history-btn {
   width: auto;
@@ -1072,23 +220,33 @@
   font-weight: 600;
 
   white-space: nowrap;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
 }
 
-/* ==========================================
-   REGRESAR AL EXTERIOR
-   ========================================== */
+#tour .history-btn:hover:not(:disabled) {
+  background: rgba(12, 28, 38, 0.9);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+#tour .history-btn:disabled,
+#tour .scene-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
 
 #tour .return-exterior {
+  padding: 11px 15px;
+
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+
   background: rgba(139, 52, 64, 0.9);
   color: #ffffff;
 
-  border: 1px solid rgba(255,255,255,0.25);
-  border-radius: 999px;
-
-  padding: 11px 15px;
-
   white-space: nowrap;
-
   backdrop-filter: blur(10px);
 }
 
@@ -1096,122 +254,1132 @@
   background: rgba(139, 52, 64, 1);
 }
 
-#tour .return-exterior[hidden] {
+#tour .return-exterior[hidden],
+#tour .history-controls[hidden] {
   display: none !important;
 }
 
-/* ==========================================
-   CELULARES
-   ========================================== */
+/* Nombre de la panorámica actual */
 
-@media (max-width: 700px) {
+#tour .tour-current-place {
+  display: inline-block;
 
-  #tour .bar-left {
-    display: flex;
-    align-items: center;
+  max-width: min(35vw, 300px);
 
-    gap: 7px;
-    max-width: calc(100vw - 24px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  padding: 10px 17px;
+
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+
+  background: rgba(20, 36, 45, 0.7);
+  color: #ffffff;
+
+  backdrop-filter: blur(16px);
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   05. ZOOM
+   ========================================================= */
+
+#tour .zoom-ctl {
+  position: absolute;
+
+  right: 14px;
+  bottom: max(
+    100px,
+    calc(100px + env(safe-area-inset-bottom))
+  );
+
+  z-index: 4;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 6px;
+}
+
+#tour .round {
+  display: grid;
+  place-items: center;
+
+  width: 38px;
+  height: 38px;
+
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+
+  background: rgba(13, 26, 34, 0.7);
+  color: #ffffff;
+
+  font-size: 21px;
+  line-height: 1;
+
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+}
+
+#tour .round:hover {
+  background: rgba(13, 26, 34, 0.95);
+}
+
+
+/* =========================================================
+   06. CARRUSEL INFERIOR
+   ========================================================= */
+
+/*
+   Este es el único bloque principal del carrusel.
+   No utilizar las reglas anteriores de .chip.
+*/
+
+#tour .dock.dock-carousel {
+  position: absolute;
+
+  left: 50%;
+  right: auto;
+
+  bottom: max(
+    18px,
+    env(safe-area-inset-bottom)
+  );
+
+  z-index: 4;
+
+  transform: translateX(-50%);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: min(760px, calc(100vw - 40px));
+  max-width: none;
+  height: 72px;
+
+  padding: 9px;
+  gap: 10px;
+
+  overflow: hidden;
+
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+
+  background: var(--surface-dark);
+
+  backdrop-filter: blur(16px);
+
+  box-shadow:
+    0 8px 28px rgba(0, 0, 0, 0.28);
+}
+
+/* Flechas laterales */
+
+#tour .dock-carousel .carousel-arrow {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex: 0 0 52px;
+
+  width: 52px;
+  height: 52px;
+
+  padding: 0;
+  margin: 0;
+
+  border: 1px solid rgba(255, 255, 255, 0.17);
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.13);
+
+  /* Ocultar caracteres anteriores */
+  color: transparent;
+  font-size: 0;
+  line-height: 0;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+/* Chevron dibujado con CSS */
+
+#tour .dock-carousel .carousel-arrow::before {
+  content: "";
+
+  display: block;
+
+  width: 14px;
+  height: 14px;
+
+  border-top: 3px solid #ffffff;
+  border-right: 3px solid #ffffff;
+}
+
+/* Anterior */
+
+#tour .dock-carousel .carousel-arrow:first-child::before {
+  transform: rotate(-135deg);
+  margin-left: 5px;
+}
+
+/* Siguiente */
+
+#tour .dock-carousel .carousel-arrow:last-child::before {
+  transform: rotate(45deg);
+  margin-right: 5px;
+}
+
+#tour .dock-carousel .carousel-arrow:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.27);
+  border-color: rgba(255, 255, 255, 0.55);
+
+  transform: scale(1.06);
+}
+
+#tour .dock-carousel .carousel-arrow:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+/* Contenedor de tres panorámicas */
+
+#tour .dock-carousel .carousel-viewport {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  align-items: center;
+
+  flex: 1;
+  min-width: 0;
+
+  gap: 10px;
+  overflow: hidden;
+}
+
+/* Botones de destinos */
+
+#tour .dock-carousel .carousel-scene {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 0;
+  width: 100%;
+  height: 50px;
+
+  padding: 0 14px;
+
+  border: none;
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.07);
+  color: #ffffff;
+
+  font-family: var(--font-ui);
+  font-size: 16px;
+  font-weight: 600;
+
+  letter-spacing: 0.1px;
+  line-height: 1.2;
+
+  text-align: center;
+  white-space: nowrap;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+#tour .dock-carousel .carousel-scene:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.19);
+  transform: translateY(-1px);
+}
+
+/* Panorámica seleccionada */
+
+#tour .dock-carousel .carousel-scene.active {
+  background: #fff9f7;
+  color: #963e43;
+
+  font-weight: 700;
+
+  box-shadow:
+    0 2px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* Accesibilidad */
+
+#tour .dock-carousel .carousel-arrow:focus-visible,
+#tour .dock-carousel .carousel-scene:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: -3px;
+}
+
+/* Clases antiguas conservadas por compatibilidad */
+
+#tour .dock-label {
+  display: none;
+}
+
+#tour .chip {
+  padding: 9px 13px;
+
+  border: none;
+  border-radius: 999px;
+
+  background: transparent;
+  color: rgba(255, 255, 255, 0.85);
+
+  font-size: 12px;
+  white-space: nowrap;
+
+  cursor: pointer;
+}
+
+#tour .chip.active {
+  background: #fff4f1;
+  color: #822e30;
+}
+
+
+/* =========================================================
+   07. CONTROLES DE ESCENA ANTIGUOS
+   ========================================================= */
+
+#tour .scene-controls {
+  display: none !important;
+}
+
+#tour .scene-btn {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+
+  background: rgba(12, 28, 38, 0.55);
+  color: #ffffff;
+
+  white-space: nowrap;
+  backdrop-filter: blur(10px);
+}
+
+#tour .scene-btn:hover:not(:disabled) {
+  background: rgba(22, 64, 86, 0.95);
+}
+
+
+/* =========================================================
+   08. HOTSPOTS GENERALES
+   ========================================================= */
+
+#tour .hotspot {
+  position: absolute;
+
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  transform:
+    translate(-50%, -50%)
+    scale(calc(1 / var(--s, 1)));
+
+  padding: 5px 12px 5px 9px;
+
+  border: 0;
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.82);
+  color: #16303d;
+
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.15;
+
+  text-align: left;
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 1px 6px rgba(0, 0, 0, 0.25);
+
+  backdrop-filter: blur(4px);
+
+  opacity: 0.94;
+
+  transition:
+    background 0.2s ease,
+    opacity 0.2s ease;
+}
+
+#tour .hotspot:hover {
+  background: #ffffff;
+  opacity: 1;
+}
+
+/* La posición 360° la calcula PanoViewer.js */
+
+#tour .hotspot.pano {
+  left: 0;
+  top: 0;
+
+  transform: none;
+}
+
+/* Hotspots originales con punto */
+
+#tour .hotspot i {
+  flex: none;
+
+  width: 9px;
+  height: 9px;
+
+  border-radius: 50%;
+  background: #164056;
+
+  animation: pulse 2.4s infinite;
+}
+
+#tour .hotspot small {
+  display: block;
+
+  font-size: 10px;
+  font-weight: 500;
+
+  opacity: 0.75;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(22, 64, 86, 0.5);
   }
 
-  #tour .history-btn {
-    width: auto;
-    min-width: 78px;
-    height: 38px;
-
-    padding: 0 10px;
-
-    font-size: 11px;
+  70% {
+    box-shadow: 0 0 0 8px rgba(22, 64, 86, 0);
   }
 
-  #tour .return-exterior {
-    padding: 10px 12px;
-    font-size: 11px;
-  }
-
-  /* El nombre de la escuela queda
-     oculto en móviles para dar espacio
-     a los controles */
-
-  #tour .brand {
-    display: none;
+  100% {
+    box-shadow: 0 0 0 0 rgba(22, 64, 86, 0);
   }
 }
 
 
-/* Ocultar interfaz mientras se reproduce
-   el desplazamiento exterior */
+/* =========================================================
+   09. HOTSPOTS DE FLECHAS CLÁSICAS
+   ========================================================= */
 
-#tour.is-traveling .bar,
-#tour.is-traveling .dock,
-#tour.is-traveling .zoom-ctl,
-#tour.is-traveling .sheet-open {
-  opacity: 0;
+#tour .hotspot.hotspot--arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 42px;
+  min-width: 42px;
+  height: 42px;
+
+  gap: 0;
+  padding: 0;
+
+  border: none;
+  border-radius: 50%;
+
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+
+  opacity: 0.7;
+
+  transition:
+    opacity 0.2s ease,
+    filter 0.2s ease;
+}
+
+#tour .hotspot--arrow .hotspot-arrow-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  width: 34px;
+  height: 34px;
+
+  background: transparent;
+  color: #ffffff;
+
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1;
+
+  text-shadow:
+    0 2px 5px rgba(0, 0, 0, 0.9);
+
   pointer-events: none;
 }
 
+#tour .hotspot--arrow:not(.hotspot--primary) .hotspot-text {
+  display: none;
+}
 
-/* ==========================================
-   ACCESO VISIBLE AL EXPLORAR EL EDIFICIO
-   ========================================== */
+#tour .hotspot--arrow:hover,
+#tour .hotspot--arrow:focus-visible {
+  background: transparent;
+  box-shadow: none;
 
-/* Solo dispositivos con mouse */
+  opacity: 1;
 
-@media (hover: hover) and (pointer: fine) {
+  filter:
+    drop-shadow(0 0 5px rgba(255, 255, 255, 0.7));
+}
 
-  /* Ocultar el botón inicialmente */
-  #tour .building-hover-enabled
-  .hotspot--primary {
+#tour .hotspot--arrow:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 3px;
+}
+
+/* Etiqueta flotante para flechas clásicas */
+
+@media (hover: hover) {
+  #tour .hotspot--arrow:not(.hotspot--primary)::after {
+    content: attr(aria-label);
+
+    position: absolute;
+
+    bottom: calc(100% + 8px);
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    padding: 6px 10px;
+
+    border-radius: 6px;
+
+    background: rgba(12, 27, 37, 0.9);
+    color: #ffffff;
+
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+
     opacity: 0;
-    visibility: hidden;
     pointer-events: none;
 
-    transition:
-      opacity 0.25s ease,
-      visibility 0.25s ease;
+    transition: opacity 0.2s ease;
   }
 
-  /* Mostrar cuando el mouse está
-     sobre la zona del edificio */
-  #tour .building-hover-active
-  .hotspot--primary {
+  #tour .hotspot--arrow:not(.hotspot--primary):hover::after,
+  #tour .hotspot--arrow:not(.hotspot--primary):focus-visible::after {
     opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-  }
-
-  /* Permitir uso mediante teclado */
-  #tour .building-hover-enabled
-  .hotspot--primary:focus-visible {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
   }
 }
 
-/* En celulares siempre visible */
-@media (hover: none) {
 
-  #tour .building-hover-enabled
-  .hotspot--primary {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
+/* =========================================================
+   10. ACCESOS PRINCIPALES EXTERIORES
+   ========================================================= */
+
+#tour .hotspot.hotspot--primary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: auto;
+  min-width: 52px;
+  height: auto;
+
+  gap: 6px;
+  padding: 8px;
+
+  overflow: visible;
+
+  border: none;
+  background: transparent;
+  box-shadow: none;
+
+  opacity: 1;
+}
+
+#tour .hotspot--primary .hotspot-arrow-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 48px;
+  height: 48px;
+
+  border-radius: 50%;
+
+  background: rgba(139, 52, 64, 0.94);
+  color: #ffffff;
+
+  font-size: 30px;
+  line-height: 1;
+
+  box-shadow:
+    0 3px 14px rgba(0, 0, 0, 0.3);
+
+  animation:
+    primary-arrow-pulse 2.8s ease-in-out infinite;
+}
+
+#tour .hotspot--primary .hotspot-text {
+  display: block;
+
+  max-width: 160px;
+
+  padding: 7px 13px;
+
+  border-radius: 999px;
+
+  background: rgba(17, 30, 38, 0.93);
+  color: #ffffff;
+
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.25;
+
+  text-align: center;
+  white-space: normal;
+
+  text-shadow: none;
+}
+
+#tour .hotspot--primary::after {
+  display: none !important;
+}
+
+@keyframes primary-arrow-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(139, 52, 64, 0.35);
+  }
+
+  50% {
+    box-shadow: 0 0 0 9px rgba(139, 52, 64, 0);
   }
 }
 
-/* ==========================================
-   VISOR DE PLANOS
-   ========================================== */
 
-/* Respetar las escenas exteriores */
+/* =========================================================
+   11. FLECHAS INTERIORES WAYFINDING
+   ========================================================= */
 
-#tour .sheet-open[hidden],
+/* Contenedor de flecha y texto */
+
+#tour .hotspot.hotspot--wayfinding {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: auto;
+  height: auto;
+  min-width: 48px;
+
+  gap: 6px;
+  padding: 5px;
+
+  border: none;
+
+  background: transparent;
+  box-shadow: none;
+
+  opacity: 0.94;
+  cursor: pointer;
+}
+
+/* Flecha sólida blanca original */
+
+#tour .hotspot--wayfinding .hotspot-way-arrow {
+  display: block;
+  flex-shrink: 0;
+
+  width: 38px;
+  height: 38px;
+
+  background: #ffffff;
+
+  clip-path: polygon(
+    0% 0%,
+    100% 50%,
+    0% 100%,
+    25% 50%
+  );
+
+  transform-origin: center;
+  transform-style: flat;
+
+  transition:
+    filter 0.2s ease,
+    opacity 0.2s ease;
+}
+
+/* Direcciones de las flechas */
+
+#tour .hotspot--wayfinding .dir-right {
+  transform: rotate(0deg);
+}
+
+#tour .hotspot--wayfinding .dir-left {
+  transform: rotate(180deg);
+}
+
+#tour .hotspot--wayfinding .dir-up {
+  transform: rotate(-90deg);
+}
+
+#tour .hotspot--wayfinding .dir-down {
+  transform: rotate(90deg);
+}
+
+/* Etiqueta definitiva */
+
+#tour .hotspot--wayfinding .hotspot-text {
+  display: block;
+
+  padding: 7px 14px;
+
+  border-radius: 999px;
+
+  background: rgba(25, 35, 44, 0.94);
+  color: #ffffff;
+
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+
+  letter-spacing: 0.3px;
+  line-height: 1.3;
+
+  text-align: center;
+  white-space: nowrap;
+
+  box-shadow:
+    0 3px 10px rgba(0, 0, 0, 0.22);
+}
+
+/* Evitar etiquetas duplicadas */
+
+#tour .hotspot--wayfinding::after {
+  display: none !important;
+}
+
+/* Interacción */
+
+#tour .hotspot--wayfinding:hover {
+  background: transparent;
+  box-shadow: none;
+  opacity: 1;
+}
+
+#tour .hotspot--wayfinding:hover .hotspot-way-arrow {
+  filter:
+    drop-shadow(0 3px 5px rgba(0, 0, 0, 0.25))
+    brightness(0.92);
+}
+
+#tour .hotspot--wayfinding:hover .hotspot-text {
+  background: rgba(35, 49, 61, 0.98);
+}
+
+#tour .hotspot--wayfinding:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 3px;
+}
+
+
+/* =========================================================
+   12. PORTADA DE BIENVENIDA
+   ========================================================= */
+
+#tour .tour-intro {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+
+  pointer-events: none;
+
+  background: linear-gradient(
+    180deg,
+    rgba(11, 22, 27, 0.20) 0%,
+    rgba(13, 27, 34, 0.38) 35%,
+    rgba(13, 27, 34, 0.83) 100%
+  );
+
+  transition: opacity 0.4s ease;
+}
+
+#tour .tour-intro.leaving {
+  opacity: 0;
+}
+
+#tour .tour-intro-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 17px;
+  max-width: 790px;
+
+  color: #ffffff;
+  text-align: center;
+}
+
+#tour .tour-intro-subtitle {
+  color: #f5d5cb;
+
+  font-size: 11px;
+  font-weight: 500;
+
+  letter-spacing: 0.26em;
+}
+
+#tour .tour-intro-title {
+  margin: 0;
+
+  font-size: clamp(36px, 6vw, 76px);
+  font-weight: 750;
+
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+
+  text-wrap: balance;
+
+  text-shadow:
+    0 3px 20px rgba(0, 0, 0, 0.4);
+}
+
+#tour .tour-intro-description {
+  max-width: 530px;
+
+  color: rgba(255, 255, 255, 0.9);
+
+  font-size: clamp(14px, 2vw, 18px);
+  line-height: 1.6;
+
+  text-wrap: balance;
+}
+
+#tour .tour-start-button {
+  display: flex;
+  align-items: center;
+
+  gap: 24px;
+
+  padding: 15px 25px;
+
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 999px;
+
+  background: var(--accent);
+  color: #ffffff;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+  pointer-events: auto;
+
+  box-shadow:
+    0 14px 30px rgba(0, 0, 0, 0.27);
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+#tour .tour-start-button:hover {
+  background: var(--accent-hover);
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 18px 36px rgba(0, 0, 0, 0.35);
+}
+
+#tour .tour-start-button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+#tour .tour-intro-hint {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* Ocultar controles mientras está la portada */
+
+#tour.intro-active .bar,
+#tour.intro-active .zoom-ctl,
+#tour.intro-active .scene-controls,
+#tour.intro-active .dock,
+#tour.intro-active .sheet-open,
+#tour.intro-active .hotspot {
+  display: none !important;
+}
+
+
+/* =========================================================
+   13. FUNDIDO, CARGA Y MENSAJES
+   ========================================================= */
+
+#tour .fade {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+
+  background: #000000;
+
+  opacity: 0;
+  pointer-events: none;
+
+  transition: opacity 0.3s ease;
+}
+
+#tour .fade.on {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#tour .tour-loading {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+  padding: 24px;
+
+  pointer-events: none;
+
+  background: rgba(13, 26, 34, 0.72);
+  color: #ffffff;
+
+  text-align: center;
+
+  backdrop-filter: blur(8px);
+}
+
+#tour .tour-loading[hidden] {
+  display: none !important;
+}
+
+#tour .tour-loading-spinner {
+  width: 45px;
+  height: 45px;
+
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #efb9ae;
+  border-radius: 50%;
+
+  animation: tour-loading-spin 0.8s linear infinite;
+}
+
+#tour .tour-loading-title {
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+}
+
+#tour .tour-loading-description {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  text-align: center;
+}
+
+@keyframes tour-loading-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#tour .toast {
+  position: absolute;
+
+  top: 64px;
+  left: 50%;
+  z-index: 7;
+
+  transform: translateX(-50%);
+
+  padding: 7px 13px;
+
+  border-radius: 8px;
+
+  background: #164056;
+  color: #ffffff;
+
+  font-size: 13px;
+}
+
+/* Imagen faltante */
+
+#tour .missing {
+  position: absolute;
+  inset: 0;
+
+  display: grid;
+  place-content: center;
+
+  gap: 10px;
+  padding: 24px;
+
+  color: #cfdde5;
+  text-align: center;
+}
+
+#tour .missing strong {
+  color: #ffffff;
+  font-size: 24px;
+}
+
+#tour .missing p {
+  margin: 0;
+}
+
+#tour .missing code {
+  display: inline-block;
+
+  padding: 6px 12px;
+
+  border-radius: 6px;
+
+  background: #1a2a35;
+  color: #9fd2e3;
+}
+
+
+/* =========================================================
+   14. ILUMINACIÓN DE FACHADAS
+   ========================================================= */
+
+#tour .facade-glow .pz-img {
+  filter:
+    brightness(1)
+    saturate(1);
+
+  transition: filter 0.45s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  #tour .facade-glow:hover .pz-img {
+    filter:
+      brightness(1.09)
+      saturate(1.07);
+  }
+}
+
+
+/* =========================================================
+   15. VISOR DE PLANOS
+   ========================================================= */
+
+/* Botón Plano */
+
+#tour .sheet-open {
+  position: absolute;
+
+  left: 14px;
+  bottom: max(
+    98px,
+    calc(98px + env(safe-area-inset-bottom))
+  );
+
+  z-index: 4;
+
+  padding: 10px 15px;
+
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 999px;
+
+  background: rgba(20, 36, 45, 0.76);
+  color: #ffffff;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  backdrop-filter: blur(14px);
+  cursor: pointer;
+}
+
+#tour .sheet-open:hover {
+  background: rgba(41, 61, 72, 0.92);
+}
+
+#tour .sheet-open[hidden] {
+  display: none !important;
+}
+
+/* Fondo del modal */
+
+#tour .sheet-modal {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+
+  display: grid;
+  place-items: center;
+
+  padding: 18px;
+
+  background: rgba(7, 15, 22, 0.84);
+  backdrop-filter: blur(12px);
+}
+
 #tour .sheet-modal[hidden] {
   display: none !important;
 }
 
-/* Ventana principal */
+/* Ventana */
+
+#tour .sheet-panel {
+  width: min(1100px, 96vw);
+  max-height: 92vh;
+
+  overflow: auto;
+
+  padding: 20px;
+
+  border-radius: 18px;
+
+  background: #f8f7f5;
+  color: #24343c;
+
+  box-shadow:
+    0 28px 80px rgba(0, 0, 0, 0.45);
+}
 
 /* Encabezado */
 
@@ -1219,26 +1387,44 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+
   gap: 16px;
+  padding: 4px 4px 14px;
 }
 
 #tour .sheet-head strong {
-  font-size: 18px;
   color: #26343c;
+  font-size: 18px;
 }
 
 #tour .sheet-head p {
   margin: 6px 0 0;
-  font-size: 12px;
+
   color: #6b747d;
+  font-size: 12px;
+}
+
+#tour .sheet-head button {
+  flex-shrink: 0;
+
+  width: 36px;
+  height: 36px;
+
+  border: 0;
+  border-radius: 50%;
+
+  background: #e9e6e2;
+  color: #28363d;
+
+  cursor: pointer;
 }
 
 /* Selector de plantas */
 
 #tour .floor-tabs {
   display: flex;
-  gap: 8px;
 
+  gap: 8px;
   margin: 16px 0;
 }
 
@@ -1258,9 +1444,10 @@
 }
 
 #tour .floor-tab.active {
-  background: #a84342;
-  border-color: #a84342;
-  color: white;
+  border-color: var(--accent);
+  background: var(--accent);
+
+  color: #ffffff;
 }
 
 #tour .floor-tab:disabled {
@@ -1276,37 +1463,480 @@
 
   overflow: auto;
 
-  background: #ffffff;
   border: 1px solid #e6e2df;
   border-radius: 12px;
+
+  background: #ffffff;
 }
 
-/* Imagen */
+/* Imagen del plano */
 
 #tour .floor-plan-image {
   display: block;
 
   width: 100%;
-  height: auto;
-
   min-width: 680px;
   max-width: none;
+  height: auto;
 
   border: none;
 }
 
-/* Texto inferior */
-
 #tour .floor-plan-note {
   margin-top: 12px;
 
-  font-size: 12px;
   color: #68737d;
+  font-size: 12px;
 }
 
-/* Celulares */
+
+/* =========================================================
+   16. TRANSICIONES DE VIDEO
+   ========================================================= */
+
+#tour .travel-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+
+  overflow: hidden;
+  pointer-events: none;
+}
+
+#tour .travel-overlay[hidden] {
+  display: none !important;
+}
+
+#tour .travel-video {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  opacity: 1;
+  pointer-events: none;
+}
+
+/* Estado de salida del video */
+
+#tour .travel-overlay.leaving {
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+#tour .travel-skip {
+  position: absolute;
+
+  right: 24px;
+  bottom: max(
+    24px,
+    env(safe-area-inset-bottom)
+  );
+
+  padding: 11px 18px;
+
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+
+  background: rgba(12, 25, 35, 0.7);
+  color: #ffffff;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  backdrop-filter: blur(10px);
+
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+#tour .travel-skip:hover {
+  background: rgba(12, 25, 35, 0.95);
+}
+
+#tour .travel-skip:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
+}
+
+/* Ocultar controles durante el video */
+
+#tour.is-traveling .bar,
+#tour.is-traveling .dock,
+#tour.is-traveling .zoom-ctl,
+#tour.is-traveling .sheet-open {
+  opacity: 0;
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   17. FLECHAS LATERALES DE LAS FACHADAS
+   ========================================================= */
+
+#tour .exterior-nav {
+  position: absolute;
+
+  top: 50%;
+  z-index: 4;
+
+  transform: translateY(-50%);
+
+  display: none;
+  place-items: center;
+
+  width: 54px;
+  height: 54px;
+
+  padding: 0;
+
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+
+  background: rgba(13, 26, 34, 0.55);
+
+  backdrop-filter: blur(6px);
+
+  box-shadow:
+    0 2px 14px rgba(0, 0, 0, 0.4);
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+#tour.is-exterior:not(.is-traveling):not(.intro-active)
+.exterior-nav {
+  display: grid;
+}
+
+#tour .exterior-nav[hidden] {
+  display: none !important;
+}
+
+#tour .exterior-nav--prev {
+  left: 18px;
+}
+
+#tour .exterior-nav--next {
+  right: 18px;
+}
+
+#tour .exterior-nav svg {
+  width: 26px;
+  height: 26px;
+
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 3;
+
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+#tour .exterior-nav:hover {
+  background: #ffffff;
+  transform: translateY(-50%) scale(1.08);
+}
+
+#tour .exterior-nav:hover svg {
+  stroke: #164056;
+}
+
+#tour .exterior-nav:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 4px;
+}
+
+/* Nombre de la fachada */
+
+#tour .exterior-nav-label {
+  position: absolute;
+
+  top: 100%;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  margin-top: 8px;
+  padding: 3px 8px;
+
+  border-radius: 999px;
+
+  background: rgba(13, 26, 34, 0.74);
+  color: #ffffff;
+
+  font-size: 10px;
+  font-weight: 500;
+  white-space: nowrap;
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   18. HOTSPOTS VISIBLES AL EXPLORAR FACHADAS
+   ========================================================= */
+
+@media (hover: hover) and (pointer: fine) {
+
+  #tour .building-hover-enabled .hotspot--primary {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    transition:
+      opacity 0.25s ease,
+      visibility 0.25s ease;
+  }
+
+  #tour .building-hover-active .hotspot--primary,
+  #tour .building-hover-enabled
+  .hotspot--primary:focus-visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+}
+
+@media (hover: none) {
+
+  #tour .building-hover-enabled .hotspot--primary {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+}
+
+
+/* =========================================================
+   19. TABLETS
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+  #tour .dock.dock-carousel {
+    width: min(650px, calc(100vw - 30px));
+
+    height: 66px;
+    padding: 7px;
+    gap: 7px;
+  }
+
+  #tour .dock-carousel .carousel-arrow {
+    flex-basis: 46px;
+
+    width: 46px;
+    height: 46px;
+  }
+
+  #tour .dock-carousel .carousel-arrow::before {
+    width: 13px;
+    height: 13px;
+  }
+
+  #tour .dock-carousel .carousel-viewport {
+    gap: 6px;
+  }
+
+  #tour .dock-carousel .carousel-scene {
+    height: 46px;
+
+    padding: 0 8px;
+    font-size: 14px;
+  }
+}
+
+
+/* =========================================================
+   20. CELULARES
+   ========================================================= */
 
 @media (max-width: 700px) {
+
+  /* Barra superior */
+
+  #tour .bar-left {
+    top: max(12px, env(safe-area-inset-top));
+    left: 12px;
+
+    gap: 7px;
+    max-width: calc(100vw - 24px);
+  }
+
+  #tour .bar-right {
+    top: max(12px, env(safe-area-inset-top));
+    right: 12px;
+  }
+
+  #tour .brand {
+    display: none;
+  }
+
+  #tour .tour-current-place {
+    max-width: 42vw;
+
+    padding: 10px 12px;
+    font-size: 11px;
+  }
+
+  #tour .history-controls {
+    gap: 4px;
+  }
+
+  #tour .history-btn {
+    min-width: 78px;
+    height: 38px;
+
+    padding: 0 10px;
+    font-size: 11px;
+  }
+
+  #tour .return-exterior {
+    padding: 10px 12px;
+    font-size: 11px;
+  }
+
+  /* Carrusel */
+
+  #tour .dock.dock-carousel {
+    left: 50%;
+    right: auto;
+
+    bottom: max(
+      12px,
+      env(safe-area-inset-bottom)
+    );
+
+    transform: translateX(-50%);
+
+    width: calc(100vw - 20px);
+    max-width: none;
+    height: 60px;
+
+    padding: 5px;
+    gap: 4px;
+  }
+
+  #tour .dock-carousel .carousel-arrow {
+    flex: 0 0 42px;
+
+    width: 42px;
+    height: 42px;
+  }
+
+  #tour .dock-carousel .carousel-arrow::before {
+    width: 12px;
+    height: 12px;
+
+    border-width: 3px;
+  }
+
+  #tour .dock-carousel .carousel-viewport {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+
+    gap: 3px;
+  }
+
+  #tour .dock-carousel .carousel-scene {
+    height: 42px;
+
+    padding: 0 4px;
+
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  /* Zoom */
+
+  #tour .zoom-ctl {
+    right: 12px;
+
+    bottom: max(
+      84px,
+      calc(84px + env(safe-area-inset-bottom))
+    );
+  }
+
+  #tour .round {
+    width: 36px;
+    height: 36px;
+  }
+
+  /* Portada */
+
+  #tour .tour-intro-content {
+    gap: 14px;
+  }
+
+  #tour .tour-intro-subtitle {
+    font-size: 9px;
+    letter-spacing: 0.13em;
+  }
+
+  #tour .tour-intro-title {
+    font-size: clamp(32px, 9vw, 48px);
+  }
+
+  #tour .tour-intro-description {
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  /* Hotspots */
+
+  #tour .hotspot--primary .hotspot-arrow-icon {
+    width: 46px;
+    height: 46px;
+
+    font-size: 27px;
+  }
+
+  #tour .hotspot--primary .hotspot-text {
+    padding: 7px 10px;
+    font-size: 11px;
+  }
+
+  #tour .hotspot.hotspot--arrow {
+    width: 44px;
+    height: 44px;
+  }
+
+  #tour .hotspot--arrow .hotspot-arrow-icon {
+    font-size: 26px;
+  }
+
+  #tour .hotspot--wayfinding .hotspot-way-arrow {
+    width: 32px;
+    height: 32px;
+  }
+
+  #tour .hotspot--wayfinding .hotspot-text {
+    padding: 5px 9px;
+    font-size: 11px;
+  }
+
+  /* Plano */
+
+  #tour .sheet-open {
+    left: 12px;
+    bottom: 79px;
+
+    padding: 9px 12px;
+    font-size: 11px;
+  }
+
+  #tour .sheet-panel {
+    padding: 12px;
+    max-height: 90vh;
+  }
+
   #tour .floor-tab {
     padding: 9px 13px;
     font-size: 12px;
@@ -1315,333 +1945,77 @@
   #tour .floor-plan-container {
     max-height: 60vh;
   }
-}
 
-/* ==========================================
-   CARRUSEL INFERIOR COMPACTO
-   ========================================== */
+  /* Fachadas */
 
-#tour .dock.dock-carousel {
-  position: absolute;
-
-  left: 50%;
-  right: auto;
-
-  bottom: max(
-    14px,
-    env(safe-area-inset-bottom)
-  );
-
-  transform: translateX(-50%);
-
-  width: min(490px, calc(100vw - 110px));
-  max-width: none;
-
-  box-sizing: border-box;
-
-  display: flex;
-  align-items: center;
-
-  gap: 5px;
-  padding: 6px;
-
-  overflow: hidden;
-
-  border-radius: 999px;
-
-  background: rgba(18, 32, 42, 0.82);
-
-  border: 1px solid rgba(255,255,255,0.15);
-
-  backdrop-filter: blur(14px);
-
-  box-shadow:
-    0 5px 20px rgba(0,0,0,0.18);
-}
-
-
-/* ==========================================
-   BOTONES LATERALES DEL CARRUSEL
-   ========================================== */
-
-#tour .carousel-arrow {
-  flex: 0 0 34px;
-
-  width: 34px;
-  height: 34px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 0;
-
-  border: none;
-  border-radius: 50%;
-
-  background: rgba(255,255,255,0.1);
-  color: white;
-
-  font-size: 25px;
-  line-height: 1;
-
-  cursor: pointer;
-
-  transition:
-    background 0.2s ease,
-    opacity 0.2s ease;
-}
-
-#tour .carousel-arrow:hover:not(:disabled) {
-  background: rgba(255,255,255,0.25);
-}
-
-#tour .carousel-arrow:disabled {
-  opacity: 0.25;
-  cursor: default;
-}
-
-
-/* ==========================================
-   TRES ESPACIOS VISIBLES
-   ========================================== */
-
-#tour .carousel-viewport {
-  flex: 1;
-  min-width: 0;
-
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-
-  gap: 4px;
-
-  overflow: hidden;
-}
-
-#tour .carousel-scene {
-  min-width: 0;
-  width: 100%;
-  height: 34px;
-
-  padding: 0 6px;
-
-  border: none;
-  border-radius: 999px;
-
-  background: transparent;
-  color: rgba(255,255,255,0.82);
-
-  font-size: 11px;
-  font-weight: 500;
-
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-
-  cursor: pointer;
-
-  transition:
-    background 0.2s ease,
-    color 0.2s ease;
-}
-
-#tour .carousel-scene:hover:not(.active) {
-  background: rgba(255,255,255,0.14);
-  color: white;
-}
-
-
-/* ==========================================
-   PANORÁMICA ACTUAL
-   ========================================== */
-
-#tour .carousel-scene.active {
-  background: #f9f6f4;
-  color: #963e43;
-
-  font-weight: 700;
-}
-
-
-/* ==========================================
-   ACCESIBILIDAD
-   ========================================== */
-
-#tour .carousel-arrow:focus-visible,
-#tour .carousel-scene:focus-visible {
-  outline: 2px solid #ffffff;
-  outline-offset: -2px;
-}
-
-
-/* ==========================================
-   CELULARES
-   ========================================== */
-
-@media (max-width: 700px) {
-
-  #tour .dock.dock-carousel {
-    left: 50%;
-    right: auto;
-
-    width: calc(100vw - 96px);
-
-    max-width: 430px;
-
-    transform: translateX(-50%);
-
-    gap: 3px;
-    padding: 5px;
+  #tour .exterior-nav {
+    width: 44px;
+    height: 44px;
   }
 
-  #tour .carousel-arrow {
-    width: 30px;
-    height: 34px;
-
-    flex-basis: 30px;
-
-    font-size: 23px;
+  #tour .exterior-nav--prev {
+    left: 8px;
   }
 
-  #tour .carousel-viewport {
-    gap: 2px;
+  #tour .exterior-nav--next {
+    right: 8px;
   }
 
-  #tour .carousel-scene {
-    height: 34px;
-
-    padding: 0 3px;
-
-    font-size: 10px;
+  #tour .exterior-nav svg {
+    width: 22px;
+    height: 22px;
   }
 
-}
-
-/* ==========================================
-   FLECHAS INTERIORES - WAYFINDING
-   ========================================== */
-
-#tour .hotspot.hotspot--wayfinding {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  width: auto;
-  height: auto;
-  min-width: 48px;
-
-  gap: 6px;
-  padding: 5px;
-
-  background: transparent;
-  border: none;
-  box-shadow: none;
-
-  opacity: 0.9;
-  cursor: pointer;
-}
-
-/* Flecha blanca sólida */
-
-#tour .hotspot-way-arrow {
-  display: block;
-
-  width: 38px;
-  height: 38px;
-
-  background: #ffffff;
-
-  clip-path: polygon(
-    0% 0%,
-    100% 50%,
-    0% 100%,
-    25% 50%
-  );
-
-  transition:
-    opacity 0.2s ease,
-    filter 0.2s ease;
-}
-
-/* Orientaciones */
-
-#tour .hotspot-way-arrow.dir-right {
-  transform: rotate(0deg);
-}
-
-#tour .hotspot-way-arrow.dir-left {
-  transform: rotate(180deg);
-}
-
-#tour .hotspot-way-arrow.dir-up {
-  transform: rotate(-90deg);
-}
-
-#tour .hotspot-way-arrow.dir-down {
-  transform: rotate(90deg);
-}
-
-/* Etiqueta del destino */
-
-#tour .hotspot.hotspot--wayfinding .hotspot-text {
-  display: block;
-
-  padding: 6px 12px;
-
-  background: rgba(20, 32, 42, 0.88);
-  color: #ffffff;
-
-  border-radius: 999px;
-
-  font-size: 12px;
-  font-weight: 600;
-  text-align: center;
-  white-space: nowrap;
-
-  box-shadow: 0 3px 10px rgba(0,0,0,0.25);
-}
-
-/* Evitar etiquetas duplicadas */
-
-#tour .hotspot--wayfinding::after {
-  display: none !important;
-}
-
-/* Interacción */
-
-#tour .hotspot.hotspot--wayfinding:hover {
-  background: transparent;
-  box-shadow: none;
-  opacity: 1;
-}
-
-#tour .hotspot--wayfinding:hover
-.hotspot-way-arrow {
-  filter: brightness(0.82);
-}
-
-#tour .hotspot--wayfinding:hover .hotspot-text {
-  filter: brightness(1.08);
-}
-
-/* Accesibilidad */
-
-#tour .hotspot--wayfinding:focus-visible {
-  outline: 2px solid #ffffff;
-  outline-offset: 3px;
-}
-
-/* Celulares */
-
-@media (max-width: 700px) {
-  #tour .hotspot-way-arrow {
-    width: 32px;
-    height: 32px;
+  #tour .exterior-nav-label {
+    padding: 2px 7px;
+    font-size: 9px;
   }
 
-  #tour .hotspot.hotspot--wayfinding .hotspot-text {
-    padding: 5px 9px;
+  /* Videos */
+
+  #tour .travel-skip {
+    right: 14px;
+    bottom: 20px;
+  }
+}
+
+
+/* =========================================================
+   21. CELULARES PEQUEÑOS
+   ========================================================= */
+
+@media (max-width: 380px) {
+
+  #tour .dock-carousel .carousel-arrow {
+    flex-basis: 36px;
+
+    width: 36px;
+    height: 40px;
+  }
+
+  #tour .dock-carousel .carousel-scene {
+    padding: 0 2px;
     font-size: 11px;
+  }
+}
+
+
+/* =========================================================
+   22. MOVIMIENTO REDUCIDO
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  #tour .tour-intro,
+  #tour .tour-start-button,
+  #tour .tour-loading-spinner,
+  #tour .hotspot i,
+  #tour .hotspot--primary .hotspot-arrow-icon,
+  #tour .travel-overlay,
+  #tour .travel-video,
+  #tour .facade-glow .pz-img,
+  #tour .stage.travel-fallback {
+    transition: none;
+    animation: none;
   }
 }

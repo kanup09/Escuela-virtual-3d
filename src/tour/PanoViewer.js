@@ -259,7 +259,7 @@ export class PanoViewer {
           hotspot.group.position
             .copy(hotspot.basePosition)
             .addScaledVector(hotspot.forward, pulse * 0.06);
-          hotspot.material.opacity = hotspot.hovered ? 0.78 : 0.52;
+          hotspot.material.opacity = 1;
           hotspot.outlineMaterial.opacity = hotspot.hovered ? 0.95 : 0.58;
           for (let i = 0; i < hotspot.shadowMaterials.length; i++) {
             hotspot.shadowMaterials[i].opacity =
@@ -285,7 +285,7 @@ export class PanoViewer {
           hotspot.label.style.display = '';
           hotspot.label.style.left = `${(point.x * 0.5 + 0.5) * w}px`;
           hotspot.label.style.top = `${(-point.y * 0.5 + 0.5) * h}px`;
-          hotspot.label.style.transform = 'translate(-50%, calc(-50% - 38px))';
+          hotspot.label.style.transform ='translate(-50%, calc(-50% - 22px))';
         }
       }
 
@@ -339,7 +339,11 @@ export class PanoViewer {
       shadow.rotation.x = -Math.PI / 2;
       shadow.position.y = 0.012 + index * 0.002;
       const size = 1.65 - index * 0.3;
-      shadow.scale.set(0.82 * size, 1.7 * size, 1);
+      shadow.scale.set(
+        0.35 * size,
+        0.55 * size,
+        1
+    );
       shadow.renderOrder = 8 + index;
       group.add(shadow);
       shadowMaterials.push(shadow.material);
@@ -348,21 +352,34 @@ export class PanoViewer {
     const arrowTransform = new THREE.Group();
     group.add(arrowTransform);
 
+
+    // ==========================================
+    // FLECHA COMPACTA TIPO CHEVRON SÓLIDO
+    // ==========================================
+
     const shape = new THREE.Shape();
-    shape.moveTo(0, 1.8);
-    shape.lineTo(0.7, 0.55);
-    shape.lineTo(0.28, 0.55);
-    shape.lineTo(0.28, -1.5);
-    shape.lineTo(-0.28, -1.5);
-    shape.lineTo(-0.28, 0.55);
-    shape.lineTo(-0.7, 0.55);
+
+    // Punta de la flecha
+    shape.moveTo(0, 0.62);
+
+    // Lateral derecho
+    shape.lineTo(0.46, -0.48);
+
+    // Hendidura central
+    shape.lineTo(0, -0.22);
+
+    // Lateral izquierdo
+    shape.lineTo(-0.46, -0.48);
+
+    // Cerrar silueta
     shape.closePath();
+
 
     const geometry = new THREE.ShapeGeometry(shape);
     const material = new THREE.MeshBasicMaterial({
       color: 0xffffff,
       transparent: true,
-      opacity: 0.52,
+      opacity: 1,
       side: THREE.DoubleSide,
       depthTest: false,
       depthWrite: false,
@@ -387,7 +404,10 @@ export class PanoViewer {
     outline.renderOrder = 12;
     arrowTransform.add(outline);
 
-    const hitGeometry = new THREE.PlaneGeometry(2.4, 3.8);
+    const hitGeometry = new THREE.PlaneGeometry(
+      1.4,
+      1.6
+    );
     const hitMaterial = new THREE.MeshBasicMaterial({
       transparent: true,
       opacity: 0,
