@@ -1621,6 +1621,10 @@
   filter: brightness(0.82);
 }
 
+#tour .hotspot--wayfinding:hover .hotspot-text {
+  filter: brightness(1.08);
+}
+
 /* Accesibilidad */
 
 #tour .hotspot--wayfinding:focus-visible {

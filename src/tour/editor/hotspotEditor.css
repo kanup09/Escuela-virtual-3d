@@ -10,8 +10,9 @@
 
   z-index: 100;
 
-  width: 275px;
-  max-width: calc(100vw - 36px);
+  width: 320px;
+  max-width: calc(100vw - 20px);
+  box-sizing: border-box;
   max-height: calc(100vh - 110px);
 
   overflow-y: auto;
@@ -61,35 +62,42 @@
   color: #c7d8df;
 }
 
-#tour .he-coordinates {
-  display: flex;
-  gap: 12px;
-
-  padding: 10px;
-  margin: 12px 0;
-
-  border-radius: 8px;
-  background: rgba(255,255,255,0.09);
-
-  font-size: 13px;
-}
-
 #tour .hotspot-editor label {
   display: flex;
   flex-direction: column;
 
+  min-width: 0;
   gap: 5px;
-  margin: 12px 0;
+  margin: 10px 0;
 
   font-size: 12px;
+}
+
+#tour .hotspot-editor .he-grid {
+  display: grid;
+  gap: 8px;
+}
+
+#tour .hotspot-editor .he-position {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+#tour .hotspot-editor .he-rotation {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+#tour .hotspot-editor .he-rotation label {
+  font-size: 10px;
 }
 
 #tour .hotspot-editor select,
 #tour .hotspot-editor input {
   width: 100%;
+  min-width: 0;
   box-sizing: border-box;
 
-  padding: 9px;
+  padding: 8px;
 
   background: #ffffff;
   color: #26343c;
@@ -121,6 +129,6 @@
   #tour .hotspot-editor {
     top: 60px;
     right: 10px;
-    width: 240px;
+    width: 300px;
   }
 }

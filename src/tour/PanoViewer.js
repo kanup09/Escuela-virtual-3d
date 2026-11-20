@@ -7,6 +7,28 @@ function directionFromImage(u, v) {
   return new THREE.Vector3(Math.sin(lon) * Math.cos(lat), Math.sin(lat), -Math.cos(lon) * Math.cos(lat));
 }
 
+function wayfindingPlacement(x, y, config = {}) {
+  const direction = directionFromImage(x / 100, y / 100);
+  const horizontal = new THREE.Vector3(direction.x, 0, direction.z).normalize();
+  const floorY = -2.2;
+  const distance = THREE.MathUtils.clamp(
+    direction.y < -0.02 ? floorY / direction.y : 16,
+    5,
+    18
+  );
+  const basePosition = horizontal.multiplyScalar(distance);
+  basePosition.y = floorY;
+  const offsets = { forward: 0, right: 90, back: 180, left: -90 };
+  const radialBearing = Math.atan2(direction.x, -direction.z);
+  const bearing = Number.isFinite(config.heading)
+    ? THREE.MathUtils.degToRad(config.heading)
+    : radialBearing + THREE.MathUtils.degToRad(
+        offsets[config.direction] ?? 0
+      );
+
+  return { direction, basePosition, bearing };
+}
+
 // Visor de panoramas 360° (imagen equirectangular, proporción 2:1).
 export class PanoViewer {
   constructor(container, image, {
@@ -230,13 +252,19 @@ export class PanoViewer {
 
         for (const hotspot of this.wayfindingHotspots) {
           const pulse = Math.sin(now * 0.002 + hotspot.phase);
-          const scale = (hotspot.hovered ? 1.12 : 1) * (1 + pulse * 0.018);
-          hotspot.group.scale.setScalar(scale);
+          hotspot.group.scale.setScalar(1 + pulse * 0.012);
+          hotspot.arrowTransform.scale.setScalar(
+            hotspot.scale * (hotspot.hovered ? 1.045 : 1)
+          );
           hotspot.group.position
             .copy(hotspot.basePosition)
             .addScaledVector(hotspot.forward, pulse * 0.06);
           hotspot.material.opacity = hotspot.hovered ? 0.78 : 0.52;
           hotspot.outlineMaterial.opacity = hotspot.hovered ? 0.95 : 0.58;
+          for (let i = 0; i < hotspot.shadowMaterials.length; i++) {
+            hotspot.shadowMaterials[i].opacity =
+              hotspot.shadowOpacities[i] * (hotspot.hovered ? 1.12 : 1);
+          }
 
           toHotspot.copy(hotspot.group.position);
           if (toHotspot.dot(forward) <= 0) {
@@ -285,25 +313,40 @@ export class PanoViewer {
     this.hotspots.push({ el, dir: directionFromImage(x / 100, y / 100) });
   }
 
-  addWayfindingHotspot(label, x, y, heading = null) {
-    const direction = directionFromImage(x / 100, y / 100);
-    const horizontal = new THREE.Vector3(direction.x, 0, direction.z).normalize();
-    const floorY = -2.2;
-    const distance = THREE.MathUtils.clamp(
-      direction.y < -0.02 ? floorY / direction.y : 16,
-      5,
-      18
-    );
-    const basePosition = horizontal.multiplyScalar(distance);
-    basePosition.y = floorY;
-
-    const bearing = Number.isFinite(heading)
-      ? THREE.MathUtils.degToRad(heading)
-      : Math.atan2(direction.x, -direction.z);
+  addWayfindingHotspot(label, x, y, options = {}) {
+    if (typeof options === 'number') options = { heading: options };
+    if (!options) options = {};
+    const { direction, basePosition, bearing } =
+      wayfindingPlacement(x, y, options);
 
     const group = new THREE.Group();
     group.position.copy(basePosition);
     group.rotation.y = bearing;
+
+    const shadowMaterials = [];
+    const shadowOpacities = [0.045, 0.075, 0.11];
+    for (const [index, opacity] of shadowOpacities.entries()) {
+      const shadow = new THREE.Mesh(
+        new THREE.CircleGeometry(1, 32),
+        new THREE.MeshBasicMaterial({
+          color: 0x07121a,
+          transparent: true,
+          opacity,
+          depthTest: false,
+          depthWrite: false,
+        })
+      );
+      shadow.rotation.x = -Math.PI / 2;
+      shadow.position.y = 0.012 + index * 0.002;
+      const size = 1.65 - index * 0.3;
+      shadow.scale.set(0.82 * size, 1.7 * size, 1);
+      shadow.renderOrder = 8 + index;
+      group.add(shadow);
+      shadowMaterials.push(shadow.material);
+    }
+
+    const arrowTransform = new THREE.Group();
+    group.add(arrowTransform);
 
     const shape = new THREE.Shape();
     shape.moveTo(0, 1.8);
@@ -326,8 +369,8 @@ export class PanoViewer {
     });
     const arrow = new THREE.Mesh(geometry, material);
     arrow.rotation.x = -Math.PI / 2;
-    arrow.renderOrder = 10;
-    group.add(arrow);
+    arrow.renderOrder = 11;
+    arrowTransform.add(arrow);
 
     const outlineGeometry = new THREE.BufferGeometry().setFromPoints(
       shape.getPoints(24)
@@ -341,8 +384,8 @@ export class PanoViewer {
     });
     const outline = new THREE.LineLoop(outlineGeometry, outlineMaterial);
     outline.rotation.x = -Math.PI / 2;
-    outline.renderOrder = 11;
-    group.add(outline);
+    outline.renderOrder = 12;
+    arrowTransform.add(outline);
 
     const hitGeometry = new THREE.PlaneGeometry(2.4, 3.8);
     const hitMaterial = new THREE.MeshBasicMaterial({
@@ -355,8 +398,8 @@ export class PanoViewer {
     });
     const hitArea = new THREE.Mesh(hitGeometry, hitMaterial);
     hitArea.rotation.x = -Math.PI / 2;
-    hitArea.renderOrder = 12;
-    group.add(hitArea);
+    hitArea.renderOrder = 13;
+    arrowTransform.add(hitArea);
     hitArea.userData.wayfindingHotspot = null;
 
     label.classList.add('pano', 'hotspot--wayfinding-label');
@@ -366,6 +409,7 @@ export class PanoViewer {
     const hotspot = {
       label,
       group,
+      arrowTransform,
       hitArea,
       direction,
       forward: new THREE.Vector3(
@@ -376,12 +420,71 @@ export class PanoViewer {
       basePosition: basePosition.clone(),
       material,
       outlineMaterial,
+      shadowMaterials,
+      shadowOpacities,
+      scale: 1,
       phase: Math.random() * Math.PI * 2,
       hovered: false,
     };
     hitArea.userData.wayfindingHotspot = hotspot;
     this.scene.add(group);
+    this.updateWayfindingHotspot(hotspot, { x, y, ...options });
     this.wayfindingHotspots.push(hotspot);
+    return hotspot;
+  }
+
+  updateWayfindingHotspot(hotspot, config) {
+    const x = Number.isFinite(config.x) ? config.x : hotspot.config.x;
+    const y = Number.isFinite(config.y) ? config.y : hotspot.config.y;
+    const { direction, basePosition, bearing } =
+      wayfindingPlacement(x, y, config);
+
+    const rotateX = Number.isFinite(config.rotateX) ? config.rotateX : 0;
+    const rotateY = Number.isFinite(config.rotateY) ? config.rotateY : 0;
+    const rotateZ = Number.isFinite(config.rotateZ) ? config.rotateZ : 0;
+    const scale = Number.isFinite(config.scale) && config.scale > 0
+      ? config.scale
+      : 1;
+
+    hotspot.direction.copy(direction);
+    hotspot.basePosition.copy(basePosition);
+    hotspot.group.position.copy(basePosition);
+    hotspot.group.rotation.y = bearing;
+    hotspot.forward.set(Math.sin(bearing), 0, -Math.cos(bearing));
+    hotspot.arrowTransform.rotation.set(
+      THREE.MathUtils.degToRad(rotateX),
+      THREE.MathUtils.degToRad(rotateY),
+      THREE.MathUtils.degToRad(rotateZ)
+    );
+    hotspot.scale = scale;
+    hotspot.config = {
+      ...config,
+      x,
+      y,
+      rotateX,
+      rotateY,
+      rotateZ,
+      scale,
+    };
+  }
+
+  removeWayfindingHotspot(hotspot) {
+    const index = this.wayfindingHotspots.indexOf(hotspot);
+    if (index < 0) return;
+
+    this.wayfindingHotspots.splice(index, 1);
+    this.scene.remove(hotspot.group);
+    hotspot.label.remove();
+    this.setHoveredWayfinding(null);
+
+    hotspot.group.traverse((child) => {
+      child.geometry?.dispose();
+      if (Array.isArray(child.material)) {
+        child.material.forEach((material) => material.dispose());
+      } else {
+        child.material?.dispose();
+      }
+    });
   }
 
   getWayfindingAt(event) {
@@ -512,6 +615,7 @@ export class PanoViewer {
 
   
   dispose() {
+    this.running = false;
     cancelAnimationFrame(this.raf);
 
     this.resizeObserver.disconnect();
@@ -549,21 +653,9 @@ export class PanoViewer {
 
     this.container.style.touchAction = '';
 
-    for (const hotspot of this.wayfindingHotspots) {
-      this.scene.remove(hotspot.group);
-      hotspot.label.remove();
-
-      for (const child of hotspot.group.children) {
-        child.geometry?.dispose();
-        if (Array.isArray(child.material)) {
-          child.material.forEach((material) => material.dispose());
-        } else {
-          child.material?.dispose();
-        }
-      }
+    for (const hotspot of [...this.wayfindingHotspots]) {
+      this.removeWayfindingHotspot(hotspot);
     }
-
-    this.wayfindingHotspots.length = 0;
 
     // Liberar recursos de Three.js
     this.texture.dispose();
