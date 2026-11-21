@@ -189,20 +189,8 @@ export const interiores = [
         "label": "Aula PB",
         "arrivalYaw": 0
       },
-      // Escena de origen: espacio-ludico
-      {
-        "x": 17.11,
-        "y": 53.57,
-        "to": "talleresAfuera",
-        "style": "wayfinding",
-        "direction": "forward",
-        "rotateX": 0,
-        "rotateY": 58,
-        "rotateZ": 0,
-        "scale": 1,
-        "label": "Talleres",
-        "arrivalYaw": 0
-      }
+      
+
     ],
   },
 
@@ -608,12 +596,12 @@ export const interiores = [
       // SALIDA (flecha chica sobre el piso, abajo a la derecha)
       {
         "x": 72,
-        "y": 91,
+        "y": 71,
         "to": "planta-alta-1",
         "style": "wayfinding",
-        "direction": "back",
+        "direction": "left",
         "rotateX": 0,
-        "rotateY": 0,
+        "rotateY": 6,
         "rotateZ": 0,
         "scale": 0.75,
         "label": "Planta Alta A",
