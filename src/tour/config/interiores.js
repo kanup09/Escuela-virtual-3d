@@ -220,6 +220,34 @@ export const interiores = [
         "scale": 1,
         "label": "Aula Integrada",
         "arrivalYaw": 0
+      },
+      // Escena de origen: espacio-ludicoPA
+      {
+        "x": 37.99,
+        "y": 56.09,
+        "to": "rampa",
+        "style": "wayfinding",
+        "direction": "left",
+        "rotateX": 0,
+        "rotateY": 0,
+        "rotateZ": 0,
+        "scale": 1,
+        "label": "Rampa",
+        "arrivalYaw": 0
+      },
+      // Escena de origen: espacio-ludicoPA
+      {
+        "x": 58.28,
+        "y": 56.13,
+        "to": "espacio-ludico",
+        "style": "wayfinding",
+        "direction": "forward",
+        "rotateX": 0,
+        "rotateY": 17,
+        "rotateZ": 0,
+        "scale": 1,
+        "label": "Espacio Ludico",
+        "arrivalYaw": 0
       }
       
 
